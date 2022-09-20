@@ -13,5 +13,5 @@ jobs:
         with:
           target_repo_url:
             git@github.com:EpitechPromo2025/B-DEV-500-TLS-5-1-area-johann.sako.git
-          ssh_private_key:                              # <-- use 'secrets' to pass credential information.
+          ssh_private_key:
             ${{ secrets.SSH_PRIVATE_KEY }}
