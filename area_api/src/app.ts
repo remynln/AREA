@@ -1,0 +1,33 @@
+import cors from 'cors'
+import express, { Application } from 'express'
+import { config } from './config'
+import login from './routes/login'
+//import { PetsController } from '~/resources/pets/pets.controller'
+//import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
+//import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
+
+const app = express()
+
+//middleware to parse json body
+app.use(express.json())
+
+//maybe useless
+app.use(cors())
+
+
+// login route
+app.use('/login', login)
+
+// home route
+app.get('/', (req, res) => res.send('hello world'))
+
+/**
+ * Gestion des erreurs
+ * /!\ Cela doit être le dernier `app.use`
+ */
+//app.use(ExceptionsHandler)
+
+/**
+ * On demande à Express d'ecouter les requêtes sur le port défini dans la config
+ */
+app.listen(config.API_PORT, () => console.log(`Launched on port ${config.API_PORT}`))
