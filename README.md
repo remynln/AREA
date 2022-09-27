@@ -4,10 +4,10 @@
 
 ### Introduction
 
-The API have two sides:
+The API has two sides:
   - Authentication system:
     It handles basic accounts gesture.
-  - Services system
+  - Services system:
     This part deal with many services like twitter, Valorant or instagram.
     It handles Custom Action/Reaction system, including his creation and his interactions with running instances.
 
@@ -40,7 +40,7 @@ This API Works With a postgres database, and have a JWT system to authorize conn
 - **Error Responses**:
   - 403: Username or password is incorrect
 
-Every other enpoints needs the JWT in the header (user must be authentified):
+Every others endpoints need the JWT in the header (user must be authentified):
   `Authorization: Bearer <token>`
 
 `/auth/unregister`: *DELETE Method*:
@@ -69,10 +69,14 @@ An AREA have:
   - `condition` (optional): a condition set using **properties** to trigger or not 
   - `reaction`: The service's Reaction to the action and his parameters
 
-Exemple: You want to instanciate an AREA that send a tweet "I made a top 1 on fortnite, add me: <FortniteUsername>" when you made a top on fortnite.
+Exemple: You want to instanciate an AREA that send a tweet "I made a top 1 on fortnite, add me: \<FortniteUsername\>" when you made a top on fortnite.
 
 The AREA is:
-  - `action`: A fortnite game is made by a user
+  - `action`:  Fortnite service -> a game is launched by a user is over
     - with `parameters`: 
       `username`: The fortnite username
-    - `condition`
+  - `condition`: `[Action:rank]` == 1
+  - `Reaction`: Tweeter service -> tweet something
+    - with `parameters`:
+      - `title`: "Another top 1"
+      - `content`: "I made a top 1 on fortnite, add me: `[Action:FortniteUsername]`"
