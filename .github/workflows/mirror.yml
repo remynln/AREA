@@ -1,6 +1,12 @@
 name: Mirroring
 
-on: [push, delete]
+on: 
+  push:
+    branches:
+      - main
+  delete:
+    branches:
+      - main
 
 jobs:
   to_git:
