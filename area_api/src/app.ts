@@ -2,6 +2,8 @@ import cors from 'cors'
 import express, { Application } from 'express'
 import { config } from './config'
 import login from './routes/login'
+
+import session from 'express-session'
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
@@ -14,13 +16,17 @@ app.use(express.json())
 //maybe useless
 app.use(cors())
 
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false
+}));
 
 // login route
 app.use('/login', login)
 
 // home route
 app.get('/', (req, res) => res.send('hello world'))
-
 /**
  * Gestion des erreurs
  * /!\ Cela doit être le dernier `app.use`
