@@ -42,6 +42,9 @@ passport.use(new GoogleStrategy({
 //});
 
 router.get('/google', (req, res) => {
+    if (!req.query.callback) {
+        res.status(403).send("Missing callback_url")
+    }
     const state = req.query.callback as string     
     passport.authenticate("google", { scope: ['profile', 'email'], state})(req, res)
 }, (req, res) => {
