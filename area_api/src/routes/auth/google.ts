@@ -2,6 +2,7 @@ import passport, { Strategy } from "passport";
 import express, { Request, Response, Router } from "express";
 const GoogleStrategy = require("passport-google-oauth20")
 import "dotenv/config"
+import url from "url";
 
 var router: Router = express.Router()
 
@@ -22,7 +23,7 @@ passport.use(new GoogleStrategy({
 }, function(accessToken: any, refresh_token: any, profile: any, callback: any) {
     console.log(accessToken, refresh_token, profile)
     callback(null, {
-        name: "user"
+        email: profile.emails[0].value
     })
 }))
 
@@ -41,6 +42,8 @@ passport.use(new GoogleStrategy({
 //    })(req, res)
 //});
 
+
+
 router.get('/google', (req, res) => {
     if (!req.query.callback) {
         res.status(403).send("Missing callback_url")
@@ -51,10 +54,20 @@ router.get('/google', (req, res) => {
     console.log("nsm")
 })
 
-router.get('/google/callback', passport.authenticate('google', {
-    failureRedirect: "http://localhost:8080/"
-}), (req, res) => {
-    res.redirect(req.query.state as string)
+router.get('/google/callback', (req, res, next) => {
+    passport.authenticate('google', {
+        failureRedirect: "http://localhost:8080/"
+    }, (err, user, info) => {
+        console.log("user: ", user)
+        res.locals.user = user;
+        next()
+    })(req, res, next)
+}, (req, res) => {
+    console.log("haha", res.locals.user)
+    res.redirect(url.format({
+        pathname: req.query.state as string,
+        query: res.locals.user
+    }))
 })
 
 export default router
