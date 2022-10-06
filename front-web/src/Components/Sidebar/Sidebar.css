@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+.Sidebar {
+    height: 100%;
+    width: 280px;
+    background-color: #444444;
+}
+
+.SidebarList {
+    margin: 0;
+    padding: 0;
+    height: auto;
+    width: 100%;
+}
+
+.SidebarList .row {
+    text-decoration: none;
+    width: 100%;
+    height: 80px;
+    list-style-type: none;
+    margin: 0%;
+    display: flex;
+    flex-direction: row;
+    color: #EDEDED;
+    justify-content: center;
+    align-items: center;
+    font-family: Poppins;
+    font-size: 16px;
+}
+
+.SidebarList .row:hover {
+    color: #f10c23;
+}
+
+.SidebarList #active {
+    color: #EDEDED;
+    background-color: #BF1B2C;
+    font-weight: bold;
+}
+
+.row #icon {
+    flex: 30%;
+    place-items: center;
+    display: grid;
+    padding-left: 10%;
+}
+
+.row #title {
+    flex: 70%;
+}
+
+.SidebarLogo {
+    height: 17.5%;
+}
+
+.Logo {
+    margin-top: -25%;
+    margin-left: -5%;
+    width: 110%;
+}
+
+@media only screen and (max-height: 850px) {
+    .Logo {
+        margin-top: -30%;
+        margin-left: -5%;
+        width: 110%;
+    }
+}
+
+@media only screen and (max-height: 750px) {
+    .Logo {
+        margin-top: -35%;
+        margin-left: -5%;
+        width: 110%;
+    }
+}
+
+@media only screen and (max-width: 1000px),
+            screen and (max-height: 575px) {
+    .Sidebar {
+        height: 100%;
+        width: 70px;
+    }
+    
+    .SidebarList #title {
+        display: none;
+    }
+
+    .row #icon {
+        flex: 30%;
+        place-items: center;
+        display: grid;
+        padding-left: 0%;
+    }
+
+    .SidebarLogo {
+        height: 100px;
+        width: 60px;
+        overflow: hidden;
+    }
+    
+    .Logo {
+        margin-top: -40px;
+        margin-left: -16px;
+        width: 180px;
+    }
+}
