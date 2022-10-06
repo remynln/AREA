@@ -1,9 +1,9 @@
 import passport, { Strategy } from "passport";
 import express, { Request, Response, Router } from "express";
-const GoogleStrategy = require("passport-google-oauth20")
 import "dotenv/config"
 import url from "url";
 import jwt from "jsonwebtoken";
+import services from "../../core/global"
 
 var router: Router = express.Router()
 
@@ -17,29 +17,23 @@ passport.deserializeUser((user: Express.User, done) => {
     done(null, user);
 });
 
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:8080/login/google/callback",
-}, function(accessToken: any, refresh_token: any, profile: any, callback: any) {
-    console.log(accessToken, refresh_token, profile)
-    callback(null, {
-        email: profile.emails[0].value
-    })
-}))
 
-router.get('/google', (req, res) => {
+for (var i of services) {
+    passport.use(i[1].strategy)
+}
+
+router.get('/:serviceName', (req, res) => {
     if (!req.query.callback) {
         res.status(403).send("Missing callback_url")
     }
     const state = req.query.callback as string     
-    passport.authenticate("google", { scope: ['profile', 'email'], state})(req, res)
+    passport.authenticate(req.params.serviceName, { scope: ['profile', 'email'], state})(req, res)
 }, (req, res) => {
     console.log("nsm")
 })
 
-router.get('/google/callback', (req, res, next) => {
-    passport.authenticate('google', {
+router.get('/:serviceName/callback', (req, res, next) => {
+    passport.authenticate(req.params.serviceName, {
         failureRedirect: "http://localhost:8080/"
     }, (err, user, info) => {
         console.log("user: ", user)
