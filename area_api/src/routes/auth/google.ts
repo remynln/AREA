@@ -20,8 +20,7 @@ passport.use(new GoogleStrategy({
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: "http://localhost:8080/login/google/callback",
 }, function(accessToken: any, refresh_token: any, profile: any, callback: any) {
-    console.log("profile")
-    process.stdout.write(accessToken, refresh_token, profile)
+    console.log(accessToken, refresh_token, profile)
     callback(null, {
         name: "user"
     })
@@ -43,15 +42,16 @@ passport.use(new GoogleStrategy({
 //});
 
 router.get('/google', (req, res) => {
-    console.log("allé")
-    passport.authenticate("google", { scope: ['profile']})(req, res)
+    const state = req.query.callback as string     
+    passport.authenticate("google", { scope: ['profile', 'email'], state})(req, res)
 }, (req, res) => {
     console.log("nsm")
 })
 
 router.get('/google/callback', passport.authenticate('google', {
-    failureRedirect: "http://localhost:8080/",
-    successRedirect: "http://localhost:8080/"
-}))
+    failureRedirect: "http://localhost:8080/"
+}), (req, res) => {
+    res.redirect(req.query.state as string)
+})
 
 export default router
