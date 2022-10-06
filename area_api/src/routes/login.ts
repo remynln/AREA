@@ -3,10 +3,10 @@ import google from "./auth/google"
 
 var login: Router = Router()
 
-login.get('/', (req: Request, res: Response) => {
-    res.send("login get method")
-})
+//login.get('/:serviceName', (req: Request, res: Response) => {
+//    res.send(req.params.serviceName)
+//})
 
-login.use("/", google)
+login.use("/service", google)
 
 export default login

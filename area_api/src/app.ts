@@ -23,7 +23,7 @@ app.use(session({
 }));
 
 // login route
-app.use('/login', login)
+app.use('/auth', login)
 
 // home route
 app.get('/', (req, res) => res.send('hello world'))
