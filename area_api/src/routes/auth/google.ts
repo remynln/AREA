@@ -3,6 +3,7 @@ import express, { Request, Response, Router } from "express";
 const GoogleStrategy = require("passport-google-oauth20")
 import "dotenv/config"
 import url from "url";
+import jwt from "jsonwebtoken";
 
 var router: Router = express.Router()
 
@@ -27,23 +28,6 @@ passport.use(new GoogleStrategy({
     })
 }))
 
-//router.get('/google', (req, res) => {
-//    console.log("azezea", req.query.callback)
-//    
-//    const callbackUrl: string = req.query.callback as string || ''
-//    if (callbackUrl == "") {
-//        res.status(403).json({
-//            message: "No callback url"
-//        })
-//        return;
-//    }
-//    passport.authenticate("google", (req, res) => {
-//        console.log("azd")
-//    })(req, res)
-//});
-
-
-
 router.get('/google', (req, res) => {
     if (!req.query.callback) {
         res.status(403).send("Missing callback_url")
@@ -63,10 +47,11 @@ router.get('/google/callback', (req, res, next) => {
         next()
     })(req, res, next)
 }, (req, res) => {
-    console.log("haha", res.locals.user)
     res.redirect(url.format({
         pathname: req.query.state as string,
-        query: res.locals.user
+        query: {
+            token: jwt.sign(res.locals.user, process.env.JWT_KEY || "")
+        }
     }))
 })
 
