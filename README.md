@@ -17,7 +17,9 @@ The API has two sides:
 
 This API Works With a postgres database, and have a JWT system to authorize connected accounts.
 
-#### Routes
+### Classic authentication system
+
+##### Routes
 
 `/auth/register`: *POST Method*
 - **Request Body**:
@@ -47,7 +49,24 @@ Every others endpoints need the JWT in the header (user must be authentified):
 - **Response**:
   - 200
   
-### Services system
+### Service OAuth2 Authentication
+
+Oauth2 system is useful to create or enrich an account with services like Google, twitter, microsoft etc...
+Accounts are linked by their mails, if you connect with the google service, it will create a classic account with the mail associated with google, but will save the api token to unlock AREAS action and reactions linked to this service.
+
+#### Routes
+
+`/auth/[service_name]`: *GET Method*
+- **Request Body**:
+  - `callback`: The url to redirect after authentication
+- **Response**:
+  - callback url redirection with body ->
+    - `token`: JWT for authorization
+
+#### Available services
+  - `google`
+
+### AREA system
 
 #### Basic description
 
