@@ -35,6 +35,12 @@ auth.post('/register', checkBody(["email", "username", "password"]), (req: Reque
     })
 })
 
+auth.post('/login', checkBody(["email", "password"]), (req, res) => {
+    res.status(200).json({
+        token: jwt.sign({ email: req.body.email }, process.env.JWT_KEY || '')
+    })
+})
+
 auth.use("/service", google)
 
 export default auth
