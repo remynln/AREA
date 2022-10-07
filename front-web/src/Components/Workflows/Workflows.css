@@ -1,0 +1,32 @@
+.WorkflowAdd {
+    width: 240px;
+    height: 320px;
+    background-color: #444444;
+    border-radius: 24px;
+    position: relative;
+}
+
+.WorkflowAdd #icon {
+    transform: scale(2, 2);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -20px 0 0 -10px;
+    color: #EDEDED;
+}
+
+.WorkflowAdd #icon:hover {
+    color: #f10c23;
+}
+
+@media only screen and (max-width: 800px),
+            screen and (max-height: 900px) {
+    .WorkflowAdd {
+        width: 180px;
+        height: 280px;
+    }
+
+    .WorkflowAdd #icon {
+        transform: scale(1.5, 1.5);
+    }
+}
