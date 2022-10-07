@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express'
 import google from "./services"
 import checkBody from '~/middlewares/checkBody'
+import jwt from "jsonwebtoken"
 
 var auth: Router = Router()
 
@@ -30,7 +31,7 @@ auth.post('/register', checkBody(["email", "username", "password"]), (req: Reque
         return;
     }
     res.status(200).json({
-        nice : "ok"
+        token: jwt.sign({ email: req.body.email }, process.env.JWT_KEY || '')
     })
 })
 
