@@ -7,9 +7,6 @@ import { Workflows } from './Pages/Workflows'
 import { Login } from './Pages/Login'
 import { Register } from './Pages/Register'
 import { PrivateRoutes } from './Components/LoginPage/PrivateRoutes'
-import { StoreProvider } from 'easy-peasy';
-import { UserAuth } from './Stores/UserAuth'
-import { ServerConnection } from './Stores/ServerConnection'
 
 function App() {
   return (
