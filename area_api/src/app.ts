@@ -2,7 +2,7 @@ import cors from 'cors'
 import express, { Application } from 'express'
 import { config } from './config'
 import login from './routes/auth/login'
-
+import checkToken from "~/middlewares/checkToken";
 import session from 'express-session'
 import area from './routes/area/create'
 //import { PetsController } from '~/resources/pets/pets.controller'
@@ -25,7 +25,7 @@ app.use(session({
 
 // login route
 app.use('/auth', login)
-app.use('/area', area)
+app.use('/area', checkToken, area)
 
 // home route
 app.get('/', (req, res) => res.send('hello world'))
