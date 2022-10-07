@@ -11,6 +11,7 @@ interface Reaction<ParamType> {
 }
 
 export interface Service {
+    start: Function,
     strategy: passport.Strategy,
     actions: Map<string, Action<any>>,
     reactions: Map<string, Reaction<any>>

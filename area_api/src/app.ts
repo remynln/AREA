@@ -5,6 +5,7 @@ import login from './routes/auth/login'
 import checkToken from "~/middlewares/checkToken";
 import session from 'express-session'
 import area from './routes/area/create'
+import google from './core/services/google';
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
@@ -38,4 +39,8 @@ app.get('/', (req, res) => res.send('hello world'))
 /**
  * On demande à Express d'ecouter les requêtes sur le port défini dans la config
  */
-app.listen(config.API_PORT, () => console.log(`Launched on port ${config.API_PORT}`))
+app.listen(config.API_PORT, () => {
+    console.log(`Launched on port ${config.API_PORT}`)
+    google.start()
+}
+)
