@@ -3,15 +3,14 @@ const GoogleStrategy = require("passport-google-oauth20")
 import { PubSub } from '@google-cloud/pubsub';
 import { readFileSync } from "fs";
 
-
 async function quickstart(
   projectId = 'your-project-id', // Your Google Cloud Platform project ID
   topicNameOrId = 'my-topic', // Name for the new topic to create
   subscriptionName = 'my-sub' // Name for the new subscription to create
 ) {
-    const file = readFileSync(process.cwd() + process.env.GOOGLE_APPLICATION_CREDENTIALS || '')
-    const gmailService = JSON.parse(file.toString())
-    console.log(gmailService)
+    //const file = readFileSync(process.cwd() + process.env.GOOGLE_APPLICATION_CREDENTIALS || '')
+    //const gmailService = JSON.parse(file.toString())
+    //console.log(gmailService)
     //// Instantiates a client
     //const pubsub = new PubSub({projectId});
 //
