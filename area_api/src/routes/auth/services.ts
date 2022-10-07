@@ -17,7 +17,6 @@ passport.deserializeUser((user: Express.User, done) => {
     done(null, user);
 });
 
-
 for (var i of services) {
     passport.use(i[1].strategy)
 }

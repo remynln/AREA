@@ -1,7 +1,7 @@
 import cors from 'cors'
 import express, { Application } from 'express'
 import { config } from './config'
-import login from './routes/login'
+import login from './routes/auth/login'
 
 import session from 'express-session'
 //import { PetsController } from '~/resources/pets/pets.controller'
