@@ -4,6 +4,7 @@ import { config } from './config'
 import login from './routes/auth/login'
 
 import session from 'express-session'
+import area from './routes/area/create'
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
@@ -24,6 +25,7 @@ app.use(session({
 
 // login route
 app.use('/auth', login)
+app.use('/area', area)
 
 // home route
 app.get('/', (req, res) => res.send('hello world'))
