@@ -26,7 +26,7 @@ router.get('/:serviceName', (req, res) => {
         res.status(403).send("Missing callback_url")
     }
     const state = req.query.callback as string     
-    passport.authenticate(req.params.serviceName, { scope: ['profile', 'email'], state})(req, res)
+    passport.authenticate(req.params.serviceName, { state })(req, res)
 }, (req, res) => {
     console.log("nsm")
 })
