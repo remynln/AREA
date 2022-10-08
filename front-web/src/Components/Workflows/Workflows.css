@@ -19,8 +19,7 @@
     color: #f10c23;
 }
 
-@media only screen and (max-width: 800px),
-            screen and (max-height: 900px) {
+@media only screen and (max-height: 900px) {
     .WorkflowAdd {
         width: 180px;
         height: 280px;
