@@ -38,14 +38,14 @@
     font-weight: bold;
 }
 
-.row #icon {
+.SidebarIcon {
     flex: 30%;
     place-items: center;
     display: grid;
     padding-left: 10%;
 }
 
-.row #title {
+.SidebarTitle {
     flex: 70%;
 }
 
@@ -82,11 +82,11 @@
         width: 70px;
     }
     
-    .SidebarList #title {
+    .SidebarTitle {
         display: none;
     }
 
-    .row #icon {
+    .SidebarIcon {
         flex: 30%;
         place-items: center;
         display: grid;
