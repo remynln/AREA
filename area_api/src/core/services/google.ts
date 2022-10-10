@@ -59,18 +59,18 @@ function getMailFromId(token: string, mailId: string) {
         console.log("new mail !");
         let from = (res.data.payload.headers as any[])
             .find(({ name }) => name == "From")
-            .value.split(' ')
+            .value.split('<')
         let to = (res.data.payload.headers as any[])
             .find(({ name }) => name == "To")
-            .value.split(' ')
+            .value.split('<')
         let mail: Mail = {
             from: {
                 name: from[0],
-                email: from[1]
+                email: (from[1] as string).replace('>', '')
             },
             to: {
                 name: to[0],
-                email: to[1]
+                email: to[1].replace('>', '')
             },
             object: (res.data.payload.headers as any[])
                 .find(({ name }) => name == "Subject")
