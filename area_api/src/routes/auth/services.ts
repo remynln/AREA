@@ -40,6 +40,12 @@ router.get('/:serviceName/callback', (req, res, next) => {
         next()
     })(req, res, next)
 }, (req, res) => {
+    if (req.errored || !res.locals.user) {
+        res.status(500).json({
+            message: "Internal server error"
+        });
+        return;
+    }
     res.redirect(url.format({
         pathname: req.query.state as string,
         query: {
