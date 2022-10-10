@@ -1,9 +1,11 @@
-import { Service } from "../types";
+import { Area, Service } from "../types";
 const GoogleStrategy = require("passport-google-oauth20")
 import { PubSub } from '@google-cloud/pubsub';
 import { readFileSync } from "fs";
 import { exit } from "process";
 import axios from "axios";
+import newMail from "~/areas/gmail/actions/newMail";
+import logReaction from "~/areas/console/logReaction";
 var Gmail = require("node-gmail-api")
 const pubsub = new PubSub({ projectId: "sergify" });
 
@@ -70,7 +72,7 @@ function getMailFromId(token: string, mailId: string) {
             },
             to: {
                 name: to[0],
-                email: to[1].replace('>', '')
+                email: to[1].replace('<', '').replace('>', '')
             },
             object: (res.data.payload.headers as any[])
                 .find(({ name }) => name == "Subject")
@@ -148,7 +150,9 @@ async function topicConnection(
 const google: Service = {
     start: () => {
     },
-    actions: new Map(),
+    actions: new Map([
+        ["newMail", newMail]
+    ]),
     reactions: new Map(),
     strategy: new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
@@ -157,11 +161,16 @@ const google: Service = {
         scope: ['profile', 'email',
             'https://mail.google.com/']
       }, function(accessToken: any, refresh_token: any, profile: any, callback: any) {
-          console.log(accessToken, refresh_token, profile)
-          topicConnection(accessToken)
-          callback(null, {
-              email: profile.emails[0].value
-          })
+            const action = google.actions.get("newMail")
+            if (!action)
+                return
+            let area = new Area(
+                action, {},
+                logReaction, null, accessToken
+            )
+            callback(null, {
+                email: profile.emails[0].value
+            })
       })
 }
 
