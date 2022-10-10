@@ -15,8 +15,8 @@
     color: #EDEDED;
 }
 
-.WorkflowAdd #icon:hover {
-    color: #f10c23;
+.WorkflowAdd:hover {
+    box-shadow: 0px 0px 0px 2px #f10c23 inset;
 }
 
 @media only screen and (max-height: 900px) {
