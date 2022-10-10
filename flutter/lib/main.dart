@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -11,10 +12,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
-      home: Scaffold(
-        body: const MyStatefulWidget(),
+      theme: new ThemeData(scaffoldBackgroundColor: Colors.black),
+      home: AnimatedSplashScreen(
+        splash: 'assets/sergify.png',
+        splashIconSize: double.infinity,
         backgroundColor: Colors.black,
-      ),
+        nextScreen: MyStatefulWidget(),
+        splashTransition: SplashTransition.fadeTransition,
+        duration: 3000,
+      )
     );
   }
 }
@@ -32,8 +38,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(10),
+    return Scaffold (
+      body: Center(
         child: ListView(
           children: <Widget>[
             Image.asset(
@@ -43,21 +49,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               fit: BoxFit.fitWidth,
               scale: 1,
             ),
+            SizedBox(height: 30),
             Container(
-              alignment: Alignment.topCenter,
-              padding: const EdgeInsets.all(10),
-              child: const Text(
-                  'Login',
-                style: TextStyle(fontSize: 35, color: Colors.white, fontWeight: FontWeight.bold)
-              )
-            ),
-            Container(
-                alignment: Alignment.center,
+                alignment: Alignment.topCenter,
                 padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'Sign in',
-                  style: TextStyle(fontSize: 20),
-                )),
+                child: const Text('Login',
+                    style: TextStyle(
+                        fontSize: 35,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold))),
+            SizedBox(height: 10),
             Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
@@ -70,10 +71,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     labelText: 'User Name',
-                    labelStyle: TextStyle(
-                        color: Colors.white
-                    )
-                ),
+                    labelStyle: TextStyle(color: Colors.white)),
               ),
             ),
             Container(
@@ -88,18 +86,18 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                    labelStyle: TextStyle(
-                        color: Colors.white
-                    )
-                ),
+                    border: OutlineInputBorder(),
+                    labelText: 'Password',
+                    labelStyle: TextStyle(color: Colors.white)),
               ),
             ),
             TextButton(
               onPressed: () {
                 //forgot password screen
               },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
               child: const Text(
                 'Forgot Password',
               ),
@@ -113,23 +111,49 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     print(nameController.text);
                     print(passwordController.text);
                   },
-                )),
-            Row(
-              children: <Widget>[
-                const Text('Does not have account?'),
-                TextButton(
-                  child: const Text(
-                    'Sign in',
-                    style: TextStyle(fontSize: 20),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromRGBO(191, 27, 44, 1),
                   ),
-                  onPressed: () {
-                    //signup screen
-                  },
-                )
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
+                )),
+            SizedBox(height: 30),
+            Container(
+                alignment: Alignment.topCenter,
+                child: const Text('Or continue with',
+                    style: TextStyle(fontSize: 15, color: Colors.grey))
             ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  print("google");
+                },
+                icon: Image.asset("assets/google.png", width: 18),
+                style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                        width: 1.0, color: Color.fromRGBO(191, 27, 44, 1)),
+                    backgroundColor: Colors.transparent),
+                label: Text('Google'), // <-- Text
+              ),
+            ),
+            ListTile(
+                title: Row(children: <Widget>[
+              Text("Don't have an account?",
+                  style: TextStyle(fontSize: 15, color: Colors.grey)),
+              TextButton(
+                onPressed: () {
+                  //forgot password screen
+                },
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text(
+                  'Create now',
+                ),
+              ),
+            ], mainAxisAlignment: MainAxisAlignment.center))
           ],
-        ));
+        )
+      )
+    );
   }
 }
