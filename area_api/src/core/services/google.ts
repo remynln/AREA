@@ -35,24 +35,93 @@ async function createTopic(
     //topic.publish(Buffer.from('Test message!'));
 }
 
-function topicConnection(
+interface Mail {
+    from: {
+        name: string,
+        email: string
+    }
+    to: {
+        name: string,
+        email: string
+    }
+    object: string,
+    body: string,
+    date: string
+}
+
+function getMailFromId(token: string, mailId: string) {
+    axios.get(`https://gmail.googleapis.com/gmail/v1/users/me/messages/` + mailId, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        }
+    }).then((res) => {
+        console.log("new mail !");
+        let from = (res.data.payload.headers as any[])
+            .find(({ name }) => name == "From")
+            .value.split(' ')
+        let to = (res.data.payload.headers as any[])
+            .find(({ name }) => name == "To")
+            .value.split(' ')
+        let mail: Mail = {
+            from: {
+                name: from[0],
+                email: from[1]
+            },
+            to: {
+                name: to[0],
+                email: to[1]
+            },
+            object: (res.data.payload.headers as any[])
+                .find(({ name }) => name == "Subject")
+                .value,
+            date: (res.data.payload.headers as any[])
+                .find(({ name }) => name == "Date")
+                .value,
+            body: atob(res.data.payload.parts[0].body.data)
+        }
+        console.log("new mail !", mail);
+    }).catch((err) => {
+        console.log("errrre", err)
+    })
+}
+
+function getLastMail(token: string, historyId: string) {
+    axios.get("https://gmail.googleapis.com/gmail/v1/users/me/history", {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        params: {
+            startHistoryId: historyId
+        }
+    }).then((res) => {
+        for (let i of res.data.history) {
+            if (!i.messagesAdded)
+                continue;
+            for (let messagesAdded of i.messagesAdded) {
+                getMailFromId(token, messagesAdded.message.id)
+            }
+        } 
+    }).catch((err) => {
+        console.log("errrr", err.response)
+    })
+}
+
+async function topicConnection(
     token: string,
     topicNameOrId = 'my-topic',
     subscriptionName = 'my-sub'
 ) {
     const topic = pubsub.topic(topicNameOrId)
     const sub = topic.subscription(subscriptionName);
-    //sub.on('message', (mess) => {
-    //    console.log("new message:", mess.data.toString())
-    //})
-    //sub.on('error', (err) => {
-    //    console.log("ggl service error", err)
-    //    exit(1)
-    //})
+    await sub.delete()
+    const [subscription] = await topic.createSubscription(subscriptionName);
+
     console.log(topic.name)
     axios.post("https://www.googleapis.com/gmail/v1/users/me/watch", {
         topicName: topic.name,
-        labelIds: ["INBOX"]
+        labelIds: ["INBOX"],
     }, {
         headers: {
             'Content-Type': 'application/json',
@@ -60,6 +129,17 @@ function topicConnection(
         }
     }).then((res) => {
         console.log("post success", res.data)
+        const startHistoryId = res.data.historyId
+        sub.on('message', (mess) => {
+            console.log("new message:", JSON.parse(mess.data))
+            let { historyId } = JSON.parse(mess.data)
+            console.log("new messageeee:", startHistoryId.toString())
+            getLastMail(token, startHistoryId.toString())
+        })
+        sub.on('error', (err) => {
+            console.log("ggl service error", err)
+            exit(1)
+        })
     }).catch((err) => {
         console.log("post error:", err.response)
     })
