@@ -4,6 +4,7 @@ import checkBody from '~/middlewares/checkBody'
 import jwt from "jsonwebtoken"
 import db from '~/database/db'
 import { Message } from '@google-cloud/pubsub'
+import { debug } from 'console'
 
 var auth: Router = Router()
 
@@ -44,6 +45,11 @@ auth.post('/register', checkBody(["email", "username", "password"]), async (req:
     res.status(200).json({
         token: jwt.sign({ email: req.body.email }, process.env.JWT_KEY || '')
     })
+    await db.setToken("1234", req.body.email, "google" ,(err) => {
+        if (err) {
+            console.log(err)
+        }
+    })
     return
 })
 
@@ -66,6 +72,12 @@ auth.post('/login', checkBody(["email", "password"]), async (req, res) => {
         res.status(400).json({message: "Invalid password"})
         return
     }
+    const token = await db.getToken(req.body.email, (err) => {
+        if (err) {
+            console.log(err)
+        }
+    }, "google")
+    console.log(token)
     res.status(200).json({
         token: jwt.sign({ email: req.body.email }, process.env.JWT_KEY || '')
     })

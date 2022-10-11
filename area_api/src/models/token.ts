@@ -1,8 +1,7 @@
-import {Mongoose, Schema, model} from "mongoose";
+import {Mongoose, Schema, model, ObjectId} from "mongoose";
 
 const tokenSchema = new Schema({
-    token_id: {type: Number},
-    user_id: {type: Number},
+    user_id: {type: String},
     service_token: {type: String},
     service_name: {type: String}
 })
