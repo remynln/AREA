@@ -99,3 +99,40 @@ The AREA is:
     - with `parameters`:
       - `title`: "Another top 1"
       - `content`: "I made a top 1 on fortnite, add me: `[Action:FortniteUsername]`"
+      
+ #### Endpoints
+ 
+`/area/create`: *POST Method*
+- **Request Body**:
+  - `action`:
+    - `id`: the id of the action
+    - `params`: the params of the action (in JSON), depending on the actions
+- `reaction`:
+    - `id`: the id of the action
+    - `params`: the params of the action (in JSON), depending on the actions
+- **Response**:
+  - 201 -> OK
+  - 403 -> Needs an authentication to a service concerned by actions or reactions
+
+In order to do create an area correctly without doing a bad request: you can request some informations about available services actions reaction and their params
+
+`/area/actions/[service_name]`: *GET Method*
+- **Response**:
+  - 200 ->
+    - [list of available actions { `id`, `name`, `description` }]
+
+`/area/action/[action_id]`: *GET Method*
+- **Response**:
+  - 200 ->
+    - `parameters`: [list of parameters]
+    - `properties`: [list of available properties]
+
+`/area/reactions/[service_name]`: *GET Method*
+- **Response**:
+  - 200 ->
+    - [list of available reactions { `id`, `name`, `description` } ]
+
+`/area/reaction/[reaction_id]`: *GET Method*
+- **Response**:
+  - 200 ->
+    - `properties`: [list of available properties]
