@@ -64,7 +64,6 @@ flutter:
   assets:
      - assets/sergify.png
      - assets/google.png
-     - assets/facebook.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
