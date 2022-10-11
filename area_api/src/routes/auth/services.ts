@@ -26,7 +26,7 @@ router.get('/:serviceName', (req, res) => {
         res.status(403).send("Missing callback_url")
     }
     const state = req.query.callback as string     
-    passport.authenticate(req.params.serviceName, { scope: ['profile', 'email'], state})(req, res)
+    passport.authenticate(req.params.serviceName, { state })(req, res)
 }, (req, res) => {
     console.log("nsm")
 })
@@ -40,6 +40,12 @@ router.get('/:serviceName/callback', (req, res, next) => {
         next()
     })(req, res, next)
 }, (req, res) => {
+    if (req.errored || !res.locals.user) {
+        res.status(500).json({
+            message: "Internal server error"
+        });
+        return;
+    }
     res.redirect(url.format({
         pathname: req.query.state as string,
         query: {
