@@ -11,7 +11,7 @@ export interface Action<ParamType, PropertiesType> {
 }
 
 export interface Reaction<ParamType> {
-    launch: (params: ParamType) => void
+    launch: (params: ParamType, serviceToken: string) => void
 }
 
 export interface Service {
@@ -34,7 +34,7 @@ export class Area<ActionParams, ReactionParams> {
         serviceToken: string // Temporary, this will be replaced by account mail when db is up
     ) {
         action.start((properties) => {
-            reaction.launch(reactionParams == null ? properties : reactionParams)
+            reaction.launch(reactionParams == null ? properties : reactionParams, serviceToken)
         }, actionParams, serviceToken)
     }
 

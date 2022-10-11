@@ -34,20 +34,30 @@ async function getMailFromId(token: string,
             'Authorization': 'Bearer ' + token
         }
     })
+    console.log("labels:", res.data.labelIds)
+    for (let i of res.data.labelIds) {
+        console.log("yes", i)
+        if (i == 'SENT')
+            return
+    }
     let from: string[] = (res.data.payload.headers as any[])
         .find(({ name }) => name == "From")
         .value.split('<')
+    console.log("from", (res.data.payload.headers as any[])
+        .find(({ name }) => name == "From"))
     let to: string[] = (res.data.payload.headers as any[])
         .find(({ name }) => name == "To")
         .value.split('<')
+    console.log("to", (res.data.payload.headers as any[])
+        .find(({ name }) => name == "To"))
     let mail: Mail = {
         from: {
-            name: from[0].trim(),
-            email: (from[1] as string).replace('>', '')
+            name: from.length == 2 ? from[0].trim() : '',
+            email: from.length == 2 ? (from[1] as string).replace('>', '') : from[0]
         },
         to: {
-            name: to[0].trim(),
-            email: to[1].replace('<', '').replace('>', '')
+            name: to.length == 2 ? to[0].trim() : '',
+            email: to.length == 2 ? (to[1] as string).replace('>', '') : to[0]
         },
         object: (res.data.payload.headers as any[])
             .find(({ name }) => name == "Subject")
@@ -75,6 +85,8 @@ async function getLastMails(
         }
     })
     console.log(res.data)
+    if (!res.data.history)
+        return
     for (let i of res.data.history) {
         if (!i.messagesAdded)
             continue;
@@ -85,12 +97,12 @@ async function getLastMails(
 }
 
 async function topicSubscribe(token: string, trigger: (historyId: number) => void) {
+    console.log("starting action newMail...")
     const topic = pubsub.topic(TOPIC_NAME)
     const sub = topic.subscription(SUBSCRIPTION_NAME);
     await sub.delete()
     const [subscription] = await topic.createSubscription(SUBSCRIPTION_NAME);
 
-    console.log("starting action newMail...")
     const res = await axios.post("https://www.googleapis.com/gmail/v1/users/me/watch", {
         topicName: topic.name,
         labelIds: ["INBOX"],
@@ -100,8 +112,10 @@ async function topicSubscribe(token: string, trigger: (historyId: number) => voi
             'Authorization': 'Bearer ' + token
         }
     })
+    var historyId = res.data.historyId
     sub.on('message', (mess) => {
-        trigger(res.data.historyId)
+        trigger(historyId)
+        historyId = JSON.parse(mess.data).historyId
     })
     console.log("start success !")
     return res;
