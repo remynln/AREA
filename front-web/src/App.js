@@ -21,10 +21,8 @@ function App() {
             <Route path="*" element={<Navigate to="/dashboard" />}/>
             <Route path="/" element={<Navigate to="/dashboard" />}/>
             <Route path="/home" element={<Navigate to="/dashboard" />}/>
-            <Route path="/login" element={<Navigate to="/dashboard" />}/>
-            <Route path="/register" element={<Navigate to="/dashboard" />}/>
           </Route>
-          <Route path="/login" element={<Login />}/>
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />}/>
         </Routes>
       </Router>
