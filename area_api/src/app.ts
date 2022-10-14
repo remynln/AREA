@@ -6,6 +6,7 @@ import checkToken from "~/middlewares/checkToken";
 import session from 'express-session'
 import area from './routes/area/create'
 import google from './core/services/google';
+import serviceConnect from './routes/service/connect'
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
@@ -27,6 +28,10 @@ app.use(session({
 // login route
 app.use('/auth', login)
 app.use('/area', checkToken, area)
+
+
+// service route
+app.use('/service', serviceConnect)
 
 // home route
 app.get('/', (req, res) => res.send('hello world'))
