@@ -1,5 +1,6 @@
 import React from "react";
 import "./Services.css"
+import SingleService from "./SingleService"
 import { ServicesContent } from "./ServicesContent"
 
 function Services() {
@@ -14,6 +15,9 @@ function Services() {
                     </a>    
                 )
             })}   
+                   <SingleService link={val.link} logo={val.logo} />   
+                )
+            })}
         </div>
     )
 }

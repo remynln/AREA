@@ -7,6 +7,7 @@ import session from 'express-session'
 import area from './routes/area/create'
 import google from './core/services/google';
 import mongoose from 'mongoose';
+import serviceConnect from './routes/service/connect'
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
@@ -34,6 +35,10 @@ app.use(session({
 app.use('/auth', login)
 app.use('/area', checkToken, area)
 
+
+// service route
+app.use('/service', serviceConnect)
+
 // home route
 app.get('/', (req, res) => res.send('hello world'))
 /**
@@ -48,5 +53,4 @@ app.get('/', (req, res) => res.send('hello world'))
 app.listen(config.API_PORT, () => {
     console.log(`Launched on port ${config.API_PORT}`)
     google.start()
-}
-)
+})
