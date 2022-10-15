@@ -42,5 +42,4 @@ app.get('/', (req, res) => res.send('hello world'))
 app.listen(config.API_PORT, () => {
     console.log(`Launched on port ${config.API_PORT}`)
     google.start()
-}
-)
+})
