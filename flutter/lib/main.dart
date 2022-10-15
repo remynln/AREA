@@ -1,5 +1,7 @@
+import 'package:area/api/answer/login_answer.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:area/api/service.dart';
 
 void main() => runApp(const MyApp());
 
@@ -34,6 +36,12 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  late LoginAnswer? loginAnswer;
+
+  void handleLogin() async {
+    loginAnswer = await ApiService().handleLogin(nameController.text, passwordController.text);
+    print(loginAnswer?.token);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +79,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white),
                 ),
-                labelText: 'User Name',
+                labelText: 'Username/Email',
                 labelStyle: TextStyle(color: Colors.white)),
           ),
         ),
@@ -109,6 +117,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             child: ElevatedButton(
               child: const Text('Login'),
               onPressed: () {
+                handleLogin();
                 print(nameController.text);
                 print(passwordController.text);
               },
