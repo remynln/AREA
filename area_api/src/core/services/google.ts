@@ -23,19 +23,12 @@ const google: Service = {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         passReqToCallback: true
       }, function(req: any, accessToken: any, refresh_token: any, profile: any, callback: any) {
-            const action = google.actions.get("newMail")
             console.log((req as Request).baseUrl)
             if ((req as Request).baseUrl.includes("/auth/")) {
                 console.log("this is auth route");
             } else {
                 console.log("this is not auth route")
             }
-            if (!action)
-                return
-            let area = new Area(
-                action, {},
-                sendMail, null, accessToken
-            )
             callback(null, {
                 email: profile.emails[0].value
             })

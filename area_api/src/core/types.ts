@@ -1,35 +1,49 @@
 import passport from "passport"
 
-export interface Action<ParamType, PropertiesType> {
+type Param = {
+    name: string;
+    type: string | Param[];
+    required?: boolean
+} 
+
+type Property = {
+    name: string;
+    type: String | Property[];
+} 
+
+export interface Action {
+    propertiesType: any
+    paramTypes: any
     start: (
-        trigger: (properties: PropertiesType) => void,
-        params: ParamType,
+        trigger: (properties: any) => void,
+        params: any,
         token: string
     ) => void,
     stop: () => void
     destroy: () => void
 }
 
-export interface Reaction<ParamType> {
-    launch: (params: ParamType, serviceToken: string) => void
+export interface Reaction {
+    paramTypes: any
+    launch: (params: any, serviceToken: string) => void
 }
 
 export interface Service {
     start: Function,
     strategy: passport.Strategy,
-    actions: Map<string, Action<any, any>>,
-    reactions: Map<string, Reaction<any>>
+    actions: Map<string, Action>,
+    reactions: Map<string, Reaction>
 
     [x: string | number | symbol]: unknown;
 }
 
 export class Area<ActionParams, ReactionParams> {
-    private _action: Action<ActionParams, any>
+    private _action: Action
  
     constructor(
-        action: Action<ActionParams, any>,
+        action: Action,
         actionParams: ActionParams,
-        reaction: Reaction<ReactionParams>,
+        reaction: Reaction,
         reactionParams: ReactionParams,
         serviceToken: string // Temporary, this will be replaced by account mail when db is up
     ) {

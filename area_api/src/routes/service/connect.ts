@@ -3,7 +3,7 @@ import express, { Request, Response, Router } from "express";
 import "dotenv/config"
 import url from "url";
 import jwt from "jsonwebtoken";
-import services from "../../core/global"
+import { services } from "../../core/global"
 
 var router: Router = Router()
 
