@@ -1,17 +1,17 @@
 import 'dart:convert';
 
-Login loginFromJson(String str) => Login.fromJson(json.decode(str));
+LoginAnswer loginAnswerFromJson(String str) => LoginAnswer.fromJson(json.decode(str));
 
-String loginToJson(Login data) => json.encode(data.toJson());
+String loginAnswerToJson(LoginAnswer data) => json.encode(data.toJson());
 
-class Login {
-  Login({
+class LoginAnswer {
+  LoginAnswer({
     this.token = "",
   });
 
   String token;
 
-  factory Login.fromJson(Map<String, dynamic> json) => Login(
+  factory LoginAnswer.fromJson(Map<String, dynamic> json) => LoginAnswer(
     token: json["token"],
   );
 
