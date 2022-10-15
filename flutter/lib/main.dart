@@ -63,6 +63,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           padding: const EdgeInsets.all(10),
           child: TextField(
             controller: nameController,
+            style: TextStyle(color: Colors.white),
             decoration: const InputDecoration(
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white),
@@ -77,7 +78,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         Container(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
           child: TextField(
-            obscureText: false,
+            style: TextStyle(color: Colors.white),
             controller: passwordController,
             decoration: const InputDecoration(
                 enabledBorder: UnderlineInputBorder(
