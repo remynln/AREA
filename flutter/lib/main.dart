@@ -77,7 +77,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         Container(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
           child: TextField(
-            obscureText: true,
+            obscureText: false,
             controller: passwordController,
             decoration: const InputDecoration(
                 enabledBorder: UnderlineInputBorder(

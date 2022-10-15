@@ -1,17 +1,17 @@
 import 'dart:convert';
 
-Register registerFromJson(String str) => Register.fromJson(json.decode(str));
+RegisterAnswer registerAnswerFromJson(String str) => RegisterAnswer.fromJson(json.decode(str));
 
-String registerToJson(Register data) => json.encode(data.toJson());
+String registerAnswerToJson(RegisterAnswer data) => json.encode(data.toJson());
 
-class Register {
-  Register({
+class RegisterAnswer {
+  RegisterAnswer({
     this.token = "",
   });
 
   String token;
 
-  factory Register.fromJson(Map<String, dynamic> json) => Register(
+  factory RegisterAnswer.fromJson(Map<String, dynamic> json) => RegisterAnswer(
     token: json["token"],
   );
 
