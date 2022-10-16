@@ -28,9 +28,7 @@ router.get('/:serviceName', (req, res) => {
     const state = req.query.callback as string     
     passport.authenticate(req.params.serviceName, {
         state,
-        callbackURL: "/auth/service/google/callback",
-        scope: ['profile', 'email',
-            'https://mail.google.com/']
+        callbackURL: "/auth/service/google/callback"
     } as any)(req, res)
 }, (req, res) => {
     console.log("nsm")
@@ -39,8 +37,6 @@ router.get('/:serviceName', (req, res) => {
 router.get('/:serviceName/callback', (req, res, next) => {
     passport.authenticate(req.params.serviceName, {
         failureRedirect: "http://localhost:8080/",
-        scope: ['profile', 'email',
-            'https://mail.google.com/'],
         callbackURL: "/auth/service/google/callback"
     } as any, (err, user, info) => {
         console.log("user: ", user)
