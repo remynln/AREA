@@ -8,7 +8,7 @@ function Sidebar() {
     return (
         <div className="Sidebar">
             <div className="SidebarLogo">
-                <img src={Logo} className="Logo"/>
+                <img src={Logo} className="Logo" alt="Sidebar_Logo"/>
             </div>
             <ul className="SidebarList">
                 {SidebarContent.map((val, key) => {

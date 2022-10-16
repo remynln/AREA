@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Cookies from 'js-cookie'
 import "./Services.css"
 
 function SingleService(props) {
@@ -19,7 +20,7 @@ function SingleService(props) {
     return (
         <a className="SingleService" href={props.link} style={ConnectionStyle}>
             <div class="ServiceBg">
-                <img src={require("../../img/" + props.logo + ".png")} class="ServiceLogo"/>
+                <img src={require("../../img/" + props.logo + ".png")} class="ServiceLogo" alt="Service_Logo"/>
             </div>
         </a>
     )
