@@ -23,7 +23,9 @@ const google: Service = {
     strategy: new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        passReqToCallback: true
+        passReqToCallback: true,
+        scope: ['profile', 'email',
+            'https://mail.google.com/']
       }, function(req: any, accessToken: any, refresh_token: any, profile: any, callback: any) {
             console.log((req as Request).baseUrl)
             if ((req as Request).baseUrl.includes("/auth/")) {
