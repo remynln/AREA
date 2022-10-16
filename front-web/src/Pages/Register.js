@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Logo from "../img/Sergify_Logo_Vertical.png"
 import { useNavigate } from 'react-router-dom'
+import Cookies from 'js-cookie'
 import './Login.css'
 
 export const Register = () => {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (Cookies.get('jwt') !== undefined)
+            navigate('/dashboard')
+    });
 
     const navigateToLogin = () => {
         navigate('/login');
@@ -12,7 +18,7 @@ export const Register = () => {
 
     return (
         <div className="LoginPage">
-            <img src={Logo} className="LoginLogo"/>
+            <img src={Logo} className="LoginLogo" alt="Login_Logo"/>
             <div className="InputBackground">
                 <input className="Input" placeholder="Username"></input>
             </div>
