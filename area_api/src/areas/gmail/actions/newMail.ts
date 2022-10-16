@@ -6,10 +6,6 @@ const pubsub = new PubSub({ projectId: "sergify" });
 const TOPIC_NAME = "my-topic"
 const SUBSCRIPTION_NAME = "my-sub"
 
-interface None {
-
-}
-
 interface Mail {
     from: {
         name: string,
@@ -121,7 +117,35 @@ async function topicSubscribe(token: string, trigger: (historyId: number) => voi
     return res;
 }
 
-const newMail: Action<None, Mail> = {
+interface Mail2 {
+    from: {
+        name: string,
+        email: string
+    }
+    to: {
+        name: string,
+        email: string
+    }
+    object: string,
+    body: string,
+    date: string
+}
+
+const newMail: Action = {
+    paramTypes: {},
+    propertiesType: {
+        'from': {
+            'name': 'string',
+            'email': 'string'
+        },
+        'to': {
+            'name': 'string',
+            'email': 'string'
+        },
+        'object': 'string',
+        'body': 'string',
+        'date': 'string'
+    },
     start(trigger, params, serviceToken) {
         topicSubscribe(serviceToken, (historyId) => {
             getLastMails(serviceToken, historyId.toString(), trigger)
