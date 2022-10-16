@@ -1,6 +1,7 @@
 import { Reaction } from "~/core/types";
 
-const logReaction: Reaction<any> = {
+const logReaction: Reaction = {
+    paramTypes: [],
     launch(params, _) {
         console.log(params)
     }
