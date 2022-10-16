@@ -38,3 +38,9 @@
         width: 40vw;
     }
 }
+
+@media only screen and (max-height: 700px) {
+    .Services {
+        height: 80%;
+    }
+}
