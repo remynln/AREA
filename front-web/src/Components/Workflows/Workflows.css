@@ -29,3 +29,10 @@
         transform: scale(1.5, 1.5);
     }
 }
+
+@media only screen and (max-height: 700px) {
+    .WorkflowAdd {
+        width: 150px;
+        height: 230px;
+    }
+}
