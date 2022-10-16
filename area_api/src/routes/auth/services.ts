@@ -3,7 +3,7 @@ import express, { Request, Response, Router } from "express";
 import "dotenv/config"
 import url from "url";
 import jwt from "jsonwebtoken";
-import { services } from "../../core/global"
+import Area from "../../core/global"
 
 var router: Router = express.Router()
 
@@ -17,7 +17,7 @@ passport.deserializeUser((user: Express.User, done) => {
     done(null, user);
 });
 
-for (var i of services) {
+for (var i of Area.services) {
     passport.use(i[1].strategy)
 }
 

@@ -17,7 +17,9 @@ const google: Service = {
     actions: new Map([
         ["newMail", newMail]
     ]),
-    reactions: new Map(),
+    reactions: new Map([
+        ["sendMail", sendMail]
+    ]),
     strategy: new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
