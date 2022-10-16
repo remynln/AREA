@@ -105,10 +105,10 @@ The AREA is:
 `/area/create`: *POST Method*
 - **Request Body**:
   - `action`:
-    - `id`: the id of the action
+    - `name`: the id of the action
     - `params`: the params of the action (in JSON), depending on the actions
 - `reaction`:
-    - `id`: the id of the action
+    - `name`: the id of the action
     - `params`: the params of the action (in JSON), depending on the actions
 - **Response**:
   - 201 -> OK
@@ -116,7 +116,7 @@ The AREA is:
 
 In order to do create an area correctly without doing a bad request: you can request some informations about available services actions reaction and their params
 
-`/area/actions/[service_name]`: *GET Method*
+`/area/[service_name]/actions`: *GET Method*
 - **Response**:
   - 200 ->
     - [list of available actions { `id`, `name`, `description` }]
@@ -127,7 +127,7 @@ In order to do create an area correctly without doing a bad request: you can req
     - `parameters`: [list of parameters]
     - `properties`: [list of available properties]
 
-`/area/reactions/[service_name]`: *GET Method*
+`/area/[service_name]/reactions/`: *GET Method*
 - **Response**:
   - 200 ->
     - [list of available reactions { `id`, `name`, `description` } ]
