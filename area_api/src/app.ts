@@ -6,11 +6,18 @@ import checkToken from "~/middlewares/checkToken";
 import session from 'express-session'
 import area from './routes/area/create'
 import google from './core/services/google';
+import mongoose from 'mongoose';
+import serviceConnect from './routes/service/connect'
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
 
 const app = express()
+const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@area.4a3tikc.mongodb.net/area?retryWrites=true&w=majority`
+
+mongoose.connect(url).then(() => {
+    console.log("Connected to database")
+})
 
 //middleware to parse json body
 app.use(express.json())
@@ -28,6 +35,10 @@ app.use(session({
 app.use('/auth', login)
 app.use('/area', checkToken, area)
 
+
+// service route
+app.use('/service', serviceConnect)
+
 // home route
 app.get('/', (req, res) => res.send('hello world'))
 /**
@@ -42,5 +53,4 @@ app.get('/', (req, res) => res.send('hello world'))
 app.listen(config.API_PORT, () => {
     console.log(`Launched on port ${config.API_PORT}`)
     google.start()
-}
-)
+})
