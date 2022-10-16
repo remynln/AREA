@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "../img/Sergify_Logo_Vertical.png"
 import GoogleLogo from "../img/Google_Sign_In_Logo.png"
 import { useNavigate } from 'react-router-dom'
 import axios from "axios";
+import Cookies from 'js-cookie'
 import './Login.css'
 
 export const Login = () => {
@@ -10,22 +11,35 @@ export const Login = () => {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (Cookies.get('jwt') !== undefined)
+            navigate('/dashboard')
+    });
+
     const navigateToRegister = () => {
         navigate('/register');
     };
 
     const Login = () => {
-        axios.post("/auth/login", { user }, { password })
+        axios.post("http://localhost:8080/auth/login", {
+            email: user,
+            password: password
+        })
         .then(res => {
-          console.log(res);
+          if (res.status === 200)
+            Cookies.set('jwt', res.data.token)
+            navigate('/dashboard')
+        })
+        .catch(error => {
+            console.log(error.message);
         })
     }
 
     return (
         <div className="LoginPage">
-            <img src={Logo} className="LoginLogo"/>
+            <img src={Logo} className="LoginLogo" alt="Login_Logo"/>
             <a className="GoogleSignIn">
-                <img className="GoogleSignInLogo" src={GoogleLogo} />
+                <img className="GoogleSignInLogo" src={GoogleLogo} alt="Google_Logo"/>
                 <p>Sign in with Google</p>
             </a>
             <div className="InputBackground">
