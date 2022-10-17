@@ -33,7 +33,7 @@ app.use(session({
 
 // login route
 app.use('/auth', login)
-app.use('/area', /* checkToken, */ area)
+app.use('/area', checkToken, area)
 
 
 // service route

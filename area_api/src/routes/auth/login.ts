@@ -88,7 +88,11 @@ auth.post('/login', checkBody(["email", "password"]), async (req, res) => {
 })
 
 auth.delete("/unregister", checkToken, (req, res) => {
-    let mail = jwt.decode(req.headers.authorization?.split(' ')[1] || '')
+    let token = jwt.decode(req.headers.authorization?.split(' ')[1] || '') as JwtFormat
+    let mail = token.email;
+    res.status(200).send({
+        email: mail
+    })
     // TODO integrate database comm to delete account
 })
 
