@@ -5,6 +5,8 @@ declare global {
         GOOGLE_CLIENT_SECRET: string;
         JWT_KEY: string;
         GOOGLE_APPLICATION_CREDENTIALS: string;
+        DB_USER: string;
+        DB_PASSWORD: string;
       }
     }
   }
