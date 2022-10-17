@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:area/api/answer/google_answer.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:area/api/endpoints.dart';
@@ -9,7 +10,8 @@ import 'package:area/api/answer/login_answer.dart';
 import 'package:area/api/answer/register_answer.dart';
 
 class ApiService {
-  Future<RegisterAnswer?> handleRegister(String email, String username, String password) async {
+  Future<RegisterAnswer?> handleRegister(
+      String email, String username, String password) async {
     try {
       final uri = Uri.http(ApiConstants.baseUrl, ApiConstants.registerEndpoint);
       final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
@@ -18,7 +20,8 @@ class ApiService {
         'username': username,
         'password': password
       };
-      var response = await http.post(uri, headers: headers, body: json.encode(body_data));
+      var response =
+          await http.post(uri, headers: headers, body: json.encode(body_data));
       if (response.statusCode == 200) {
         RegisterAnswer _model = registerAnswerFromJson(response.body);
         return _model;
@@ -30,15 +33,14 @@ class ApiService {
       log(e.toString());
     }
   }
+
   Future<LoginAnswer?> handleLogin(String email, String password) async {
     try {
       final uri = Uri.http(ApiConstants.baseUrl, ApiConstants.loginEndpoint);
       final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
-      final body_data = {
-        'email': email,
-        'password': password
-      };
-      var response = await http.post(uri, headers: headers, body: json.encode(body_data));
+      final body_data = {'email': email, 'password': password};
+      var response =
+          await http.post(uri, headers: headers, body: json.encode(body_data));
       if (response.statusCode == 200) {
         LoginAnswer _model = loginAnswerFromJson(response.body);
         return _model;
@@ -47,6 +49,32 @@ class ApiService {
       }
       return null;
     } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<GoogleLoginAnswer?> handleGoogleLogin(String callback) async {
+    try {
+      print("START");
+      final uri = Uri.http(ApiConstants.baseUrl,
+          ApiConstants.googleLoginEndpoint, {'callback': callback});
+      final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
+      print(uri);
+      var response = await http.get(
+        uri,
+        headers: headers,
+      );
+      print("rep");
+      print(response.body);
+      if (response.statusCode == 200) {
+        GoogleLoginAnswer _model = googleLoginAnswerFromJson(response.body);
+        return _model;
+      } else if (response.statusCode == 400) {
+        log('Client error in google oauth login connection');
+      }
+      return null;
+    } catch (e) {
+      print(e.toString());
       log(e.toString());
     }
   }
