@@ -3,7 +3,8 @@ import { createMimeMessage } from "mimetext";
 import axios from "axios";
 
 
-const sendMail: Reaction<any> = {
+const sendMail: Reaction = {
+    paramTypes: {},
     launch(params, token) {
         const msg = createMimeMessage()
         msg.setSender({name: 'Marco', addr: 'marco.leaguelegends@gmail.com'})
