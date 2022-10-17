@@ -5,7 +5,7 @@ import url from "url";
 import jwt from "jsonwebtoken";
 import Area from "../../core/global"
 
-var router: Router = express.Router()
+var router: Router = Router()
 
 router.use(passport.initialize())
 
@@ -25,10 +25,10 @@ router.get('/:serviceName', (req, res) => {
     if (!req.query.callback) {
         res.status(403).send("Missing callback_url")
     }
-    const state = req.query.callback as string     
+    const state = req.query.callback as string
     passport.authenticate(req.params.serviceName, {
-        state,
-        callbackURL: "/auth/service/google/callback"
+        state: state,
+        callbackURL: "/service/google/callback"
     } as any)(req, res)
 }, (req, res) => {
     console.log("nsm")
@@ -37,7 +37,7 @@ router.get('/:serviceName', (req, res) => {
 router.get('/:serviceName/callback', (req, res, next) => {
     passport.authenticate(req.params.serviceName, {
         failureRedirect: "http://localhost:8080/",
-        callbackURL: "/auth/service/google/callback"
+        callbackURL: "/service/google/callback"
     } as any, (err, user, info) => {
         console.log("user: ", user)
         res.locals.user = user;

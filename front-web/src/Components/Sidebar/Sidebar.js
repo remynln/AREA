@@ -2,13 +2,13 @@ import React from "react";
 import './Sidebar.css';
 import { Link } from 'react-router-dom'
 import { SidebarContent } from './SidebarContent';
-import logo from '../../img/Sergify_Logo_Horizontal.png';
+import Logo from '../../img/Sergify_Logo_Horizontal.png';
 
 function Sidebar() {
     return (
         <div className="Sidebar">
             <div className="SidebarLogo">
-                <img src={logo} className="Logo"/>
+                <img src={Logo} className="Logo"/>
             </div>
             <ul className="SidebarList">
                 {SidebarContent.map((val, key) => {
