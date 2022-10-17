@@ -1,7 +1,10 @@
 import 'package:area/api/answer/login_answer.dart';
+import 'package:area/api/answer/google_answer.dart';
+import 'package:area/api/service.dart';
+import 'package:area/api/google_login_widget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:area/api/service.dart';
 
 void main() => runApp(const MyApp());
 
@@ -37,10 +40,20 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   late LoginAnswer? loginAnswer;
+  late GoogleLoginAnswer? googleLoginAnswer;
 
   void handleLogin() async {
     loginAnswer = await ApiService().handleLogin(nameController.text, passwordController.text);
     print(loginAnswer?.token);
+  }
+
+  void handleGoogleLogin() async {
+    print("HERE");
+    googleLoginAnswer = await ApiService().handleGoogleLogin("/");
+    //print("WE");
+    print(googleLoginAnswer?.token);
+    //GoogleLogin(html_page: googleLoginAnswer!.token);
+    //print("ARE");
   }
 
   @override
@@ -134,7 +147,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           padding: EdgeInsets.symmetric(horizontal: 10.0),
           child: ElevatedButton.icon(
             onPressed: () {
-              print("google");
+              handleGoogleLogin();
             },
             icon: Image.asset("assets/google.png", width: 18),
             style: OutlinedButton.styleFrom(
