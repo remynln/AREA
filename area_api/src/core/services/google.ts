@@ -8,6 +8,7 @@ import newMail from "~/areas/gmail/actions/newMail";
 import logReaction from "~/areas/console/logReaction";
 import sendMail from "~/areas/gmail/reactions/sendMail";
 import { Request } from "express";
+import db from "~/database/db";
 var Gmail = require("node-gmail-api")
 const pubsub = new PubSub({ projectId: "sergify" });
 
@@ -28,14 +29,17 @@ const google: Service = {
             'https://mail.google.com/']
       }, function(req: any, accessToken: any, refresh_token: any, profile: any, callback: any) {
             console.log((req as Request).baseUrl)
+            let accountToken = req.headers.authorization;
+            //if (!accountToken) {
+                callback(null, {
+                    email: profile.emails[0].value
+                })
+            //}
             if ((req as Request).baseUrl.includes("/auth/")) {
                 console.log("this is auth route");
             } else {
                 console.log("this is not auth route")
             }
-            callback(null, {
-                email: profile.emails[0].value
-            })
       })
 }
 

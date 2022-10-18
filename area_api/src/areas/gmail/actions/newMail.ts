@@ -132,6 +132,7 @@ interface Mail2 {
 }
 
 const newMail: Action = {
+    serviceName: 'google',
     paramTypes: {},
     propertiesType: {
         'from': {

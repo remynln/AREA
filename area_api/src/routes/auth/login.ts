@@ -48,11 +48,6 @@ auth.post('/register', checkBody(["email", "username", "password"]), async (req:
         token: jwt.sign({ email: req.body.email } as JwtFormat,
             process.env.JWT_KEY || '')
     })
-    await db.setToken("1234", req.body.email, "google" ,(err) => {
-        if (err) {
-            console.log(err)
-        }
-    })
     return
 })
 
@@ -75,12 +70,6 @@ auth.post('/login', checkBody(["email", "password"]), async (req, res) => {
         res.status(400).json({message: "Invalid password"})
         return
     }
-    const token = await db.getToken(req.body.email, (err) => {
-        if (err) {
-            console.log(err)
-        }
-    }, "google")
-    console.log(token)
     res.status(200).json({
         token: jwt.sign({ email: req.body.email } as JwtFormat,
             process.env.JWT_KEY || '')
