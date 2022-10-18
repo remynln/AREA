@@ -148,6 +148,7 @@ const newMail: Action = {
         'date': 'string'
     },
     start(trigger, params, serviceToken) {
+        console.log("service tok:", serviceToken)
         topicSubscribe(serviceToken, (historyId) => {
             getLastMails(serviceToken, historyId.toString(), trigger)
         })

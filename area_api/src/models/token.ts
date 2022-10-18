@@ -6,6 +6,7 @@ const tokenSchema = new Schema({
     service_name: {type: String}
 })
 
+
 const tokenModel = model('Token', tokenSchema)
 
 export default tokenModel

@@ -68,6 +68,7 @@ export class Area {
             if (!i.ref.serviceName)
                 continue
             i.token = await db.getToken(accountMail, i.ref.serviceName)
+            console.log("bizarre", i.token)
         }
     }
 

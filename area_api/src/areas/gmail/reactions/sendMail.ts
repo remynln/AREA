@@ -13,9 +13,9 @@ const sendMail: Reaction = {
     launch(params, token) {
         const msg = createMimeMessage()
         msg.setSender({name: 'Marco', addr: 'marco.leaguelegends@gmail.com'})
-        msg.setRecipient('marco.reguillot@epitech.eu')
-        msg.setSubject("let's goo")
-        msg.setMessage('text/plain', `Hi, I'm a simple text.`)
+        msg.setRecipient(params.recipient)
+        msg.setSubject(params.object)
+        msg.setMessage('text/plain', params.body)
         console.log(msg)
         console.log(msg.asEncoded())
 
