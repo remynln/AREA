@@ -1,7 +1,8 @@
 import { Reaction } from "~/core/types";
 
 const logReaction: Reaction = {
-    paramTypes: [],
+    serviceName: null,
+    paramTypes: {},
     launch(params, _) {
         console.log(params)
     }

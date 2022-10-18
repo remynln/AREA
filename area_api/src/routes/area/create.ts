@@ -1,7 +1,10 @@
 import { Router } from "express";
 import checkBody from "~/middlewares/checkBody";
 import checkToken from "~/middlewares/checkToken";
-import Area from "~/core/global";
+import AreaFunc from "~/core/global";
+import { Action, Area, Reaction } from "~/core/types";
+import JwtFormat from "~/routes/auth/jwtFormat"
+import jwt from "jsonwebtoken"
 
 var area: Router = Router()
 
@@ -11,19 +14,21 @@ function checkActionReaction(body: any) {
     if (!body.reaction.name || ! (typeof body.reaction.name === 'string'))
         throw Error(`missing or invalid property 'name' in reaction request`)
 
-    let action = Area.getAction(body.action.name)
-    let reaction = Area.getReaction(body.reaction.name)
-    Area.checkParams(action, body.action.params)
-    Area.checkParams(reaction, body.reaction.params)
-    return [action, reaction]
+    let action = AreaFunc.getAction(body.action.name)
+    let reaction = AreaFunc.getReaction(body.reaction.name)
+    AreaFunc.checkParams(action, body.action.params)
+    AreaFunc.checkParams(reaction, body.reaction.params)
+    return {action, reaction}
 }
 
 area.use("/create", checkBody(["action", "reaction"]),
 (req, res) => {
-    var action
-    var reaction
+    var action: Action
+    var reaction: Reaction
     try {
-        [action, reaction] = checkActionReaction(req.body)
+        let ret = checkActionReaction(req.body)
+        action = ret.action;
+        reaction = ret.reaction;
     } catch (err) {
         console.log("err", err)
         res.status(400).json({
@@ -31,7 +36,11 @@ area.use("/create", checkBody(["action", "reaction"]),
         })
         return
     }
-    res.status(200).json({
+    let area = new Area(action, req.body.action.params,
+        reaction, req.body.reaction.params)
+    let decoded = jwt.decode(req.headers.authorization?.split(' ')[1] || '')
+    area.setTokens((decoded as JwtFormat).email)
+    res.status(201).json({
         message: 'OK'
     })
 })
