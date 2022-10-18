@@ -9,7 +9,9 @@ import logReaction from "~/areas/console/logReaction";
 import sendMail from "~/areas/gmail/reactions/sendMail";
 import { Request } from "express";
 import db from "~/database/db";
+import JwtFormat from "~/routes/auth/jwtFormat";
 var Gmail = require("node-gmail-api")
+import jwt from "jsonwebtoken"
 const pubsub = new PubSub({ projectId: "sergify" });
 
 const google: Service = {
@@ -30,11 +32,19 @@ const google: Service = {
       }, function(req: any, accessToken: any, refresh_token: any, profile: any, callback: any) {
             console.log((req as Request).baseUrl)
             let accountToken = req.headers.authorization;
-            //if (!accountToken) {
+            if (!accountToken) {
                 callback(null, {
                     email: profile.emails[0].value
                 })
-            //}
+            }
+            let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
+            db.setToken(accessToken, mail, 'google').then(() => {
+                callback(null, {
+                    email: profile.emails[0].value
+                })
+            }).catch((err) => {
+                callback((err as Error).message, null)
+            })
             if ((req as Request).baseUrl.includes("/auth/")) {
                 console.log("this is auth route");
             } else {

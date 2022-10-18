@@ -4,7 +4,7 @@ import db from './db'
 
 
 export default async function setToken(email: string, service_name: string) {
-    const user = await User.findOne({email: email})
+    const user = await User.findOne({mail: email})
     if (!user) {
         throw new Error("Precise an email", { cause: "handled" })
     }

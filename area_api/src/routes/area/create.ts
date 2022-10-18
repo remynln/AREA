@@ -39,9 +39,15 @@ area.use("/create", checkBody(["action", "reaction"]),
     let area = new Area(action, req.body.action.params,
         reaction, req.body.reaction.params)
     let decoded = jwt.decode(req.headers.authorization?.split(' ')[1] || '')
-    area.setTokens((decoded as JwtFormat).email)
-    res.status(201).json({
-        message: 'OK'
+    area.setTokens((decoded as JwtFormat).email).then(() => {
+        area.start()
+        res.status(201).json({
+            message: 'OK'
+        })    
+    }).catch((err) => {
+        res.status(403).json({
+            message: (err as Error).message
+        }) 
     })
 })
 
