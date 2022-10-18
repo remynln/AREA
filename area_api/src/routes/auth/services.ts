@@ -25,7 +25,7 @@ router.get('/:serviceName', (req, res) => {
     if (!req.query.callback) {
         res.status(403).send("Missing callback_url")
     }
-    const state = req.query.callback as string     
+    const state = req.query.callback as string
     passport.authenticate(req.params.serviceName, {
         state,
         callbackURL: "/auth/service/google/callback"
