@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '/generics_components/generic_TextButton.dart';
 
 
 class MyStatefulWidget extends StatefulWidget {
@@ -11,6 +12,7 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool selected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,30 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                         labelStyle: TextStyle(color: Colors.white)),
                   ),
                 ),
-                TextButton(
+                Container(
+                  child: SelectableButton(
+                    selected: selected,
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.resolveWith<Color?>(
+                            (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.selected)) {
+                            return Colors.white;
+                          }
+                          return null; // defer to the defaults
+                        },
+                      ),
+                      ),
+                    onPressed: () {
+                    setState(() {
+                      selected = !selected;
+                    });
+                  },
+                    child: const Text('Forgot Password'),
+                  ),
+
+
+                ),
+                /*TextButton(
                   onPressed: () {
                     //forgot password screen
                   },
@@ -77,7 +102,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   child: const Text(
                     'Forgot Password',
                   ),
-                ),
+                ),*/
                 Container(
                     height: 50,
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
