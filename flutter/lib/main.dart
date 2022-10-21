@@ -48,12 +48,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 
   void handleGoogleLogin() async {
-    print("HERE");
     googleLoginAnswer = await ApiService().handleGoogleLogin("/");
-    //print("WE");
     print(googleLoginAnswer?.token);
-    //GoogleLogin(html_page: googleLoginAnswer!.token);
-    //print("ARE");
+    Widget LoginCall = new MediaQuery(
+        data: new MediaQueryData(),
+        child: new MaterialApp(home: new GoogleLogin(html_page: googleLoginAnswer!.token))
+    );
+    runApp(LoginCall);
   }
 
   @override
