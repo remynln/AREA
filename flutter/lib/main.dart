@@ -1,7 +1,6 @@
 import 'package:area/api/answer/login_answer.dart';
 import 'package:area/api/answer/google_answer.dart';
 import 'package:area/api/service.dart';
-import 'package:area/api/google_login_widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
@@ -50,11 +49,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   void handleGoogleLogin() async {
     googleLoginAnswer = await ApiService().handleGoogleLogin("/");
     print(googleLoginAnswer?.token);
-    Widget LoginCall = new MediaQuery(
-        data: new MediaQueryData(),
-        child: new MaterialApp(home: new GoogleLogin(html_page: googleLoginAnswer!.token))
-    );
-    runApp(LoginCall);
   }
 
   @override
