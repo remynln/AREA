@@ -41,6 +41,7 @@ class ApiService {
       final body_data = {'email': email, 'password': password};
       var response =
           await http.post(uri, headers: headers, body: json.encode(body_data));
+      print(response.body);
       if (response.statusCode == 200) {
         LoginAnswer _model = loginAnswerFromJson(response.body);
         return _model;
@@ -55,17 +56,15 @@ class ApiService {
 
   Future<GoogleLoginAnswer?> handleGoogleLogin(String callback) async {
     try {
-      print("START");
       final uri = Uri.http(ApiConstants.baseUrl,
           ApiConstants.googleLoginEndpoint, {'callback': callback});
       final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
-      print(uri);
       var response = await http.get(
         uri,
         headers: headers,
       );
-      print("rep");
-      print(response.body);
+      GoogleLoginAnswer _model = googleLoginAnswerFromJson(jsonEncode({"token": response.body}));
+      return _model;
       if (response.statusCode == 200) {
         GoogleLoginAnswer _model = googleLoginAnswerFromJson(response.body);
         return _model;
@@ -74,7 +73,9 @@ class ApiService {
       }
       return null;
     } catch (e) {
+      print("a");
       print(e.toString());
+      print("b");
       log(e.toString());
     }
   }
