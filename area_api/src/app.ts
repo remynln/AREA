@@ -37,7 +37,7 @@ app.use('/area', checkToken, area)
 
 
 // service route
-app.use('/service', serviceConnect)
+app.use('/service', checkToken, serviceConnect)
 
 // home route
 app.get('/', (req, res) => res.send('hello world'))
