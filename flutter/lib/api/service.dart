@@ -9,6 +9,8 @@ import 'package:area/api/endpoints.dart';
 import 'package:area/api/answer/login_answer.dart';
 import 'package:area/api/answer/register_answer.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
 class ApiService {
   Future<RegisterAnswer?> handleRegister(
       String email, String username, String password) async {
@@ -56,26 +58,15 @@ class ApiService {
 
   Future<GoogleLoginAnswer?> handleGoogleLogin(String callback) async {
     try {
-      final uri = Uri.http(ApiConstants.baseUrl,
-          ApiConstants.googleLoginEndpoint, {'callback': callback});
-      final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
-      var response = await http.get(
-        uri,
-        headers: headers,
+      final uri = Uri.http(
+        ApiConstants.baseUrl,
+        ApiConstants.googleLoginEndpoint,
+        {'callback': 'www.youtube.com'}
       );
-      GoogleLoginAnswer _model = googleLoginAnswerFromJson(jsonEncode({"token": response.body}));
-      return _model;
-      if (response.statusCode == 200) {
-        GoogleLoginAnswer _model = googleLoginAnswerFromJson(response.body);
-        return _model;
-      } else if (response.statusCode == 400) {
-        log('Client error in google oauth login connection');
-      }
+
+      await launchUrl(uri);
       return null;
     } catch (e) {
-      print("a");
-      print(e.toString());
-      print("b");
       log(e.toString());
     }
   }
