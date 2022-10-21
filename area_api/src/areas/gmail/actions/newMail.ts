@@ -1,4 +1,4 @@
-import { Action } from "~/core/types";
+import { Action, AreaRet } from "~/core/types";
 import { PubSub } from '@google-cloud/pubsub';
 import axios from "axios";
 const pubsub = new PubSub({ projectId: "sergify" });
@@ -147,11 +147,18 @@ const newMail: Action = {
         'body': 'string',
         'date': 'string'
     },
-    start(trigger, params, serviceToken) {
+    async start(trigger, params, serviceToken) {
         console.log("service tok:", serviceToken)
-        topicSubscribe(serviceToken, (historyId) => {
-            getLastMails(serviceToken, historyId.toString(), trigger)
-        })
+        try {
+            let res = await topicSubscribe(serviceToken, (historyId) => {
+                getLastMails(serviceToken, historyId.toString(), trigger)
+            })
+        } catch (err: any) {
+            if (err.response.status == 401) {
+                return AreaRet.AccessTokenExpired
+            }
+        }
+        return AreaRet.Ok
     },
     stop() {
     },

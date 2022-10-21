@@ -13,8 +13,27 @@ import JwtFormat from "~/routes/auth/jwtFormat";
 var Gmail = require("node-gmail-api")
 import jwt from "jsonwebtoken"
 const pubsub = new PubSub({ projectId: "sergify" });
+import qs from "qs"
 
 const google: Service = {
+    refreshToken: async (it: string) => {
+        let res
+        try {
+            res = await axios.post("https://oauth2.googleapis.com/token", qs.stringify({
+                client_id: process.env.GOOGLE_CLIENT_ID,
+                client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                grant_type: "refresh_token",
+                refresh_token: it
+            }), {
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                }
+            })
+        } catch (err: any) {
+            throw err
+        }
+        return res.data.access_token;
+    },
     start: () => {
     },
     actions: new Map([

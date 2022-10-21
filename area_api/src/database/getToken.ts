@@ -12,5 +12,5 @@ export default async function setToken(email: string, service_name: string) {
     if (!token || !token.service_token) {
         throw new Error(`You are not authentified to service ${service_name}`)
     }
-    return token.service_token
+    return [token.service_token, token.service_refresh_token]
 }
