@@ -56,6 +56,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   StreamSubscription? _streamSubscription;
 
+  MaterialStatesController? loginController = MaterialStatesController();
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +68,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   void dispose() {
     _streamSubscription?.cancel();
+    nameController.dispose();
+    passwordController.dispose();
+    loginController!.dispose();
     super.dispose();
   }
 
@@ -138,6 +143,21 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     await ApiService().handleGoogleLogin("sergify://google");
   }
 
+  MaterialStateProperty<Color?>? getButtonColorFromState() {
+    if (nameController.text.isEmpty || passwordController.text.isEmpty)
+      return (MaterialStatePropertyAll<Color>(Colors.grey));
+    else
+      return (MaterialStatePropertyAll<Color>(Color.fromRGBO(191, 27, 44, 1)));
+  }
+
+  Color getColor(Set<MaterialState> states) {
+    print("GET COLOR");
+    if (nameController.text.isEmpty || passwordController.text.isEmpty)
+      return (Colors.grey);
+    else
+      return (Color.fromRGBO(191, 27, 44, 1));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,6 +175,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: TextField(
           controller: nameController,
+          onChanged: (_) {
+            loginController!.notifyListeners();
+          },
           style: TextStyle(color: Colors.white),
           textAlign: TextAlign.center,
           decoration: InputDecoration(
@@ -174,6 +197,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: TextField(
           controller: passwordController,
+          onChanged: (_) {
+            loginController!.notifyListeners();
+          },
           style: TextStyle(color: Colors.white),
           textAlign: TextAlign.center,
           decoration: InputDecoration(
@@ -203,6 +229,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         height: 45,
         padding: const EdgeInsets.symmetric(horizontal: 60),
         child: ElevatedButton(
+            statesController: loginController,
             child: const Text('LOGIN'),
             onPressed: () {
               handleLogin();
@@ -210,8 +237,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               print(passwordController.text);
             },
             style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(
-                    Color.fromRGBO(191, 27, 44, 1)),
+                backgroundColor: MaterialStateProperty.resolveWith(getColor),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(9.0))))),
@@ -248,10 +274,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         style: TextButton.styleFrom(
           foregroundColor: Color.fromRGBO(191, 27, 44, 1),
         ),
-        child: const Text(
-          'Register here',
-          style: TextStyle(fontSize: 16)
-        ),
+        child: const Text('Register here', style: TextStyle(fontSize: 16)),
       ),
     ])));
   }
