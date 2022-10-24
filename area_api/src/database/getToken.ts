@@ -1,6 +1,5 @@
 import User from '../models/user'
 import Token from '../models/token'
-import db from './db'
 
 
 export default async function setToken(email: string, service_name: string) {
