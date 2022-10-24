@@ -132,6 +132,7 @@ interface Mail2 {
 }
 
 const newMail: Action = {
+    description: "When a new mail is received in the gmail mailbox",
     serviceName: 'google',
     paramTypes: {},
     propertiesType: {

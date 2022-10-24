@@ -15,6 +15,7 @@ async function getMailFromToken(token: string) {
 
 const sendMail: Reaction = {
     serviceName: 'google',
+    description: "Send a mail from the gmail's mailbox",
     paramTypes: {
         'recipient': 'string',
         'object': 'string',

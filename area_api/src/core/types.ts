@@ -20,6 +20,7 @@ export enum AreaRet {
 
 export interface Action {
     serviceName: string | null
+    description: string
     propertiesType: any
     paramTypes: any
     start: (
@@ -33,6 +34,7 @@ export interface Action {
 
 export interface Reaction {
     serviceName: string | null
+    description: string
     paramTypes: any
     launch: (params: any, serviceToken: string) => Promise<AreaRet>
 }
