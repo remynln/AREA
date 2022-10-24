@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Cookies from 'js-cookie'
 import "./Services.css"
 
 function SingleService(props) {
