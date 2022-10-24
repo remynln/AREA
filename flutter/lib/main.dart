@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:area/api/answer/login_answer.dart';
 import 'package:area/api/answer/google_answer.dart';
@@ -76,8 +77,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         final initialUri = await getInitialUri();
         if (initialUri != null) {
           print("initial uri is $initialUri");
-          if (!mounted)
-            return;
+          if (!mounted) return;
           setState(() {
             _initialUri = initialUri;
           });
@@ -87,8 +87,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       } on PlatformException {
         print("Failed to received initial uri");
       } on FormatException catch (err) {
-        if (!mounted)
-          return;
+        if (!mounted) return;
         print("Bad initial uri received !");
         setState(() {
           _err = err;
@@ -108,8 +107,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   void _incomingLinkHandler() {
     if (!kIsWeb) {
       _streamSubscription = uriLinkStream.listen((Uri? uri) {
-        if (!mounted)
-          return;
+        if (!mounted) return;
         print('New URI received: $uri');
         _checkUriToken(uri!.queryParameters);
         setState(() {
@@ -117,8 +115,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           _err = null;
         });
       }, onError: (Object err) {
-        if (!mounted)
-          return;
+        if (!mounted) return;
         print('Error occured: $err');
         setState(() {
           _currentUri = null;
@@ -132,7 +129,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 
   void handleLogin() async {
-    loginAnswer = await ApiService().handleLogin(nameController.text, passwordController.text);
+    loginAnswer = await ApiService()
+        .handleLogin(nameController.text, passwordController.text);
     print(loginAnswer?.token);
   }
 
@@ -142,122 +140,119 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         body: Center(
-            child: ListView(
-      children: <Widget>[
-        Image.asset(
-          'assets/sergify.png',
-          height: 200,
-          width: 500,
-          fit: BoxFit.fitWidth,
-          scale: 1,
-        ),
-        SizedBox(height: 30),
-        Container(
-            alignment: Alignment.topCenter,
-            padding: const EdgeInsets.all(10),
-            child: const Text('Login',
-                style: TextStyle(
-                    fontSize: 35,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold))),
-        SizedBox(height: 10),
-        Container(
-          padding: const EdgeInsets.all(10),
-          child: TextField(
-            controller: nameController,
-            style: TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                labelText: 'Username/Email',
-                labelStyle: TextStyle(color: Colors.white)),
+            child: ListView(children: <Widget>[
+      Image.asset(
+        'assets/sergify.png',
+        height: 200,
+        width: 500,
+        fit: BoxFit.fitWidth,
+        scale: 1,
+      ),
+      SizedBox(height: 30),
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 25),
+        child: TextField(
+          controller: nameController,
+          style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.center,
+          decoration: InputDecoration(
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
+            filled: true,
+            hintStyle: TextStyle(
+                color: Color.fromRGBO(148, 163, 184, 1),
+                fontStyle: FontStyle.italic),
+            hintText: "Username or Email",
+            fillColor: Color.fromRGBO(68, 68, 68, 1),
           ),
         ),
-        Container(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-          child: TextField(
-            style: TextStyle(color: Colors.white),
-            controller: passwordController,
-            decoration: const InputDecoration(
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                border: OutlineInputBorder(),
-                labelText: 'Password',
-                labelStyle: TextStyle(color: Colors.white)),
+      ),
+      SizedBox(height: 20),
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 25),
+        child: TextField(
+          controller: passwordController,
+          style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.center,
+          decoration: InputDecoration(
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
+            filled: true,
+            hintStyle: TextStyle(
+                color: Color.fromRGBO(148, 163, 184, 1),
+                fontStyle: FontStyle.italic),
+            hintText: "Password",
+            fillColor: Color.fromRGBO(68, 68, 68, 1),
           ),
         ),
-        TextButton(
+      ),
+      TextButton(
+        onPressed: () {
+          //forgot password screen
+        },
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.red,
+        ),
+        child: const Text(
+          'Forgot Password',
+        ),
+      ),
+      Container(
+        height: 45,
+        padding: const EdgeInsets.symmetric(horizontal: 60),
+        child: ElevatedButton(
+            child: const Text('LOGIN'),
+            onPressed: () {
+              handleLogin();
+              print(nameController.text);
+              print(passwordController.text);
+            },
+            style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(
+                    Color.fromRGBO(191, 27, 44, 1)),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9.0))))),
+      ),
+      SizedBox(height: 30),
+      Container(
+          alignment: Alignment.topCenter,
+          child: const Text('Or continue with',
+              style: TextStyle(fontSize: 15, color: Colors.grey))),
+      SizedBox(height: 10),
+      Container(
+        height: 45,
+        padding: EdgeInsets.symmetric(horizontal: 80),
+        child: ElevatedButton.icon(
           onPressed: () {
-            //forgot password screen
+            handleGoogleLogin();
           },
-          style: TextButton.styleFrom(
-            foregroundColor: Colors.red,
-          ),
-          child: const Text(
-            'Forgot Password',
-          ),
+          icon: Image.asset("assets/google.png", width: 18),
+          style: OutlinedButton.styleFrom(
+              side:
+                  BorderSide(width: 1.0, color: Color.fromRGBO(191, 27, 44, 1)),
+              backgroundColor: Colors.transparent),
+          label: Text('Google'), // <-- Text
         ),
-        Container(
-            height: 50,
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: ElevatedButton(
-              child: const Text('Login'),
-              onPressed: () {
-                handleLogin();
-                print(nameController.text);
-                print(passwordController.text);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromRGBO(191, 27, 44, 1),
-              ),
-            )),
-        SizedBox(height: 30),
-        Container(
-            alignment: Alignment.topCenter,
-            child: const Text('Or continue with',
-                style: TextStyle(fontSize: 15, color: Colors.grey))),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: ElevatedButton.icon(
-            onPressed: () {
-              handleGoogleLogin();
-            },
-            icon: Image.asset("assets/google.png", width: 18),
-            style: OutlinedButton.styleFrom(
-                side: BorderSide(
-                    width: 1.0, color: Color.fromRGBO(191, 27, 44, 1)),
-                backgroundColor: Colors.transparent),
-            label: Text('Google'), // <-- Text
-          ),
+      ),
+      SizedBox(height: 30),
+      Text("Don't have an account?",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18, color: Colors.white)),
+      TextButton(
+        onPressed: () {
+          //forgot password screen
+        },
+        style: TextButton.styleFrom(
+          foregroundColor: Color.fromRGBO(191, 27, 44, 1),
         ),
-        ListTile(
-            title: Row(children: <Widget>[
-          Text("Don't have an account?",
-              style: TextStyle(fontSize: 15, color: Colors.grey)),
-          TextButton(
-            onPressed: () {
-              //forgot password screen
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
-            ),
-            child: const Text(
-              'Create now',
-            ),
-          ),
-        ], mainAxisAlignment: MainAxisAlignment.center))
-      ],
-    )));
+        child: const Text(
+          'Register here',
+          style: TextStyle(fontSize: 16)
+        ),
+      ),
+    ])));
   }
 }
