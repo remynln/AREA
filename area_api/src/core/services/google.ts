@@ -5,7 +5,6 @@ import { readFileSync } from "fs";
 import { exit } from "process";
 import axios from "axios";
 import newMail from "~/areas/gmail/actions/newMail";
-import logReaction from "~/areas/console/logReaction";
 import sendMail from "~/areas/gmail/reactions/sendMail";
 import { Request } from "express";
 import db from "~/database/db";

@@ -8,6 +8,7 @@ import area from './routes/area/create'
 import google from './core/services/google';
 import mongoose from 'mongoose';
 import serviceConnect from './routes/service/connect'
+import serviceGet from './routes/service/get'
 import services from './routes/service/services'
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
@@ -40,6 +41,7 @@ app.use('/area', checkToken, area)
 // service route
 app.use('/service', checkToken, serviceConnect)
 app.use('/services', checkToken, services)
+app.use('/service', checkToken, serviceGet)
 
 // home route
 app.get('/', (req, res) => res.send('hello world'))
