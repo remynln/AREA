@@ -2,9 +2,18 @@ import React from "react";
 import './Sidebar.css';
 import { Link } from 'react-router-dom'
 import { SidebarContent } from './SidebarContent';
+import { useNavigate } from 'react-router-dom'
 import Logo from '../../img/Sergify_Logo_Horizontal.png';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 function Sidebar() {
+    const navigate = useNavigate();
+
+    const DisconnectUser = () => {
+        localStorage.clear()
+        navigate('/login')
+    }
+
     return (
         <div className="Sidebar">
             <div className="SidebarLogo">
@@ -22,6 +31,14 @@ function Sidebar() {
                     )
                 })}
             </ul>
+            <div className="Logout" onClick={DisconnectUser}>
+                <div className="SidebarIcon">
+                    <LogoutIcon />
+                </div>
+                <div className="SidebarTitle">
+                    <p>Logout</p>
+                </div>
+            </div>
         </div>
     )
 }

@@ -3,17 +3,32 @@ import Logo from "../img/Sergify_Logo_Vertical.png"
 import GoogleLogo from "../img/Google_Sign_In_Logo.png"
 import { useNavigate } from 'react-router-dom'
 import axios from "axios";
-import Cookies from 'js-cookie'
 import './Login.css'
 
 export const Login = () => {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMessage, setError] = useState("");
+    const [loginState, setLogin] = useState(false)
     const navigate = useNavigate();
+    const params = new URLSearchParams(window.location.search);
+
+    let LoginButton = {
+        backgroundColor: "#444444",
+        boxShadow: "0px 0px 0px 0px"
+    };
 
     useEffect(() => {
-        if (Cookies.get('jwt') !== undefined)
+        let token = params.get("token")
+    
+        if (localStorage.getItem("jwt") !== null)
             navigate('/dashboard')
+        if (token !== null)
+            localStorage.setItem('jwt', JSON.stringify(token))
+        if (user.length === 0 || password.length < 8)
+            setLogin(false)
+        else
+            setLogin(true)
     });
 
     const navigateToRegister = () => {
@@ -26,19 +41,20 @@ export const Login = () => {
             password: password
         })
         .then(res => {
-          if (res.status === 200)
-            Cookies.set('jwt', res.data.token)
-            navigate('/dashboard')
+            if (res.status === 200)
+                localStorage.setItem('jwt', JSON.stringify(res.data.token))
+                navigate('/dashboard')
         })
         .catch(error => {
-            console.log(error.message);
+            console.log(error)
+            setError(error.response.data.message);
         })
     }
 
     return (
         <div className="LoginPage">
             <img src={Logo} className="LoginLogo" alt="Login_Logo"/>
-            <a className="GoogleSignIn">
+            <a className="GoogleSignIn" href="http://localhost:8080/auth/service/google?callback=http://localhost:3000/login">
                 <img className="GoogleSignInLogo" src={GoogleLogo} alt="Google_Logo"/>
                 <p>Sign in with Google</p>
             </a>
@@ -48,7 +64,8 @@ export const Login = () => {
             <div className="InputBackground">
                 <input className="Input" placeholder="Password" type="password" onChange={(event) => setPassword(event.target.value)}></input>
             </div>
-            <div className="LoginButton" onClick={Login}>
+            {errorMessage?<p className="ErrorMessage">{errorMessage}</p>:null}
+            <div className="LoginButton" onClick={loginState ? Login : undefined} style={loginState ? undefined : LoginButton}>
                 <p>LOGIN</p>
             </div>
             <div className="RegisterText">
