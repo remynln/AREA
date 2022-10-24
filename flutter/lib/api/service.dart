@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -56,18 +57,17 @@ class ApiService {
     }
   }
 
-  Future<GoogleLoginAnswer?> handleGoogleLogin(String callback) async {
+  Future<void> handleGoogleLogin(String callback) async {
     try {
       final uri = Uri.http(
         ApiConstants.baseUrl,
         ApiConstants.googleLoginEndpoint,
-        {'callback': '/'}
+        {'callback': callback}
       );
       if (await canLaunchUrl(uri))
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       else
         throw "Uri($uri) could not be launched";
-      return null;
     } catch (e) {
       log(e.toString());
     }

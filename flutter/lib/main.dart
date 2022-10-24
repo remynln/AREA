@@ -1,9 +1,15 @@
+import 'dart:async';
+
 import 'package:area/api/answer/login_answer.dart';
 import 'package:area/api/answer/google_answer.dart';
 import 'package:area/api/service.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:flutter/services.dart';
+
+import 'package:uni_links/uni_links.dart';
 
 void main() => runApp(const MyApp());
 
@@ -38,8 +44,92 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
   late LoginAnswer? loginAnswer;
-  late GoogleLoginAnswer? googleLoginAnswer;
+  GoogleLoginAnswer _googleLoginAnswer = GoogleLoginAnswer();
+
+  bool _initialURILinkHandled = false;
+  Uri? _initialUri;
+  Uri? _currentUri;
+  Object? _err;
+
+  StreamSubscription? _streamSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _initUriHandler();
+    _incomingLinkHandler();
+  }
+
+  @override
+  void dispose() {
+    _streamSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _initUriHandler() async {
+    if (!_initialURILinkHandled) {
+      _initialURILinkHandled = true;
+      print("Invoked _initUriHandler");
+      try {
+        final initialUri = await getInitialUri();
+        if (initialUri != null) {
+          print("initial uri is $initialUri");
+          if (!mounted)
+            return;
+          setState(() {
+            _initialUri = initialUri;
+          });
+        } else {
+          print("initial uri is null !");
+        }
+      } on PlatformException {
+        print("Failed to received initial uri");
+      } on FormatException catch (err) {
+        if (!mounted)
+          return;
+        print("Bad initial uri received !");
+        setState(() {
+          _err = err;
+        });
+      }
+    }
+  }
+
+  void _checkUriToken(Map<String, String> query) {
+    if (query.containsKey("token")) {
+      setState(() {
+        _googleLoginAnswer.token = query["token"]!;
+      });
+    }
+  }
+
+  void _incomingLinkHandler() {
+    if (!kIsWeb) {
+      _streamSubscription = uriLinkStream.listen((Uri? uri) {
+        if (!mounted)
+          return;
+        print('New URI received: $uri');
+        _checkUriToken(uri!.queryParameters);
+        setState(() {
+          _currentUri = uri;
+          _err = null;
+        });
+      }, onError: (Object err) {
+        if (!mounted)
+          return;
+        print('Error occured: $err');
+        setState(() {
+          _currentUri = null;
+          if (err is FormatException)
+            _err = err;
+          else
+            _err = null;
+        });
+      });
+    }
+  }
 
   void handleLogin() async {
     loginAnswer = await ApiService().handleLogin(nameController.text, passwordController.text);
@@ -47,8 +137,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 
   void handleGoogleLogin() async {
-    googleLoginAnswer = await ApiService().handleGoogleLogin("/");
-    print(googleLoginAnswer?.token);
+    await ApiService().handleGoogleLogin("sergify://google");
   }
 
   @override
