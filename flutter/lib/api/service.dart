@@ -61,10 +61,12 @@ class ApiService {
       final uri = Uri.http(
         ApiConstants.baseUrl,
         ApiConstants.googleLoginEndpoint,
-        {'callback': 'www.youtube.com'}
+        {'callback': '/'}
       );
-
-      await launchUrl(uri);
+      if (await canLaunchUrl(uri))
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      else
+        throw "Uri($uri) could not be launched";
       return null;
     } catch (e) {
       log(e.toString());
