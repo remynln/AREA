@@ -1,5 +1,6 @@
 import passport from "passport"
 import db from "~/database/db";
+import { formatContent } from "./formatting";
 import Global from "./global"
 
 type Param = {
@@ -40,10 +41,11 @@ export interface Reaction {
 }
 
 export interface Service {
-    start: Function,
-    strategy: passport.Strategy,
-    actions: Map<string, Action>,
+    start: Function
+    strategy: passport.Strategy
+    actions: Map<string, Action>
     reactions: Map<string, Reaction>
+    authParams: any
     refreshToken: (refreshToken: string) => Promise<string>
     [x: string | number | symbol]: unknown;
 }
@@ -53,12 +55,10 @@ interface AreaWrapper<T extends Action | Reaction> {
     ref: T,
     params: any,
     token: string | undefined,
-    refreshToken: string | undefined
+    refreshToken: string | undefined,
 }
 
 export class Area {
-
-
     private _action: AreaWrapper<Action>
     private _reaction: AreaWrapper<Reaction>
 
@@ -72,13 +72,13 @@ export class Area {
             ref: action,
             params: actionParams,
             token: undefined,
-            refreshToken: undefined
+            refreshToken: undefined,
         }
         this._reaction = {
             ref: reaction,
             params: reactionParams,
             token: undefined,
-            refreshToken: undefined
+            refreshToken: undefined,
         }
     }
     public async setTokens(
@@ -96,25 +96,37 @@ export class Area {
         let service = Global.services.get(aorea.ref.serviceName);
         if (!service || !aorea.refreshToken)
             return;
-        aorea.refreshToken = await service.refreshToken(aorea.refreshToken)
+        aorea.token = await service.refreshToken(aorea.refreshToken)
+        this.start()
     }
 
-    public start() {
+    public formatParams(actionProperties: any) {
+        var formatted: any = {}
+        for (let key in this._reaction.params) {
+            formatted[key] = formatContent(this._reaction.params[key], actionProperties)
+        }
+        return formatted
+    }
+
+    private startPrivate() {
         this._action.ref.start((properties) => {
-            this._reaction.ref.launch(this._reaction.params,
+            var formatted = this.formatParams(properties)
+            this._reaction.ref.launch(formatted,
                 this._reaction.token || '').then((res) => {
                     if (res == AreaRet.AccessTokenExpired) {
                         this.refreshToken(this._reaction)
-                        this.start()
                     }
                 })
         }, this._action.params, this._action.token || '')
         .then((res) => {
             if (res == AreaRet.AccessTokenExpired) {
                 this.refreshToken(this._action)
-                this.start()
             }
         })
+    }
+
+    public start() {
+        this.startPrivate()
     }
 
     public destroy() {

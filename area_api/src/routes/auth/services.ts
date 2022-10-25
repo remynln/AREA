@@ -4,6 +4,7 @@ import "dotenv/config"
 import url from "url";
 import jwt from "jsonwebtoken";
 import Area from "../../core/global"
+import global from "../../core/global";
 
 var router: Router = express.Router()
 
@@ -25,6 +26,16 @@ router.get('/:serviceName', (req, res) => {
     if (!req.query.callback) {
         res.status(403).send("Missing callback_url")
     }
+    let service = global.services.get(req.params.serviceName)
+    if (!service) {
+        res.status(404).json({
+            message: `Service '${req.params.serviceName}' not found`
+        })
+        return
+    }
+    let authParams = service.authParams;
+    authParams.failureRedirect = req.query.callback as string
+    authParams.callbackURL = "/auth/service/google/callback"
     const state = req.query.callback as string
     passport.authenticate(req.params.serviceName, {
         state,
@@ -35,10 +46,17 @@ router.get('/:serviceName', (req, res) => {
 })
 
 router.get('/:serviceName/callback', (req, res, next) => {
-    passport.authenticate(req.params.serviceName, {
-        failureRedirect: "http://localhost:8080/",
-        callbackURL: "/auth/service/google/callback"
-    } as any, (err, user, info) => {
+    let service = global.services.get(req.params.serviceName)
+    if (!service) {
+        res.status(404).json({
+            message: `Service '${req.params.serviceName}' not found`
+        })
+        return
+    }
+    let authParams = service.authParams;
+    authParams.failureRedirect = "http://localhost:8080/"
+    authParams.callbackURL = "/auth/service/google/callback"
+    passport.authenticate(req.params.serviceName, authParams, (err, user, info) => {
         console.log("user: ", user)
         res.locals.user = user;
         next()
