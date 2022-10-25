@@ -35,6 +35,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   }
 
   void handleRegister() async {
+    if (getCredentialStatus() == false)
+      return;
     registerAnswer = await ApiService().handleRegister(
         emailController.text, nameController.text, passwordController.text);
     if (registerAnswer?.message != "") {
@@ -49,10 +51,16 @@ class _RegisterWidgetState extends State<RegisterWidget> {
     }
   }
 
-  Color getColor(Set<MaterialState> states) {
+  bool getCredentialStatus() {
     if (emailController.text.isEmpty ||
         nameController.text.isEmpty ||
         passwordController.text.length < 8)
+      return false;
+    return true;
+  }
+
+  Color getColor(Set<MaterialState> states) {
+    if (getCredentialStatus() == false)
       return (Colors.grey);
     else
       return (Color.fromRGBO(191, 27, 44, 1));
