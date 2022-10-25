@@ -39,7 +39,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
       return;
     registerAnswer = await ApiService().handleRegister(
         emailController.text, nameController.text, passwordController.text);
-    if (registerAnswer?.message != "") {
+    if (registerAnswer?.message != null) {
       Fluttertoast.showToast(
           msg: "Error : ${registerAnswer?.message}!",
           timeInSecForIosWeb: 3,
@@ -48,7 +48,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
           backgroundColor: Color.fromRGBO(191, 27, 44, 1),
           textColor: Colors.white,
           fontSize: 14);
-    }
+    } else
+      print(registerAnswer?.token);
   }
 
   bool getCredentialStatus() {
