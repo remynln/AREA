@@ -25,13 +25,10 @@ class ApiService {
       };
       var response =
           await http.post(uri, headers: headers, body: json.encode(body_data));
-      if (response.statusCode == 200) {
-        RegisterAnswer _model = registerAnswerFromJson(response.body);
-        return _model;
-      } else if (response.statusCode == 409) {
-        log('email or username already exist !');
-      }
-      return null;
+      if (response.statusCode != 200)
+        log(response.statusCode.toString());
+      RegisterAnswer _model = registerAnswerFromJson(response.body);
+      return _model;
     } catch (e) {
       log(e.toString());
     }
@@ -44,14 +41,10 @@ class ApiService {
       final body_data = {'email': email, 'password': password};
       var response =
           await http.post(uri, headers: headers, body: json.encode(body_data));
-      print(response.body);
-      if (response.statusCode == 200) {
-        LoginAnswer _model = loginAnswerFromJson(response.body);
-        return _model;
-      } else if (response.statusCode == 403) {
-        log('Username or password is incorrect');
-      }
-      return null;
+      if (response.statusCode != 200)
+        log(response.statusCode.toString());
+      LoginAnswer _model = loginAnswerFromJson(response.body);
+      return _model;
     } catch (e) {
       log(e.toString());
     }
