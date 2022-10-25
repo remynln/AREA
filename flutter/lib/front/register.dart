@@ -111,6 +111,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                   onChanged: (_) {
                     registerController!.notifyListeners();
                   },
+                  obscureText: true,
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
