@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
           splash: 'assets/sergify.png',
           splashIconSize: double.infinity,
           backgroundColor: Colors.black,
-          nextScreen: LoginWidget(),
+          nextScreen: const LoginWidget(),
           splashTransition: SplashTransition.fadeTransition,
           duration: 3000,
         ));
