@@ -17,20 +17,16 @@ import qs from "qs"
 const google: Service = {
     refreshToken: async (it: string) => {
         let res
-        try {
-            res = await axios.post("https://oauth2.googleapis.com/token", qs.stringify({
-                client_id: process.env.GOOGLE_CLIENT_ID,
-                client_secret: process.env.GOOGLE_CLIENT_SECRET,
-                grant_type: "refresh_token",
-                refresh_token: it
-            }), {
-                headers: {
-                    'content-type': 'application/x-www-form-urlencoded'
-                }
-            })
-        } catch (err: any) {
-            throw err
-        }
+        res = await axios.post("https://oauth2.googleapis.com/token", qs.stringify({
+            client_id: process.env.GOOGLE_CLIENT_ID,
+            client_secret: process.env.GOOGLE_CLIENT_SECRET,
+            grant_type: "refresh_token",
+            refresh_token: it
+        }), {
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded'
+            }
+        })
         return res.data.access_token;
     },
     start: () => {
@@ -41,22 +37,27 @@ const google: Service = {
     reactions: new Map([
         ["sendMail", sendMail]
     ]),
+    authParams: {
+        accessType: 'offline',
+        approvalPrompt: 'force',
+    },
     strategy: new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         passReqToCallback: true,
         scope: ['profile', 'email',
             'https://mail.google.com/']
-      }, function(req: any, accessToken: any, refresh_token: any, profile: any, callback: any) {
+        }, function(req: any, accessToken: any, refresh_token: any, profile: any, callback: any) {
             console.log((req as Request).baseUrl)
             let accountToken = req.headers.authorization;
             if (!accountToken) {
                 callback(null, {
                     email: profile.emails[0].value
                 })
+                return
             }
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
-            db.setToken(accessToken, mail, 'google').then(() => {
+            db.setToken(accessToken, refresh_token, mail, 'google').then(() => {
                 callback(null, {
                     email: profile.emails[0].value
                 })

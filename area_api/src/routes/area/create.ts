@@ -17,7 +17,7 @@ function checkActionReaction(body: any) {
     let action = AreaFunc.getAction(body.action.name)
     let reaction = AreaFunc.getReaction(body.reaction.name)
     AreaFunc.checkParams(action, body.action.params)
-    AreaFunc.checkParams(reaction, body.reaction.params)
+    AreaFunc.checkParams(reaction, body.reaction.params, action.propertiesType)
     return {action, reaction}
 }
 

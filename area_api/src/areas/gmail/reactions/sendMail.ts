@@ -1,9 +1,10 @@
 import { AreaRet, Reaction } from "~/core/types";
 import { createMimeMessage, MailLocation } from "mimetext";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 
 async function getMailFromToken(token: string) {
+    console.log(token)
     var res = await axios.get("https://gmail.googleapis.com/gmail/v1/users/me/profile", {
         headers: {
             'Content-Type': 'application/json',
@@ -26,8 +27,14 @@ const sendMail: Reaction = {
         let mail: string
         try {
             mail = await getMailFromToken(token);
-        } catch (e) {
-            throw Error("Can't get sender mail")
+        } catch (e: any) {
+            if (!e.response)
+                throw e
+            let err = e as AxiosError
+            if (err.response?.status == 401)
+                return AreaRet.AccessTokenExpired
+            else
+                throw e
         }
         msg.setSender({name: 'Marco', addr: mail})
         msg.setRecipient(params.recipient)

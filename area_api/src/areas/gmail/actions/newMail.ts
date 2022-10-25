@@ -96,7 +96,9 @@ async function topicSubscribe(token: string, trigger: (historyId: number) => voi
     console.log("starting action newMail...")
     const topic = pubsub.topic(TOPIC_NAME)
     const sub = topic.subscription(SUBSCRIPTION_NAME);
-    await sub.delete()
+    if ((await sub.exists())[0]) {
+        await sub.delete()
+    }
     const [subscription] = await topic.createSubscription(SUBSCRIPTION_NAME);
 
     const res = await axios.post("https://www.googleapis.com/gmail/v1/users/me/watch", {
@@ -155,6 +157,9 @@ const newMail: Action = {
                 getLastMails(serviceToken, historyId.toString(), trigger)
             })
         } catch (err: any) {
+            if (!err.response) {
+                console.log(err)
+            }
             if (err.response.status == 401) {
                 return AreaRet.AccessTokenExpired
             }
