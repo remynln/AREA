@@ -117,7 +117,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       return;
     loginAnswer = await ApiService()
         .handleLogin(nameController.text, passwordController.text);
-    if (loginAnswer?.message != "") {
+    if (loginAnswer?.message != null) {
       Fluttertoast.showToast(
           msg: "Error : ${loginAnswer?.message}!",
           timeInSecForIosWeb: 3,
@@ -127,6 +127,8 @@ class _LoginWidgetState extends State<LoginWidget> {
           textColor: Colors.white,
           fontSize: 14);
     }
+    else
+      print(loginAnswer?.token);
   }
 
   void handleGoogleLogin() async {
