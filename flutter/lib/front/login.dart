@@ -12,6 +12,8 @@ import 'package:area/front/register.dart';
 
 import 'package:uni_links/uni_links.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+
 class LoginWidget extends StatefulWidget {
   const LoginWidget({Key? key}) : super(key: key);
 
@@ -113,7 +115,16 @@ class _LoginWidgetState extends State<LoginWidget> {
   void handleLogin() async {
     loginAnswer = await ApiService()
         .handleLogin(nameController.text, passwordController.text);
-    print(loginAnswer?.token);
+    if (loginAnswer?.message != "") {
+      Fluttertoast.showToast(
+          msg: "Error : ${loginAnswer?.message}!",
+          timeInSecForIosWeb: 3,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Color.fromRGBO(191, 27, 44, 1),
+          textColor: Colors.white,
+          fontSize: 14);
+    }
   }
 
   void handleGoogleLogin() async {
@@ -121,7 +132,6 @@ class _LoginWidgetState extends State<LoginWidget> {
   }
 
   Color getColor(Set<MaterialState> states) {
-    print("GET COLOR");
     if (nameController.text.isEmpty || passwordController.text.length < 8)
       return (Colors.grey);
     else
