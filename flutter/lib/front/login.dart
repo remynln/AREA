@@ -8,6 +8,8 @@ import 'package:area/api/answer/login_answer.dart';
 import 'package:area/api/answer/google_answer.dart';
 import 'package:area/api/service.dart';
 
+import 'package:area/front/register.dart';
+
 import 'package:uni_links/uni_links.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -118,16 +120,9 @@ class _LoginWidgetState extends State<LoginWidget> {
     await ApiService().handleGoogleLogin("sergify://google");
   }
 
-  MaterialStateProperty<Color?>? getButtonColorFromState() {
-    if (nameController.text.isEmpty || passwordController.text.isEmpty)
-      return (MaterialStatePropertyAll<Color>(Colors.grey));
-    else
-      return (MaterialStatePropertyAll<Color>(Color.fromRGBO(191, 27, 44, 1)));
-  }
-
   Color getColor(Set<MaterialState> states) {
     print("GET COLOR");
-    if (nameController.text.isEmpty || passwordController.text.isEmpty)
+    if (nameController.text.isEmpty || passwordController.text.length < 8)
       return (Colors.grey);
     else
       return (Color.fromRGBO(191, 27, 44, 1));
@@ -241,10 +236,13 @@ class _LoginWidgetState extends State<LoginWidget> {
               SizedBox(height: 30),
               Text("Don't have an account?",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18, color: Colors.white)),
+                  style: TextStyle(fontSize: 16, color: Colors.white)),
               TextButton(
                 onPressed: () {
-                  //forgot password screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const RegisterWidget())
+                  );
                 },
                 style: TextButton.styleFrom(
                   foregroundColor: Color.fromRGBO(191, 27, 44, 1),
