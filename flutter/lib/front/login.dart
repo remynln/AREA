@@ -113,6 +113,8 @@ class _LoginWidgetState extends State<LoginWidget> {
   }
 
   void handleLogin() async {
+    if (getCredentialsStatus() == false)
+      return;
     loginAnswer = await ApiService()
         .handleLogin(nameController.text, passwordController.text);
     if (loginAnswer?.message != "") {
@@ -131,8 +133,14 @@ class _LoginWidgetState extends State<LoginWidget> {
     await ApiService().handleGoogleLogin("sergify://google");
   }
 
-  Color getColor(Set<MaterialState> states) {
+  bool getCredentialsStatus() {
     if (nameController.text.isEmpty || passwordController.text.length < 8)
+      return false;
+    return true;
+  }
+
+  Color getColor(Set<MaterialState> states) {
+    if (getCredentialsStatus() == false)
       return (Colors.grey);
     else
       return (Color.fromRGBO(191, 27, 44, 1));
@@ -195,17 +203,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                   ),
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  //forgot password screen
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.red,
-                ),
-                child: const Text(
-                  'Forgot Password',
-                ),
-              ),
+              SizedBox(height: 20),
               Container(
                 height: 45,
                 padding: const EdgeInsets.symmetric(horizontal: 60),
