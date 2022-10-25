@@ -170,6 +170,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                   onChanged: (_) {
                     loginController!.notifyListeners();
                   },
+                  obscureText: true,
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
