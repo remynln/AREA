@@ -77,6 +77,48 @@ function deleteQuotedThings(str: string, start: number = 0): string {
     )
 }
 
+function checkParsedCondition(
+    v1: string,
+    op: string, type: string,
+    v2: string, actionProperties: any,
+    substringIndex: number
+) {
+    console.log(v1, "\n", op,"\n", type,"\n", v2)
+    var values = []
+    for (let v of [v1, v2]) {
+        if (v.startsWith('"')) {
+            if (!type.includes('string'))
+                throw Error(`${v} have invalid type 'string' for operator ${op}, at character ${substringIndex}`, { cause: "handled" })
+            values.push(v.substring(1, v.length - 1))
+        } else if (!Number.isNaN(Number(v))) {
+            if (!type.includes("number")) {
+                throw Error(`Invalid type 'int' of '${v} for operator ${op}', at character ${substringIndex}`, {cause: "handled"})
+            }
+            values.push(Number(v))
+        } else {
+            let splitted = v.split('.')
+            if (splitted[0] != 'Action')
+                throw Error(`Only properties from action is available in property get '${v}', at character ${substringIndex}`, { cause: "handled" })
+            splitted.shift()
+            let property = getPropertyFromArray(splitted, actionProperties)
+            if (!property)
+                throw Error(`property not found in property get '${v}', at character ${substringIndex}`, { cause: "handled" })
+            if (!type.includes(typeof property)) {
+                throw Error(`Invalid property type ${typeof property} of '${property} for operator ${op}', at character ${substringIndex}`, {cause: "handled"})
+            }
+            values.push(property)
+        }
+    }
+    console.log("values:", values)
+    if (typeof values[0] == 'number' && typeof values[1] == 'number') {
+        return CONDITION_OP_NBR[op as keyof typeof CONDITION_OP_NBR](values[0], values[1])
+    }
+    if (typeof values[0] == 'string' && typeof values[1] == 'string') {
+        return CONDITION_OP_STR[op as keyof typeof CONDITION_OP_STR](values[0], values[1])
+    }
+    throw Error(`incompatible types ${typeof values[0]} of ${values[0]} and ${typeof values[1]} of ${values[1]}, at character ${substringIndex}`, {cause: "handled"})
+}
+
 export function checkSimpleCondition(condition: string, substringIndex: number, actionProperties: any) {
     var type: string | undefined = undefined
     var deletedQuote = deleteQuotedThings(condition)
@@ -86,16 +128,16 @@ export function checkSimpleCondition(condition: string, substringIndex: number, 
     for (let i in CONDITION_OP_NBR) {
         operatorPos = deletedQuote.indexOf(i)
         if (operatorPos != -1) {
-            type = 'number'
             operator = i
+            type = CONDITION_OP_STR[operator as keyof typeof CONDITION_OP_STR] ? 'number or string' : 'number'
             break;
         }
     }
-    if (!type || !operator) {
+    if (!operator) {
         for (let i in CONDITION_OP_STR) {
             operatorPos = deletedQuote.indexOf(i)
             if (operatorPos != -1) {
-                type = 'number'
+                type = 'string'
                 operator = i
                 break;
             }
@@ -103,5 +145,11 @@ export function checkSimpleCondition(condition: string, substringIndex: number, 
     }
     if (!type || !operator)
         throw Error(`No conditional operator, at character ${substringIndex}`, { cause: "handled" })
-    console.log(operator)
+    return checkParsedCondition(
+        condition.substring(0, operatorPos).trim(),
+        operator, type,
+        condition.substring(operatorPos + operator.length).trim(),
+        actionProperties,
+        substringIndex
+    )
 }
