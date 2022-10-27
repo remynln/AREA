@@ -82,6 +82,10 @@
         margin-left: -5%;
         width: 110%;
     }
+
+    .Logout {
+        margin-top: 28vh;
+    }
 }
 
 @media only screen and (max-height: 750px) {
@@ -89,6 +93,16 @@
         margin-top: -35%;
         margin-left: -5%;
         width: 110%;
+    }
+
+    .Logout {
+        margin-top: 20vh;
+    }
+}
+
+@media only screen and (max-height: 575px) {
+    .Logout {
+        margin-top: 5vh;
     }
 }
 
