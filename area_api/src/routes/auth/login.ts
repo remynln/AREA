@@ -22,27 +22,27 @@ function isPasswordValid(username: string) {
 
 auth.post('/register', checkBody(["email", "username", "password"]), async (req: Request, res: Response) => {
     if (!isMailValid(req.body.email)) {
-        res.status(400).json({ message: "invalid email"})
+        res.status(400).json({ message: "Invalid email"})
         return;
     }
     if (!isUserNameValid(req.body.username)) {
-        res.status(400).json({ message: "invalid username"})
+        res.status(400).json({ message: "Invalid username"})
         return;
     }
     if (!isPasswordValid(req.body.password)) {
-        res.status(400).json({ message: "invalid password"})
+        res.status(400).json({ message: "Invalid password"})
         return;
     }
     let is_err = false;
     await db.register(req.body.password, req.body.email, req.body.username, (err) => {
         if (err) {
             is_err = true;
-            res.status(400).json({ message: "user already exists"})
+            res.status(400).json({ message: "User already exists"})
         }
     })
     if (is_err)
         return
-    res.status(200).json({
+    res.status(201).json({
         token: jwt.sign({ email: req.body.email }, process.env.JWT_KEY || '')
     })
     await db.setToken("1234", req.body.email, "google" ,(err) => {
@@ -56,13 +56,13 @@ auth.post('/register', checkBody(["email", "username", "password"]), async (req:
 auth.post('/login', checkBody(["email", "password"]), async (req, res) => {
     let is_err = false
     if (!req.body.email || !req.body.password) {
-        res.status(400).json({ message: "missing email or password"})
+        res.status(400).json({ message: "Missing email or password"})
         return
     }
     const password_check = await db.login(req.body.password, req.body.email, (err) => {
         if (err) {
             is_err = true
-            res.status(400).json({ message: "invalid credentials"})
+            res.status(400).json({ message: "Invalid credentials"})
             return
         }
     })
