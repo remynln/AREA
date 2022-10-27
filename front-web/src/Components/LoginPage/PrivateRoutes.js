@@ -1,9 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom'
 
-export const PrivateRoutes = () => {
-  let auth = false
-  if (localStorage.getItem("jwt") !== null)
-      auth = true
+export const PrivateRoutes = (props) => {
+  let auth = props.user
   return (
     auth ? <Outlet/> : <Navigate to="/login"/>
   )

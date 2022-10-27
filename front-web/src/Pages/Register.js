@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from "axios";
 import './Login.css'
 
-export const Register = () => {
+export const Register = (props) => {
     const [username, setUser] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -18,7 +18,7 @@ export const Register = () => {
     };
 
     useEffect(() => {
-        if (localStorage.getItem("jwt") !== null)
+        if (props.user === true)
             navigate('/dashboard')
         if (password.length < 8 && password.length > 0)
             setError("Password must be more than 8 caracters")
@@ -68,7 +68,7 @@ export const Register = () => {
                 <p>REGISTER</p>
             </div>
             <div className="RegisterText">
-                <p>You have an account ?</p>
+                <p>Already have an account ?</p>
                 <p className="RegisterRedirection" onClick={navigateToLogin}>Login here</p>
             </div>
         </div>

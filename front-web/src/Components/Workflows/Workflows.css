@@ -19,6 +19,13 @@
     box-shadow: 0px 0px 0px 2px #f10c23 inset;
 }
 
+.WorkflowPanel {
+    border-radius: 12px;
+    width: 95%;
+    height: 80%;
+    background-color: #444444;
+}
+
 @media only screen and (max-height: 900px) {
     .WorkflowAdd {
         width: 180px;
