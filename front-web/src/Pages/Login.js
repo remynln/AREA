@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from "axios";
 import './Login.css'
 
-export const Login = () => {
+export const Login = (props) => {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setError] = useState("");
@@ -21,7 +21,7 @@ export const Login = () => {
     useEffect(() => {
         let token = params.get("token")
     
-        if (localStorage.getItem("jwt") !== null)
+        if (props.user === true)
             navigate('/dashboard')
         if (token !== null)
             localStorage.setItem('jwt', JSON.stringify(token))
@@ -43,7 +43,6 @@ export const Login = () => {
         .then(res => {
             if (res.status === 200)
                 localStorage.setItem('jwt', JSON.stringify(res.data.token))
-                navigate('/dashboard')
         })
         .catch(error => {
             console.log(error)
