@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken"
 import db from '~/database/db'
 import { Message } from '@google-cloud/pubsub'
 import { debug } from 'console'
+import checkToken from '~/middlewares/checkToken'
+import JwtFormat from './jwtFormat'
 
 var auth: Router = Router()
 
@@ -43,12 +45,8 @@ auth.post('/register', checkBody(["email", "username", "password"]), async (req:
     if (is_err)
         return
     res.status(201).json({
-        token: jwt.sign({ email: req.body.email }, process.env.JWT_KEY || '')
-    })
-    await db.setToken("1234", req.body.email, "google" ,(err) => {
-        if (err) {
-            console.log(err)
-        }
+        token: jwt.sign({ email: req.body.email } as JwtFormat,
+            process.env.JWT_KEY || '')
     })
     return
 })
@@ -72,15 +70,19 @@ auth.post('/login', checkBody(["email", "password"]), async (req, res) => {
         res.status(400).json({message: "Invalid password"})
         return
     }
-    const token = await db.getToken(req.body.email, (err) => {
-        if (err) {
-            console.log(err)
-        }
-    }, "google")
-    console.log(token)
     res.status(200).json({
-        token: jwt.sign({ email: req.body.email }, process.env.JWT_KEY || '')
+        token: jwt.sign({ email: req.body.email } as JwtFormat,
+            process.env.JWT_KEY || '')
     })
+})
+
+auth.delete("/unregister", checkToken, (req, res) => {
+    let token = jwt.decode(req.headers.authorization?.split(' ')[1] || '') as JwtFormat
+    let mail = token.email;
+    res.status(200).send({
+        email: mail
+    })
+    // TODO integrate database comm to delete account
 })
 
 auth.use("/service", google)
