@@ -1,18 +1,7 @@
 import { AreaRet, Reaction } from "~/core/types";
 import { createMimeMessage, MailLocation } from "mimetext";
 import axios, { AxiosError } from "axios";
-
-
-async function getMailFromToken(token: string) {
-    console.log(token)
-    var res = await axios.get("https://gmail.googleapis.com/gmail/v1/users/me/profile", {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        }
-    })
-    return res.data.emailAddress
-}
+import { getMailFromToken } from "../utils";
 
 const sendMail: Reaction = {
     serviceName: 'google',
@@ -23,6 +12,7 @@ const sendMail: Reaction = {
         'body': 'string'
     },
     async launch(params, token) {
+        console.log("sending mail...")
         const msg = createMimeMessage()
         let mail: string
         try {
@@ -54,6 +44,7 @@ const sendMail: Reaction = {
             if (err.response.status == 401) {
                 return AreaRet.AccessTokenExpired
             }
+            console.log(err.response)
             throw err
         }
         return AreaRet.Ok

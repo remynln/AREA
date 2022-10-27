@@ -27,10 +27,12 @@ export interface Action {
     start: (
         trigger: (properties: any) => void,
         params: any,
-        token: string
+        token: string,
+        accountMail: string,
     ) => Promise<AreaRet>,
     stop: () => void
     destroy: () => void
+    [x: string | number | symbol]: unknown;
 }
 
 export interface Reaction {
@@ -61,6 +63,7 @@ interface AreaWrapper<T extends Action | Reaction> {
 export class Area {
     private _action: AreaWrapper<Action>
     private _reaction: AreaWrapper<Reaction>
+    private _accountMail: string | undefined
 
     constructor(
         action: Action,
@@ -80,15 +83,16 @@ export class Area {
             token: undefined,
             refreshToken: undefined,
         }
+        this._accountMail = undefined
     }
     public async setTokens(
         accountMail: string
     ) {
+        this._accountMail = accountMail
         for (let i of [this._action, this._reaction]) {
             if (!i.ref.serviceName)
                 continue
             [i.token, i.refreshToken] = await db.getToken(accountMail, i.ref.serviceName)
-            console.log("bizarre", i.token)
         }
     }
 
@@ -97,7 +101,6 @@ export class Area {
         if (!service || !aorea.refreshToken)
             return;
         aorea.token = await service.refreshToken(aorea.refreshToken)
-        this.start()
     }
 
     public formatParams(actionProperties: any) {
@@ -114,13 +117,21 @@ export class Area {
             this._reaction.ref.launch(formatted,
                 this._reaction.token || '').then((res) => {
                     if (res == AreaRet.AccessTokenExpired) {
-                        this.refreshToken(this._reaction)
+                        console.log("reaction token expired")
+                        this.refreshToken(this._reaction).then((res) => {
+                            this._reaction.ref.launch(formatted,
+                                this._reaction.token || '')
+                        })
                     }
                 })
-        }, this._action.params, this._action.token || '')
+        }, this._action.params, this._action.token || '',
+            this._accountMail || '')
         .then((res) => {
             if (res == AreaRet.AccessTokenExpired) {
-                this.refreshToken(this._action)
+                console.log("reaction token expired")
+                this.refreshToken(this._action).then((res) => {
+                    this.start()
+                })
             }
         })
     }
