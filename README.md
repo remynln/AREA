@@ -51,12 +51,12 @@ Every others endpoints need the JWT in the header (user must be authentified):
   
 ### Service OAuth2 Authentication
 
-Oauth2 system is useful to create or enrich an account with services like Google, twitter, microsoft etc...
+Oauth2 system is useful to enrich an account with services like Google, twitter, microsoft etc...
 Accounts are linked by their mails, if you connect with the google service, it will create a classic account with the mail associated with google, but will save the api token to unlock AREAS action and reactions linked to this service.
 
 #### Routes
 
-`/auth/[service_name]`: *GET Method*
+`/service/[service_name]`: *GET Method*
 - **Request Body**:
   - `callback`: The url to redirect after authentication
 - **Response**:
@@ -95,7 +95,7 @@ The AREA is:
     - with `parameters`: 
       `username`: The fortnite username
   - `condition`: `[Action:rank]` == 1
-  - `Reaction`: Tweeter service -> tweet something
+  - `reaction`: Tweeter service -> tweet something
     - with `parameters`:
       - `title`: "Another top 1"
       - `content`: "I made a top 1 on fortnite, add me: `[Action:FortniteUsername]`"
@@ -105,10 +105,11 @@ The AREA is:
 `/area/create`: *POST Method*
 - **Request Body**:
   - `action`:
-    - `name`: the id of the action
+    - `name`: `[service_name]/[action_name]` 
     - `params`: the params of the action (in JSON), depending on the actions
+- `condition`: string with `condition` format (explained later)
 - `reaction`:
-    - `name`: the id of the action
+    - `name`: `[service_name]/[action_name]`
     - `params`: the params of the action (in JSON), depending on the actions
 - **Response**:
   - 201 -> OK
@@ -116,23 +117,48 @@ The AREA is:
 
 In order to do create an area correctly without doing a bad request: you can request some informations about available services actions reaction and their params
 
-`/area/[service_name]/actions`: *GET Method*
+`/services/` *GET Method*
 - **Response**:
   - 200 ->
-    - [list of available actions { `id`, `name`, `description` }]
+    - `connected`: [list of services that the user is connected to]
+    - `not_connected`: [list of available services that the user is not connected to]
 
-`/area/action/[action_id]`: *GET Method*
+`/service/[service_name]/actions`: *GET Method*
+- **Response**:
+  - 200 ->
+    - [list of available actions { `name`, `description` }]
+  - 404 -> Service with name [service_name] not found
+
+`/service/[service_name]/action/[action_name]`: *GET Method*
 - **Response**:
   - 200 ->
     - `parameters`: [list of parameters]
     - `properties`: [list of available properties]
+  - 404 -> Service with name [service_name] not found
+  - 404 -> Action [action_name] not found
 
-`/area/[service_name]/reactions/`: *GET Method*
+`/service/[service_name]/reactions`: *GET Method*
 - **Response**:
   - 200 ->
-    - [list of available reactions { `id`, `name`, `description` } ]
+    - [list of available reactions { `name`, `description` } ]
+  - 404 -> Service with name \[service_name] not found
 
-`/area/reaction/[reaction_id]`: *GET Method*
+`/service/[service_name]/reaction/[reaction_name]`: *GET Method*
 - **Response**:
   - 200 ->
     - `properties`: [list of available properties]
+  - 404 -> Service with name `service_name` not found
+  - 404 -> Reaction `reaction_name` not found
+
+#### Properties formatting
+
+Action properties can be used in reaction parameters by calling `[Action.property]`.
+For example, when using action gmail/newMail, you can type `[Action.from.email]` to get action mail.
+If you want to use`[` character in your body, you have to write `\[`.
+
+#### Condition format
+
+condition is formatted like every basic programming language.
+
+You can compare properties of type number using comparisons operators: `>`, `<`, `<=`, `>=`, `==`
+You can compare properties of type string using operators: `==` (case insensitive comparison), `===` (case sensitive comparison), `in` (leftstring is a substring of rightstring exemple: `"can" in "you can do it"` is true)
