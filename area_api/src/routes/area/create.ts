@@ -1,30 +1,54 @@
 import { Router } from "express";
 import checkBody from "~/middlewares/checkBody";
 import checkToken from "~/middlewares/checkToken";
-
+import AreaFunc from "~/core/global";
+import { Action, Area, Reaction } from "~/core/types";
+import JwtFormat from "~/routes/auth/jwtFormat"
+import jwt from "jsonwebtoken"
 
 var area: Router = Router()
 
 function checkActionReaction(body: any) {
     if (!body.action.name || ! (typeof body.action.name === 'string'))
-        return {
-            message: `missing or invalid property 'name' in action request`
-        }
+        throw Error(`missing or invalid property 'name' in action request`)
     if (!body.reaction.name || ! (typeof body.reaction.name === 'string'))
-        return {
-            message: `missing or invalid property 'name' in reaction request`
-        }
-    return null
+        throw Error(`missing or invalid property 'name' in reaction request`)
+
+    let action = AreaFunc.getAction(body.action.name)
+    let reaction = AreaFunc.getReaction(body.reaction.name)
+    AreaFunc.checkParams(action, body.action.params)
+    AreaFunc.checkParams(reaction, body.reaction.params, action.propertiesType)
+    return {action, reaction}
 }
 
-area.use("/create",
-    checkToken, checkBody(["action", "reaction"]),
+area.use("/create", checkBody(["action", "reaction"]),
 (req, res) => {
-    let error = checkActionReaction(req.body)
-    if (error != null) {
-        res.status(400).send(error)
+    var action: Action
+    var reaction: Reaction
+    try {
+        let ret = checkActionReaction(req.body)
+        action = ret.action;
+        reaction = ret.reaction;
+    } catch (err) {
+        console.log("err", err)
+        res.status(400).json({
+            message: (err as Error).message
+        })
         return
     }
+    let area = new Area(action, req.body.action.params,
+        reaction, req.body.reaction.params)
+    let decoded = jwt.decode(req.headers.authorization?.split(' ')[1] || '')
+    area.setTokens((decoded as JwtFormat).email).then(() => {
+        area.start()
+        res.status(201).json({
+            message: 'OK'
+        })    
+    }).catch((err) => {
+        res.status(403).json({
+            message: (err as Error).message
+        }) 
+    })
 })
 
 export default area;
