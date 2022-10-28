@@ -13,7 +13,7 @@ export const DashboardContent = () => {
                 <p className="DashboardTitle">Hello User !</p>
                 <p className="DashboardSubTitle">Welcome back on Sergify</p>
             </div>
-            <WorkflowPanel inCreation={inCreation} />
+            <WorkflowPanel inCreation={inCreation} setInCreation={setInCreation}/>
             <Dashboard_Workflows inCreation={inCreation} setInCreation={setInCreation}/>
             <Dashboard_Services inCreation={inCreation}/>
         </div>

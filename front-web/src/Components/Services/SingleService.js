@@ -1,23 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Services.css"
 
 function SingleService(props) {
-    const [ServiceConnection, setServiceConnection] = useState("disconnected");
-
-    let ConnectionStyle = {
+    let Disconnected = {
         border: "3px solid rgb(0, 163, 0)",
         pointerEvents: "auto"
     };
 
-    if (ServiceConnection === "connected") {
-        ConnectionStyle = {
-            border: "3px solid #BF1B2C",
-            pointerEvents: "none"
-        };
-    }
+    let Connected = {
+        border: "3px solid #BF1B2C",
+        pointerEvents: "none"
+    };
 
     return (
-        <a className="SingleService" href={props.link} style={ConnectionStyle}>
+        <a className="SingleService" href={props.link} style={JSON.parse(localStorage.getItem(props.name))==="connected"?Connected:Disconnected}>
             <div class="ServiceBg">
                 <img src={require("../../img/" + props.logo + ".png")} class="ServiceLogo" alt="Service_Logo"/>
             </div>
