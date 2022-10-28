@@ -5,6 +5,7 @@ import AreaFunc from "~/core/global";
 import { Action, Area, Reaction } from "~/core/types";
 import JwtFormat from "~/routes/auth/jwtFormat"
 import jwt from "jsonwebtoken"
+import { checkConditionSyntax } from "~/core/formatting";
 
 var area: Router = Router()
 
@@ -25,10 +26,16 @@ area.use("/create", checkBody(["action", "reaction"]),
 (req, res) => {
     var action: Action
     var reaction: Reaction
+    var condition: string | undefined = ''
     try {
         let ret = checkActionReaction(req.body)
         action = ret.action;
-        reaction = ret.reaction;
+        reaction = ret.reaction
+        condition = req.body.condition
+        if (condition) {
+            console.log(action.propertiesType)
+            checkConditionSyntax(condition, action.propertiesType)
+        }
     } catch (err) {
         console.log("err", err)
         res.status(400).json({
@@ -36,7 +43,7 @@ area.use("/create", checkBody(["action", "reaction"]),
         })
         return
     }
-    let area = new Area(action, req.body.action.params,
+    let area = new Area(action, req.body.action.params, condition,
         reaction, req.body.reaction.params)
     let decoded = jwt.decode(req.headers.authorization?.split(' ')[1] || '')
     area.setTokens((decoded as JwtFormat).email).then(() => {

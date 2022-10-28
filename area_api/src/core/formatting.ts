@@ -118,7 +118,6 @@ function checkParsedCondition(
 }
 
 export function checkSimpleCondition(condition: string, substringIndex: number, actionProperties: any) {
-    console.log(condition)
     var type: string | undefined = undefined
     condition = condition.trim()
     var deletedQuote = deleteQuotedThings(condition)
@@ -215,17 +214,24 @@ export function checkCondition(conditionStr: string, actionProperties: any): boo
     return checkSimpleCondition(condition, 0, actionProperties)
 }
 
-export function checkConditionSyntax(
-    conditionStr: string,
-    actionPropertiesType: any
-) {
+function concretisePropertyType(actionPropertiesType: any): any
+{
     var actionProperties: any = {}
+
     for (let i in actionPropertiesType) {
         if (actionPropertiesType[i] == 'string')
             actionProperties[i] = "abc" as string
         else if (actionPropertiesType[i] == 'number')
             actionProperties[i] = 1 as number
+        else
+            actionProperties[i] = concretisePropertyType(actionPropertiesType[i])
     }
-    console.log(actionProperties)
-    checkCondition(conditionStr, actionProperties)
+    return actionProperties
+}
+
+export function checkConditionSyntax(
+    conditionStr: string,
+    actionPropertiesType: any
+) {
+    checkCondition(conditionStr, concretisePropertyType(actionPropertiesType))
 }
