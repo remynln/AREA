@@ -17,15 +17,18 @@ function App() {
       if (localStorage.getItem("jwt") !== null && user === false)
         setUser(true)
         loadUser()
-      if (localStorage.getItem("jwt") === null && user === true)
-        setUser(false)
   });
 
   const loadUser = () => {
-    axios.get("http://localhost:8080/services/")
+    axios.get("http://localhost:8080/services/", {headers: {Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt"))}})
     .then(res => {
         if (res.status === 200)
-          console.log(res.message)
+          res.data.connected.map(service => {
+            localStorage.setItem(service, JSON.stringify("connected"))
+          })
+          res.data.not_connected.map(service => {
+            localStorage.setItem(service, JSON.stringify("disconnected"))
+          })
     })
     .catch(error => {
         console.log(error)
@@ -45,7 +48,7 @@ function App() {
             <Route path="/" element={<Navigate to="/dashboard" />}/>
             <Route path="/home" element={<Navigate to="/dashboard" />}/>
           </Route>
-          <Route path="/login" element={<Login user={user}/>} />
+          <Route path="/login" element={<Login user={user} setUser={setUser}/>} />
           <Route path="/register" element={<Register user={user}/>}/>
         </Routes>
       </Router>

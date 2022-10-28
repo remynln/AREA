@@ -4,7 +4,7 @@ import './Workflows.css'
 export const WorkflowCreate = (props) => {
     return (
         <div className="WorkflowAdd" onClick={() => props.setInCreation(true)}>
-            <div id="icon">
+            <div className="WorkflowCreate">
                 <AddIcon />
             </div>
         </div>

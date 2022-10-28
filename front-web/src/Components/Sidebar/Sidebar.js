@@ -11,7 +11,7 @@ function Sidebar() {
 
     const DisconnectUser = () => {
         localStorage.clear()
-        navigate('/login')
+        navigate("/login")
     }
 
     return (

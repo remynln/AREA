@@ -18,7 +18,7 @@ export const Register = (props) => {
     };
 
     useEffect(() => {
-        if (props.user === true)
+        if (props.user === true && localStorage.getItem("jwt") !== null)
             navigate('/dashboard')
         if (password.length < 8 && password.length > 0)
             setError("Password must be more than 8 caracters")
@@ -41,10 +41,9 @@ export const Register = (props) => {
             password: password
         })
         .then(res => {
-            console.log(res)
             if (res.status === 201)
                 localStorage.setItem('jwt', JSON.stringify(res.data.token))
-                navigate('/dashboard')
+                navigate("/dashboard")
         })
         .catch(error => {
             setError(error.response.data.message);

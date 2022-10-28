@@ -8,7 +8,7 @@ function Services() {
         <div className="Services">
             {ServicesContent.map((val, key) => {
                 return (  
-                   <SingleService link={val.link} logo={val.logo} />   
+                   <SingleService link={val.link} logo={val.logo} name={val.name}/>   
                 )
             })}
         </div>
