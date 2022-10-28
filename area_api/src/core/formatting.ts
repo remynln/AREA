@@ -83,7 +83,6 @@ function checkParsedCondition(
     v2: string, actionProperties: any,
     substringIndex: number
 ) {
-    console.log(v1, "\n", op,"\n", type,"\n", v2)
     var values = []
     for (let v of [v1, v2]) {
         if (v.startsWith('"')) {
@@ -109,7 +108,6 @@ function checkParsedCondition(
             values.push(property)
         }
     }
-    console.log("values:", values)
     if (typeof values[0] == 'number' && typeof values[1] == 'number') {
         return CONDITION_OP_NBR[op as keyof typeof CONDITION_OP_NBR](values[0], values[1])
     }
@@ -120,11 +118,15 @@ function checkParsedCondition(
 }
 
 export function checkSimpleCondition(condition: string, substringIndex: number, actionProperties: any) {
+    console.log(condition)
     var type: string | undefined = undefined
+    condition = condition.trim()
     var deletedQuote = deleteQuotedThings(condition)
     var operatorPos: number = -1
     var operator: string | undefined = undefined
-
+    if (condition == "true" || condition == "false") {
+        return condition == "true" ? true : false
+    }
     for (let i in CONDITION_OP_NBR) {
         operatorPos = deletedQuote.indexOf(i)
         if (operatorPos != -1) {
@@ -152,4 +154,78 @@ export function checkSimpleCondition(condition: string, substringIndex: number, 
         actionProperties,
         substringIndex
     )
+}
+
+function getBetween(withoutQuoteCondition: string, opPos: number) {
+    var res = [0, withoutQuoteCondition.length]
+    for (let i = opPos - 2; i > 0; i--) {
+        let curr = withoutQuoteCondition[i]
+        if (curr.startsWith("&&") || curr.startsWith("||")) {
+            res[0] = i + 2
+            break;
+        }
+    }
+    let endAnd = withoutQuoteCondition.indexOf("&&", opPos + 2)
+    let endOr = withoutQuoteCondition.indexOf("||", opPos + 2)
+    if (endAnd < endOr && endAnd != -1) {
+        res[1] = endAnd
+    } else if (endOr != -1) {
+        res[1] = endOr
+    }
+    return res;
+}
+
+export function checkCondition(conditionStr: string, actionProperties: any): boolean {
+    var condition = conditionStr.trim()
+    var withoutQuotes = deleteQuotedThings(conditionStr)
+    var openParenthesis = withoutQuotes.indexOf('(')
+    while (openParenthesis != -1) {
+        let closeParenthesis = withoutQuotes.indexOf(')')
+        if (closeParenthesis == -1)
+            throw Error(`Expected ')' after '(', at character ${openParenthesis}`, { cause: "handled" })
+        let ret = checkCondition(condition.substring(openParenthesis + 1, closeParenthesis), actionProperties)
+        condition = condition.substring(0, openParenthesis) +
+            (ret ? " true " : " false ") +
+            condition.substring(closeParenthesis + 1)
+        withoutQuotes = deleteQuotedThings(condition)
+        openParenthesis = withoutQuotes.indexOf('(', openParenthesis)
+    }
+    var and = withoutQuotes.indexOf("&&")
+    while (and != -1) {
+        let between = getBetween(withoutQuotes, and)
+        let ret = checkSimpleCondition(condition.substring(between[0], and), between[0], actionProperties)
+            && checkSimpleCondition(condition.substring(and + 2, between[1]), and + 2, actionProperties)
+        condition = condition.substring(0, between[0]) +
+            (ret ? " true " : " false ") +
+            condition.substring(between[1])
+        withoutQuotes = deleteQuotedThings(condition)
+        and = withoutQuotes.indexOf('&&', and)
+    }
+    var or = withoutQuotes.indexOf("||")
+    while (or != -1) {
+        let between = getBetween(withoutQuotes, or)
+        let ret = checkSimpleCondition(condition.substring(between[0], or), between[0], actionProperties)
+            || checkSimpleCondition(condition.substring(or + 2, between[1]), or + 2, actionProperties)
+        condition = condition.substring(0, between[0]) +
+            (ret ? " true " : " false ") +
+            condition.substring(between[1])
+        withoutQuotes = deleteQuotedThings(condition)
+        or = withoutQuotes.indexOf('||', or)
+    }
+    return checkSimpleCondition(condition, 0, actionProperties)
+}
+
+export function checkConditionSyntax(
+    conditionStr: string,
+    actionPropertiesType: any
+) {
+    var actionProperties: any = {}
+    for (let i in actionPropertiesType) {
+        if (actionPropertiesType[i] == 'string')
+            actionProperties[i] = "abc" as string
+        else if (actionPropertiesType[i] == 'number')
+            actionProperties[i] = 1 as number
+    }
+    console.log(actionProperties)
+    checkCondition(conditionStr, actionProperties)
 }

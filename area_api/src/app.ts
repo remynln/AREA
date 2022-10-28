@@ -10,7 +10,7 @@ import mongoose from 'mongoose';
 import serviceConnect from './routes/service/connect'
 import serviceGet from './routes/service/get'
 import services from './routes/service/services'
-import { checkSimpleCondition } from './core/formatting';
+import { checkCondition, checkConditionSyntax, checkSimpleCondition } from './core/formatting';
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
@@ -56,7 +56,7 @@ app.get('/', (req, res) => res.send('hello world'))
  * On demande à Express d'ecouter les requêtes sur le port défini dans la config
  */
 app.listen(config.API_PORT, () => {
-    console.log(checkSimpleCondition(' "43 dogs" in Action.name', 0, { "name": "there is 43 cats" }))
+    console.log(checkConditionSyntax('43 < Action.name && (3 < 4 || 4 < 3)', { "name": "number" }))
     console.log(`Launched on port ${config.API_PORT}`)
     google.start()
 })
