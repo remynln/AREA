@@ -1,6 +1,6 @@
 import passport from "passport"
 import db from "~/database/db";
-import { formatContent } from "./formatting";
+import { checkCondition, formatContent } from "./formatting";
 import Global from "./global"
 
 type Param = {
@@ -62,12 +62,14 @@ interface AreaWrapper<T extends Action | Reaction> {
 
 export class Area {
     private _action: AreaWrapper<Action>
+    private _condition: string | undefined
     private _reaction: AreaWrapper<Reaction>
     private _accountMail: string | undefined
 
     constructor(
         action: Action,
         actionParams: any,
+        condition: string | undefined,
         reaction: Reaction,
         reactionParams: any,
     ) {
@@ -83,6 +85,7 @@ export class Area {
             token: undefined,
             refreshToken: undefined,
         }
+        this._condition = condition
         this._accountMail = undefined
     }
     public async setTokens(
@@ -113,6 +116,8 @@ export class Area {
 
     private startPrivate() {
         this._action.ref.start((properties) => {
+            if (this._condition && !checkCondition(this._condition, properties))
+                return;
             var formatted = this.formatParams(properties)
             this._reaction.ref.launch(formatted,
                 this._reaction.token || '').then((res) => {
