@@ -21,8 +21,10 @@ export const Login = (props) => {
     useEffect(() => {
         let token = params.get("token")
     
-        if (props.user === true)
+        if (props.user === true && localStorage.getItem("jwt") !== null)
             navigate('/dashboard')
+        else
+            props.setUser(false)
         if (token !== null)
             localStorage.setItem('jwt', JSON.stringify(token))
         if (user.length === 0 || password.length < 8)
