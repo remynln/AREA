@@ -37,7 +37,6 @@ router.get('/:serviceName', (req, res) => {
     authParams.callbackURL = "/service/google/callback"
     passport.authenticate(req.params.serviceName, authParams)(req, res)
 }, (req, res) => {
-    console.log("nsm")
 })
 
 router.get('/:serviceName/callback', (req, res, next) => {
@@ -63,12 +62,7 @@ router.get('/:serviceName/callback', (req, res, next) => {
         });
         return;
     }
-    res.redirect(url.format({
-        pathname: req.query.state as string,
-        query: {
-            token: jwt.sign(res.locals.user, process.env.JWT_KEY || "")
-        }
-    }))
+    res.redirect(req.query.state as string)
 })
 
 export default router

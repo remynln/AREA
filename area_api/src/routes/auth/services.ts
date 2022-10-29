@@ -5,6 +5,8 @@ import url from "url";
 import jwt from "jsonwebtoken";
 import Area from "../../core/global"
 import global from "../../core/global";
+import db from "~/database/db";
+import JwtFormat from "./jwtFormat";
 
 var router: Router = express.Router()
 
@@ -36,11 +38,8 @@ router.get('/:serviceName', (req, res) => {
     let authParams = service.authParams;
     authParams.failureRedirect = req.query.callback as string
     authParams.callbackURL = "/auth/service/google/callback"
-    const state = req.query.callback as string
-    passport.authenticate(req.params.serviceName, {
-        state,
-        callbackURL: "/auth/service/google/callback"
-    } as any)(req, res)
+    authParams.state = req.query.callback as string
+    passport.authenticate(req.params.serviceName, authParams)(req, res)
 }, (req, res) => {
     console.log("nsm")
 })
@@ -62,18 +61,31 @@ router.get('/:serviceName/callback', (req, res, next) => {
         next()
     })(req, res, next)
 }, (req, res) => {
-    if (req.errored || !res.locals.user) {
+    if (req.errored || !res.locals.user.data || !res.locals.user.username
+        || !res.locals.user.accessToken || !res.locals.user.refreshToken) {
+        console.log(res.locals.user.accessToken, res.locals.user.refreshToken)
         res.status(500).json({
             message: "Internal server error"
         });
         return;
     }
-    res.redirect(url.format({
-        pathname: req.query.state as string,
-        query: {
-            token: jwt.sign(res.locals.user, process.env.JWT_KEY || "")
-        }
-    }))
+    db.loginService(
+        req.params.serviceName,
+        res.locals.user.data,
+        res.locals.user.username).then((mail) => {
+        db.setToken(res.locals.user.accessToken, res.locals.user.refreshToken, mail,req.params.serviceName).then(() => {
+            let token: JwtFormat = {
+                email: mail
+            }
+            res.redirect(url.format({
+                pathname: req.query.state as string,
+                query: {
+                    token: jwt.sign(token, process.env.JWT_KEY || "")
+                }
+            }))
+        })
+    }
+    ) 
 })
 
 export default router

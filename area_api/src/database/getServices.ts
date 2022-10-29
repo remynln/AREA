@@ -5,6 +5,7 @@ import Token from '../models/token'
 // get the connected service in function of user email
 export default async function getServices(email: string) {
     let user = await User.findOne({ mail: email });
+    console.log("ok", email)
     if (!user) {
         throw new Error("Precise an email", { cause: "handled" })
     }

@@ -49,25 +49,27 @@ const google: Service = {
             'https://mail.google.com/']
         }, function(req: any, accessToken: any, refresh_token: any, profile: any, callback: any) {
             console.log((req as Request).baseUrl)
+            console.log(profile)
             let accountToken = req.headers.authorization;
+            let cbObj = {
+                data: profile._json.email,
+                username: profile._json.name,
+                refreshToken: refresh_token,
+                accessToken: accessToken
+            }
             if (!accountToken) {
-                callback(null, {
-                    email: profile.emails[0].value
-                })
+                callback(null, cbObj)
                 return
             }
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
-            db.setToken(accessToken, refresh_token, mail, 'google').then(() => {
-                callback(null, {
-                    email: profile.emails[0].value
+            if (!(req as Request).baseUrl.includes("/auth/")) {
+                db.setToken(accessToken, refresh_token, mail, 'google').then(() => {
+                    callback(null, cbObj)
+                }).catch((err) => {
+                    callback((err as Error).message, null)
                 })
-            }).catch((err) => {
-                callback((err as Error).message, null)
-            })
-            if ((req as Request).baseUrl.includes("/auth/")) {
-                console.log("this is auth route");
             } else {
-                console.log("this is not auth route")
+                callback(cbObj)
             }
       })
 }
