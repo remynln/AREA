@@ -41,6 +41,7 @@ dependencies:
   url_launcher: ^6.1.6
   uni_links: ^0.5.1
   fluttertoast: ^8.1.1
+  flutter_svg: ^1.1.6
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +69,29 @@ flutter:
   assets:
      - assets/sergify.png
      - assets/google.png
+     - assets/dashboard/add.svg
+     - assets/dashboard/bottombar/bottombar.svg
+     - assets/dashboard/bottombar/dashboard_inactive.svg
+     - assets/dashboard/bottombar/dashboard_active.svg
+     - assets/dashboard/bottombar/notification_inactive.svg
+     - assets/dashboard/bottombar/notification_active.svg
+     - assets/dashboard/bottombar/settings_inactive.svg
+     - assets/dashboard/bottombar/settings_active.svg
+     - assets/dashboard/bottombar/workflows_inactive.svg
+     - assets/dashboard/bottombar/workflows_active.svg
+     - assets/dashboard/service/facebook.svg
+     - assets/dashboard/service/github.svg
+     - assets/dashboard/service/google.svg
+     - assets/dashboard/service/instagram.svg
+     - assets/dashboard/service/outlook.svg
+     - assets/dashboard/service/twitter.svg
+
+  fonts:
+    - family: RobotoMono
+      fonts:
+        - asset: assets/fonts/Roboto/RobotoMono.ttf
+        - asset: assets/fonts/Roboto/RobotoMono-Bold.ttf
+          weight: 700
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

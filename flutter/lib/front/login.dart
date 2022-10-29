@@ -9,6 +9,7 @@ import 'package:area/api/answer/google_answer.dart';
 import 'package:area/api/service.dart';
 
 import 'package:area/front/register.dart';
+import 'package:area/front/dashboard.dart';
 
 import 'package:uni_links/uni_links.dart';
 
@@ -113,8 +114,7 @@ class _LoginWidgetState extends State<LoginWidget> {
   }
 
   void handleLogin() async {
-    if (getCredentialsStatus() == false)
-      return;
+    if (getCredentialsStatus() == false) return;
     loginAnswer = await ApiService()
         .handleLogin(nameController.text, passwordController.text);
     if (loginAnswer?.message != null) {
@@ -126,9 +126,13 @@ class _LoginWidgetState extends State<LoginWidget> {
           backgroundColor: Color.fromRGBO(191, 27, 44, 1),
           textColor: Colors.white,
           fontSize: 14);
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  DashboardWidget(token: loginAnswer!.token.toString())));
     }
-    else
-      print(loginAnswer?.token);
   }
 
   void handleGoogleLogin() async {
@@ -153,113 +157,111 @@ class _LoginWidgetState extends State<LoginWidget> {
     return Scaffold(
         body: Center(
             child: ListView(children: <Widget>[
-              Image.asset(
-                'assets/sergify.png',
-                height: 200,
-                width: 500,
-                fit: BoxFit.fitWidth,
-                scale: 1,
-              ),
-              SizedBox(height: 30),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: TextField(
-                  controller: nameController,
-                  onChanged: (_) {
-                    loginController!.notifyListeners();
-                  },
-                  style: TextStyle(color: Colors.white),
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
-                    filled: true,
-                    hintStyle: TextStyle(
-                        color: Color.fromRGBO(148, 163, 184, 1),
-                        fontStyle: FontStyle.italic),
-                    hintText: "Username or Email",
-                    fillColor: Color.fromRGBO(68, 68, 68, 1),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: TextField(
-                  controller: passwordController,
-                  onChanged: (_) {
-                    loginController!.notifyListeners();
-                  },
-                  obscureText: true,
-                  style: TextStyle(color: Colors.white),
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
-                    filled: true,
-                    hintStyle: TextStyle(
-                        color: Color.fromRGBO(148, 163, 184, 1),
-                        fontStyle: FontStyle.italic),
-                    hintText: "Password",
-                    fillColor: Color.fromRGBO(68, 68, 68, 1),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                height: 45,
-                padding: const EdgeInsets.symmetric(horizontal: 60),
-                child: ElevatedButton(
-                    statesController: loginController,
-                    child: const Text('LOGIN'),
-                    onPressed: () {
-                      handleLogin();
-                      print(nameController.text);
-                      print(passwordController.text);
-                    },
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith(getColor),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(9.0))))),
-              ),
-              SizedBox(height: 30),
-              Container(
-                  alignment: Alignment.topCenter,
-                  child: const Text('Or continue with',
-                      style: TextStyle(fontSize: 15, color: Colors.grey))),
-              SizedBox(height: 10),
-              Container(
-                height: 45,
-                padding: EdgeInsets.symmetric(horizontal: 80),
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    handleGoogleLogin();
-                  },
-                  icon: Image.asset("assets/google.png", width: 18),
-                  style: OutlinedButton.styleFrom(
-                      side:
-                      BorderSide(width: 1.0, color: Color.fromRGBO(191, 27, 44, 1)),
-                      backgroundColor: Colors.transparent),
-                  label: Text('Google'), // <-- Text
-                ),
-              ),
-              SizedBox(height: 30),
-              Text("Don't have an account?",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, color: Colors.white)),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const RegisterWidget())
-                  );
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor: Color.fromRGBO(191, 27, 44, 1),
-                ),
-                child: const Text('Register here', style: TextStyle(fontSize: 16)),
-              ),
-            ])));
+      Image.asset(
+        'assets/sergify.png',
+        height: 200,
+        width: 500,
+        fit: BoxFit.fitWidth,
+        scale: 1,
+      ),
+      SizedBox(height: 30),
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 25),
+        child: TextField(
+          controller: nameController,
+          onChanged: (_) {
+            loginController!.notifyListeners();
+          },
+          style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.center,
+          decoration: InputDecoration(
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
+            filled: true,
+            hintStyle: TextStyle(
+                color: Color.fromRGBO(148, 163, 184, 1),
+                fontStyle: FontStyle.italic),
+            hintText: "Username or Email",
+            fillColor: Color.fromRGBO(68, 68, 68, 1),
+          ),
+        ),
+      ),
+      SizedBox(height: 20),
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 25),
+        child: TextField(
+          controller: passwordController,
+          onChanged: (_) {
+            loginController!.notifyListeners();
+          },
+          obscureText: true,
+          style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.center,
+          decoration: InputDecoration(
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
+            filled: true,
+            hintStyle: TextStyle(
+                color: Color.fromRGBO(148, 163, 184, 1),
+                fontStyle: FontStyle.italic),
+            hintText: "Password",
+            fillColor: Color.fromRGBO(68, 68, 68, 1),
+          ),
+        ),
+      ),
+      SizedBox(height: 20),
+      Container(
+        height: 45,
+        padding: const EdgeInsets.symmetric(horizontal: 60),
+        child: ElevatedButton(
+            statesController: loginController,
+            child: const Text('LOGIN'),
+            onPressed: () {
+              handleLogin();
+              print(nameController.text);
+              print(passwordController.text);
+            },
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith(getColor),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9.0))))),
+      ),
+      SizedBox(height: 30),
+      Container(
+          alignment: Alignment.topCenter,
+          child: const Text('Or continue with',
+              style: TextStyle(fontSize: 15, color: Colors.grey))),
+      SizedBox(height: 10),
+      Container(
+        height: 45,
+        padding: EdgeInsets.symmetric(horizontal: 80),
+        child: ElevatedButton.icon(
+          onPressed: () {
+            handleGoogleLogin();
+          },
+          icon: Image.asset("assets/google.png", width: 18),
+          style: OutlinedButton.styleFrom(
+              side:
+                  BorderSide(width: 1.0, color: Color.fromRGBO(191, 27, 44, 1)),
+              backgroundColor: Colors.transparent),
+          label: Text('Google'), // <-- Text
+        ),
+      ),
+      SizedBox(height: 30),
+      Text("Don't have an account?",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 16, color: Colors.white)),
+      TextButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const RegisterWidget()));
+        },
+        style: TextButton.styleFrom(
+          foregroundColor: Color.fromRGBO(191, 27, 44, 1),
+        ),
+        child: const Text('Register here', style: TextStyle(fontSize: 16)),
+      ),
+    ])));
   }
 }
