@@ -29,8 +29,6 @@ const google: Service = {
         })
         return res.data.access_token;
     },
-    start: () => {
-    },
     actions: new Map([
         ["newMail", newMail]
     ]),
@@ -65,8 +63,6 @@ const google: Service = {
             if (!(req as Request).baseUrl.includes("/auth/")) {
                 db.setToken(accessToken, refresh_token, mail, 'google').then(() => {
                     callback(null, cbObj)
-                }).catch((err) => {
-                    callback((err as Error).message, null)
                 })
             } else {
                 callback(cbObj)

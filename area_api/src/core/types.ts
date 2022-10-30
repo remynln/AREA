@@ -43,7 +43,6 @@ export interface Reaction {
 }
 
 export interface Service {
-    start: Function
     strategy: passport.Strategy
     actions: Map<string, Action>
     reactions: Map<string, Reaction>
@@ -114,26 +113,30 @@ export class Area {
         return formatted
     }
 
+    launchReaction(formatted: string) {
+        this._reaction.ref.launch(formatted,
+        this._reaction.token || '').then((res) => {
+            if (res == AreaRet.AccessTokenExpired) {
+                console.log("reaction token expired")
+                this.refreshToken(this._reaction).then((res) => {
+                    this._reaction.ref.launch(formatted,
+                        this._reaction.token || '')
+                })
+            }
+        })
+    }
+
     private startPrivate() {
         this._action.ref.start((properties) => {
             if (this._condition && !checkCondition(this._condition, properties))
                 return;
             var formatted = this.formatParams(properties)
-            this._reaction.ref.launch(formatted,
-                this._reaction.token || '').then((res) => {
-                    if (res == AreaRet.AccessTokenExpired) {
-                        console.log("reaction token expired")
-                        this.refreshToken(this._reaction).then((res) => {
-                            this._reaction.ref.launch(formatted,
-                                this._reaction.token || '')
-                        })
-                    }
-                })
+            this.launchReaction(formatted)
         }, this._action.params, this._action.token || '',
             this._accountMail || '')
         .then((res) => {
             if (res == AreaRet.AccessTokenExpired) {
-                console.log("reaction token expired")
+                console.log("action token expired")
                 this.refreshToken(this._action).then((res) => {
                     this.start()
                 })

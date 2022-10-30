@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import { DatabaseError } from '~/core/errors'
 import User from '../models/user'
 
 
@@ -12,7 +13,7 @@ export default async function loginService(
     })
     if (user) {
         if (!user.mail)
-            throw Error("missing mail in a user Model")
+            throw new DatabaseError("missing mail in a user Model", 500)
         return user.mail
     }
     const newUser = new User({
