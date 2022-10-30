@@ -9,8 +9,8 @@ import 'package:area/api/answer/login_answer.dart';
 import 'package:area/api/answer/google_answer.dart';
 import 'package:area/api/connection.dart';
 
-import 'package:area/front/register.dart';
-import 'package:area/front/dashboard.dart';
+import 'package:area/front/connection_pages/register.dart';
+import 'package:area/front/standard_pages/pages.dart';
 
 import 'package:uni_links/uni_links.dart';
 
@@ -91,7 +91,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    DashboardWidget(token: _googleLoginAnswer!.token.toString())));
+                    PagesWidget(token: _googleLoginAnswer!.token.toString())));
       });
     } else if (query.containsKey("token")) {
       setState(() {
@@ -100,7 +100,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    DashboardWidget(token: loginAnswer!.token.toString())));
+                    PagesWidget(token: loginAnswer!.token.toString())));
       });
     }
   }
@@ -147,7 +147,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  DashboardWidget(token: loginAnswer!.token.toString())));
+                  PagesWidget(token: loginAnswer!.token.toString())));
     }
   }
 

@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 
-import 'package:area/front/login.dart';
+import 'package:area/front/connection_pages/login.dart';
 
 void main() => runApp(const MyApp());
 
