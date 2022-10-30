@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:area/api/services.dart';
+
 class DashboardWidget extends StatefulWidget {
   final String token;
 
@@ -89,11 +91,11 @@ class _DashboardWidgetState extends State<DashboardWidget> {
             padding: EdgeInsetsDirectional.only(start: 15),
             child: TextButton(
                 onPressed: () => setState(() {
-                  if (_isBasicService) {
-                    return;
-                  }
-                  _isBasicService = true;
-                }),
+                      if (_isBasicService) {
+                        return;
+                      }
+                      _isBasicService = true;
+                    }),
                 child: Text("Basic Services",
                     style: TextStyle(
                         color: _isBasicService ? Colors.white : Colors.grey,
@@ -102,11 +104,11 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         fontSize: 20)))),
         TextButton(
             onPressed: () => setState(() {
-              if (_isBasicService == false) {
-                return;
-              }
-              _isBasicService = false;
-            }),
+                  if (_isBasicService == false) {
+                    return;
+                  }
+                  _isBasicService = false;
+                }),
             child: Text("Games Services",
                 style: TextStyle(
                     color: _isBasicService ? Colors.grey : Colors.white,
