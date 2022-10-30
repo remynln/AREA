@@ -68,7 +68,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
      - assets/sergify.png
-     - assets/google.png
+     - assets/google_login.png
      - assets/dashboard/add.svg
      - assets/dashboard/bottombar/bottombar.svg
      - assets/dashboard/bottombar/dashboard_inactive.svg
@@ -79,12 +79,18 @@ flutter:
      - assets/dashboard/bottombar/settings_active.svg
      - assets/dashboard/bottombar/workflows_inactive.svg
      - assets/dashboard/bottombar/workflows_active.svg
-     - assets/dashboard/service/facebook.svg
-     - assets/dashboard/service/github.svg
-     - assets/dashboard/service/google.svg
-     - assets/dashboard/service/instagram.svg
-     - assets/dashboard/service/outlook.svg
-     - assets/dashboard/service/twitter.svg
+     - assets/dashboard/service/facebook_icon.png
+     - assets/dashboard/service/github_icon.png
+     - assets/dashboard/service/google_icon.png
+     - assets/dashboard/service/instagram_icon.png
+     - assets/dashboard/service/outlook_icon.png
+     - assets/dashboard/service/twitter_icon.png
+     - assets/dashboard/service/facebook.png
+     - assets/dashboard/service/github.png
+     - assets/dashboard/service/google.png
+     - assets/dashboard/service/instagram.png
+     - assets/dashboard/service/outlook.png
+     - assets/dashboard/service/twitter.png
 
   fonts:
     - family: RobotoMono

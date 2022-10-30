@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:area/api/services.dart';
+import 'package:area/api/service/service_display.dart';
 
 class DashboardWidget extends StatefulWidget {
   final String token;
@@ -115,7 +115,11 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     fontFamily: "Roboto",
                     fontWeight: FontWeight.bold,
                     fontSize: 20)))
-      ])
+      ]),
+      SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ServiceDisplay(isBasicService: _isBasicService)
+          )
     ])));
   }
 }
