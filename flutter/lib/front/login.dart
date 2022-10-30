@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -6,7 +7,7 @@ import 'package:flutter/services.dart';
 
 import 'package:area/api/answer/login_answer.dart';
 import 'package:area/api/answer/google_answer.dart';
-import 'package:area/api/service.dart';
+import 'package:area/api/connection.dart';
 
 import 'package:area/front/register.dart';
 import 'package:area/front/dashboard.dart';
@@ -40,9 +41,9 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   void initState() {
-    super.initState();
     _initUriHandler();
     _incomingLinkHandler();
+    super.initState();
   }
 
   @override
@@ -65,6 +66,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           if (!mounted) return;
           setState(() {
             _initialUri = initialUri;
+            _checkUriToken(_initialUri!.queryParameters, _initialUri!.host);
           });
         } else {
           print("initial uri is null !");
@@ -81,10 +83,24 @@ class _LoginWidgetState extends State<LoginWidget> {
     }
   }
 
-  void _checkUriToken(Map<String, String> query) {
-    if (query.containsKey("token")) {
+  void _checkUriToken(Map<String, String> query, String host) {
+    if (query.containsKey("token") && host == "google") {
       setState(() {
         _googleLoginAnswer.token = query["token"]!;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    DashboardWidget(token: _googleLoginAnswer!.token.toString())));
+      });
+    } else if (query.containsKey("token")) {
+      setState(() {
+        loginAnswer!.token = query["token"]!;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    DashboardWidget(token: loginAnswer!.token.toString())));
       });
     }
   }
@@ -94,7 +110,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       _streamSubscription = uriLinkStream.listen((Uri? uri) {
         if (!mounted) return;
         print('New URI received: $uri');
-        _checkUriToken(uri!.queryParameters);
+        _checkUriToken(uri!.queryParameters, uri!.host);
         setState(() {
           _currentUri = uri;
           _err = null;
@@ -136,7 +152,11 @@ class _LoginWidgetState extends State<LoginWidget> {
   }
 
   void handleGoogleLogin() async {
-    await ApiService().handleGoogleLogin("sergify://google");
+    try {
+      await ApiService().handleGoogleLogin("sergify://google");
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   bool getCredentialsStatus() {
