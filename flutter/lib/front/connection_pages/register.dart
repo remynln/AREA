@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:area/api/answer/register_answer.dart';
 import 'package:area/api/connection.dart';
 
-import 'package:area/front/login.dart';
+import 'package:area/front/connection_pages/login.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class RegisterWidget extends StatefulWidget {
