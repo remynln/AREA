@@ -16,36 +16,36 @@ class Services {
     facebook,
     github
   ];
-  static List<Service> GameServices = [
-    
+  static List<Service> GamesServices = [
+
   ];
 }
 
 class Twitter extends Service {
   Twitter()
-      : super("Twitter", "assets/dashboard/service/twitter.svg",
+      : super("Twitter", "assets/dashboard/service/twitter.png",
             ["Send a tweet"]);
 }
 
 class Google extends Service {
-  Google() : super("Google", "assets/dashboard/service/google.svg", []);
+  Google() : super("Google", "assets/dashboard/service/google.png", []);
 }
 
 class Outlook extends Service {
-  Outlook() : super("Outlook", "assets/dashboard/service/outlook.svg", []);
+  Outlook() : super("Outlook", "assets/dashboard/service/outlook.png", []);
 }
 
 class Instagram extends Service {
   Instagram()
-      : super("Instagram", "assets/dashboard/service/instagram.svg", []);
+      : super("Instagram", "assets/dashboard/service/instagram.png", []);
 }
 
 class Facebook extends Service {
-  Facebook() : super("Facebook", "assets/dashboard/service/facebook.svg", []);
+  Facebook() : super("Facebook", "assets/dashboard/service/facebook.png", []);
 }
 
 class Github extends Service {
-  Github() : super("Github", "assets/dashboard/service/github.svg", []);
+  Github() : super("Github", "assets/dashboard/service/github.png", []);
 }
 
 class Service {

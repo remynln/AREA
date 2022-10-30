@@ -260,7 +260,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           onPressed: () {
             handleGoogleLogin();
           },
-          icon: Image.asset("assets/google.png", width: 18),
+          icon: Image.asset("assets/google_login.png", width: 18),
           style: OutlinedButton.styleFrom(
               side:
                   BorderSide(width: 1.0, color: Color.fromRGBO(191, 27, 44, 1)),
