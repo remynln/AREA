@@ -1,3 +1,4 @@
+import { ParsingError } from "./errors";
 
 function getPropertyFromArray(arr: string[], property: any): string | number | undefined {
     if (!property)
@@ -24,20 +25,20 @@ export function formatContent(content: string, actionProperties: any) {
             continue
         endPos = content.indexOf("]", searchPos) || -1
         if (endPos == -1) {
-            throw Error(`Expected ']' after '[' at character ${searchPos - 1}`, { cause: "handled" })
+            throw new ParsingError(`Expected ']' after '['`, searchPos - 1)
         }
         let substr = content.substring(searchPos, endPos)
         if (!/^[a-zA-Z0-9.]+$/i.test(substr)) {
-            throw Error(`invalid characters in property get [${substr}], at character ${searchPos - 1}`, { cause: "handled" })
+            throw new ParsingError(`invalid characters in property get [${substr}]`, searchPos - 1)
         }
         let splitted = substr.split('.')
         if (splitted[0] != 'Action') {
-            throw Error(`Only properties from action is available in property get [${substr}], at character ${searchPos - 1}`, { cause: "handled" })
+            throw new ParsingError(`Only properties from action is available in property get [${substr}]`, searchPos - 1)
         }
         splitted.shift()
         var property = getPropertyFromArray(splitted, actionProperties)
         if (!property)
-            throw Error(`property not found in property get [${substr}], at character ${searchPos - 1}`, { cause: "handled" })
+            throw new ParsingError(`property not found in property get [${substr}]`, searchPos - 1)
         content = content.substring(0, searchPos - 1)
             + property.toString()
             + content.substring(endPos + 1)
@@ -69,7 +70,7 @@ function deleteQuotedThings(str: string, start: number = 0): string {
         return str
     let quoteEnd = str.indexOf('"', quoteStart + 1)
     if (quoteEnd == -1)
-        throw Error(`Missing quote close in condition, at character ${quoteStart}`, { cause: "handled"})
+        throw new ParsingError(`Missing quote close in condition`, quoteStart)
     return deleteQuotedThings(
         str.substring(0, quoteStart) +
         "_".repeat(1 + quoteEnd - quoteStart) +
@@ -87,23 +88,23 @@ function checkParsedCondition(
     for (let v of [v1, v2]) {
         if (v.startsWith('"')) {
             if (!type.includes('string'))
-                throw Error(`${v} have invalid type 'string' for operator ${op}, at character ${substringIndex}`, { cause: "handled" })
+                throw new ParsingError(`${v} have invalid type 'string' for operator ${op}`, substringIndex)
             values.push(v.substring(1, v.length - 1))
         } else if (!Number.isNaN(Number(v))) {
             if (!type.includes("number")) {
-                throw Error(`Invalid type 'int' of '${v} for operator ${op}', at character ${substringIndex}`, {cause: "handled"})
+                throw new ParsingError(`Invalid type 'int' of '${v}' for operator '${op}'`, substringIndex)
             }
             values.push(Number(v))
         } else {
             let splitted = v.split('.')
             if (splitted[0] != 'Action')
-                throw Error(`Only properties from action is available in property get '${v}', at character ${substringIndex}`, { cause: "handled" })
+                throw new ParsingError(`Only properties from action is available in property get '${v}'`, substringIndex)
             splitted.shift()
             let property = getPropertyFromArray(splitted, actionProperties)
             if (!property)
-                throw Error(`property not found in property get '${v}', at character ${substringIndex}`, { cause: "handled" })
+                throw new ParsingError(`property not found in property get '${v}'`, substringIndex)
             if (!type.includes(typeof property)) {
-                throw Error(`Invalid property type ${typeof property} of '${property} for operator ${op}', at character ${substringIndex}`, {cause: "handled"})
+                throw new ParsingError(`Invalid property type ${typeof property} of '${property} for operator ${op}'`, substringIndex)
             }
             values.push(property)
         }
@@ -114,7 +115,7 @@ function checkParsedCondition(
     if (typeof values[0] == 'string' && typeof values[1] == 'string') {
         return CONDITION_OP_STR[op as keyof typeof CONDITION_OP_STR](values[0], values[1])
     }
-    throw Error(`incompatible types ${typeof values[0]} of ${values[0]} and ${typeof values[1]} of ${values[1]}, at character ${substringIndex}`, {cause: "handled"})
+    throw new ParsingError(`incompatible types ${typeof values[0]} of ${values[0]} and ${typeof values[1]} of ${values[1]}`, substringIndex)
 }
 
 export function checkSimpleCondition(condition: string, substringIndex: number, actionProperties: any) {
@@ -145,7 +146,7 @@ export function checkSimpleCondition(condition: string, substringIndex: number, 
         }
     }
     if (!type || !operator)
-        throw Error(`No conditional operator, at character ${substringIndex}`, { cause: "handled" })
+        throw new ParsingError(`No conditional operator`, substringIndex)
     return checkParsedCondition(
         condition.substring(0, operatorPos).trim(),
         operator, type,
@@ -181,7 +182,7 @@ export function checkCondition(conditionStr: string, actionProperties: any): boo
     while (openParenthesis != -1) {
         let closeParenthesis = withoutQuotes.indexOf(')')
         if (closeParenthesis == -1)
-            throw Error(`Expected ')' after '(', at character ${openParenthesis}`, { cause: "handled" })
+            throw new ParsingError(`Expected ')' after '('`, openParenthesis)
         let ret = checkCondition(condition.substring(openParenthesis + 1, closeParenthesis), actionProperties)
         condition = condition.substring(0, openParenthesis) +
             (ret ? " true " : " false ") +

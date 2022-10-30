@@ -75,7 +75,8 @@ router.get('/:serviceName/callback', (req, res, next) => {
         res.locals.user.username).then((mail) => {
         db.setToken(res.locals.user.accessToken, res.locals.user.refreshToken, mail,req.params.serviceName).then(() => {
             let token: JwtFormat = {
-                email: mail
+                email: mail,
+                username: res.locals.username
             }
             res.redirect(url.format({
                 pathname: req.query.state as string,
