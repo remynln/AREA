@@ -34,19 +34,19 @@ class AppTextFormField extends StatelessWidget {
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.greenAccent,
+              color: Colors.white,
               width: 1.0,
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.greenAccent,
+              color: Colors.white,
               width: 1.0,
             ),
           ),
           border: OutlineInputBorder(
             borderSide: BorderSide(
-              color: null == borderColor ? Colors.teal : borderColor,
+              color: null == borderColor ? Colors.white : borderColor,
               width: 1.0,
             ),
           ),

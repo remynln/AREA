@@ -27,6 +27,19 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           fit: BoxFit.fitWidth,
           scale: 1,
         ),
+        AppTextFormField(
+          controller: nameController,
+          helpText: 'Email',
+          hintText: 'Email',
+          prefixIcon: Icons.email,
+        ),
+        AppTextFormField(
+          controller: passwordController,
+          helpText: 'Password',
+          hintText: 'Password',
+          isPassword: true,
+          prefixIcon: Icons.lock_open,
+        ),
         SizedBox(height: 30),
         Container(
             alignment: Alignment.topCenter,
@@ -37,24 +50,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     color: Colors.white,
                     fontWeight: FontWeight.bold))),
         SizedBox(height: 10),
-        Container(
-          padding: const EdgeInsets.all(10),
-          child: AppTextFormField(
-            controller: nameController,
-            helpText: 'Email',
-            hintText: 'Email',
-            prefixIcon: Icons.email,
-          ),
-        ),
-        Container(
-          child: AppTextFormField(
-            controller: passwordController,
-            helpText: 'Password',
-            hintText: 'Password',
-            prefixIcon: Icons.lock_open,
-          ),
-        ),
-
         /*controller: nameController,
                     decoration: const InputDecoration(
                         enabledBorder: UnderlineInputBorder(
