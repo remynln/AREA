@@ -1,6 +1,8 @@
 version: "3.9"
 services:
   back:
+    env-env_file:
+      - ./area_api/.env
     build: ./area_api
     ports:
       - "8080:8080"
