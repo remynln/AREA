@@ -109,7 +109,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     }
                     _isBasicService = false;
                   }),
-              child: Text("Games Services",
+              child: Text("Game Services",
                   style: TextStyle(
                       color: _isBasicService ? Colors.grey : Colors.white,
                       fontFamily: "Roboto",

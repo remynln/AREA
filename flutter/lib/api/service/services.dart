@@ -9,12 +9,7 @@ class Services {
   static Github github = Github();
 
   static List<Service> BasicServices = [
-    twitter,
-    google,
-    outlook,
-    instagram,
-    facebook,
-    github
+    google
   ];
   static List<Service> GamesServices = [
 

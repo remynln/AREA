@@ -23,12 +23,12 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
             onTap: () {
               print(service_list[index].name);
             },
-            child: Image.asset(service_list[index].image)),
+            child: Image.asset(service_list[index].image, filterQuality: FilterQuality.high)),
         GestureDetector(
             onTap: () {
               print(service_list[index + 1].name);
             },
-            child: Image.asset(service_list[index + 1].image)),
+            child: Image.asset(service_list[index + 1].image, filterQuality: FilterQuality.high)),
       ]));
     } else {
       return (Column(children: <Widget>[
@@ -36,7 +36,7 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
             onTap: () {
               print(service_list[index].name);
             },
-            child: Image.asset(service_list[index].image)),
+            child: Image.asset(service_list[index].image, filterQuality: FilterQuality.high)),
         Visibility(
           child: Image.asset(service_list[index].image),
           maintainSize: true,
