@@ -24,6 +24,7 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
               print(service_list[index].name);
             },
             child: Image.asset(service_list[index].image, filterQuality: FilterQuality.high)),
+        SizedBox(height: 10),
         GestureDetector(
             onTap: () {
               print(service_list[index + 1].name);
@@ -37,6 +38,7 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
               print(service_list[index].name);
             },
             child: Image.asset(service_list[index].image, filterQuality: FilterQuality.high)),
+        SizedBox(height: 10),
         Visibility(
           child: Image.asset(service_list[index].image),
           maintainSize: true,
@@ -61,6 +63,7 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
     for (var index = 0; index < service_list.length; index++) {
       list.add(handleDisplayColumn(service_list, index));
       if (index + 1 < service_list.length) {
+        list.add(const SizedBox(width: 10));
         index++;
       }
     }
