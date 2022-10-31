@@ -16,15 +16,6 @@ router.get('/', (req, res) => {
                 !connectedServices.includes(elem)
             )
         })
-    }).catch((e: any) => {
-        let err = e as Error
-        if (err.cause != "handled") {
-            res.status(500).json({message: "Internal error"})
-            console.log(e)
-        }
-        res.status(401).json({
-            message: err.message
-        })
     })
 })
 

@@ -10,6 +10,8 @@ import mongoose from 'mongoose';
 import serviceConnect from './routes/service/connect'
 import serviceGet from './routes/service/get'
 import services from './routes/service/services'
+import { checkCondition, checkConditionSyntax, checkSimpleCondition } from './core/formatting';
+import errorMiddleware from './middlewares/errorHandler';
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
@@ -49,12 +51,11 @@ app.get('/', (req, res) => res.send('hello world'))
  * Gestion des erreurs
  * /!\ Cela doit être le dernier `app.use`
  */
-//app.use(ExceptionsHandler)
 
+app.use(errorMiddleware)
 /**
  * On demande à Express d'ecouter les requêtes sur le port défini dans la config
  */
 app.listen(config.API_PORT, () => {
     console.log(`Launched on port ${config.API_PORT}`)
-    google.start()
 })
