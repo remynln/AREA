@@ -17,22 +17,10 @@ class WorkflowsWidget extends StatefulWidget {
 class _WorkflowsWidgetState extends State<WorkflowsWidget> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: ListView(children: <Widget>[
-      Container(
-        height: 30,
-        alignment: Alignment.topLeft,
-        child: ElevatedButton(
-            onPressed: () {
-              openIP(context);
-            },
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    const Color.fromRGBO(191, 27, 44, 1)),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(9.0)))),
-            child: const Text('IP')),
-      ),
+    return Scaffold(body: Center(child: ListView(children: const <Widget>[
+      Text("Currently working on...\nPlease wait :)",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white, fontSize: 24))
     ])));
   }
 }

@@ -92,7 +92,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    PagesWidget(token: _googleLoginAnswer!.token.toString())));
+                    PagesWidget(token: _googleLoginAnswer!.token.toString(), index: 0)));
       });
     } else if (query.containsKey("token")) {
       setState(() {
@@ -101,7 +101,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    PagesWidget(token: loginAnswer!.token.toString())));
+                    PagesWidget(token: loginAnswer!.token.toString(), index: 0)));
       });
     }
   }
@@ -157,7 +157,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  PagesWidget(token: loginAnswer!.token.toString())));
+                  PagesWidget(token: loginAnswer!.token.toString(), index: 0)));
     }
   }
 

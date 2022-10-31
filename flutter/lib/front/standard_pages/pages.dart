@@ -7,8 +7,9 @@ import 'package:area/front/standard_pages/workflows.dart';
 
 class PagesWidget extends StatefulWidget {
   final String token;
+  final int index;
 
-  const PagesWidget({Key? key, required this.token}) : super(key: key);
+  const PagesWidget({Key? key, required this.token, required this.index}) : super(key: key);
 
   @override
   State<PagesWidget> createState() => _PagesWidgetState();
@@ -16,7 +17,7 @@ class PagesWidget extends StatefulWidget {
 
 class _PagesWidgetState extends State<PagesWidget> {
   late String token;
-  int _index = 0;
+  late int _index;
 
   late DashboardWidget dashboard;
   late NotificationWidget notification;
@@ -28,6 +29,7 @@ class _PagesWidgetState extends State<PagesWidget> {
   void initState() {
     super.initState();
     token = widget.token;
+    _index = widget.index;
     dashboard = DashboardWidget(token: token);
     notification = const NotificationWidget();
     workflows = const WorkflowsWidget();
