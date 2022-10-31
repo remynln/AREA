@@ -1,11 +1,12 @@
 import User from '../models/user'
 import Token from '../models/token'
+import { DatabaseError } from '~/core/errors'
 
 export default async function setToken(token: string, refreshToken: string,
     email: string, service:string) {
     const user = await User.findOne({mail: email})
     if (!user) {
-        throw Error("User not found", { cause: "handled" })
+        throw new DatabaseError("User not found", 404)
     }
     await Token.deleteMany({ user_id: user._id, service_name: service })
     const newToken = new Token({
