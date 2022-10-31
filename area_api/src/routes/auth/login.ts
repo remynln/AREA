@@ -22,7 +22,7 @@ function isPasswordValid(username: string) {
     return (/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/i.test(username))
 }
 
-auth.post('/register', checkBody(["email", "username", "password"]), async (req: Request, res: Response) => {
+auth.post('/register', checkBody(["email", "username", "password"]), (req: Request, res: Response, next) => {
     if (!isMailValid(req.body.email)) {
         res.status(400).json({ message: "Invalid email"})
         return;
@@ -35,44 +35,34 @@ auth.post('/register', checkBody(["email", "username", "password"]), async (req:
         res.status(400).json({ message: "Invalid password"})
         return;
     }
-    let is_err = false;
-    await db.register(req.body.password, req.body.email, req.body.username, (err) => {
-        if (err) {
-            is_err = true;
-            res.status(400).json({ message: "User already exists"})
-        }
+    db.register(req.body.password, req.body.email, req.body.username).then(() => {
+        res.status(201).json({
+            token: jwt.sign({
+                email: req.body.email,
+                username: req.body.username
+            } as JwtFormat, process.env.JWT_KEY || '')
+        })
+    }).catch((err) => {
+        next(err)
     })
-    if (is_err)
-        return
-    res.status(201).json({
-        token: jwt.sign({ email: req.body.email } as JwtFormat,
-            process.env.JWT_KEY || '')
-    })
-    return
 })
 
-auth.post('/login', checkBody(["email", "password"]), async (req, res) => {
-    let is_err = false
+auth.post('/login', checkBody(["email", "password"]), (req, res, next) => {
     if (!req.body.email || !req.body.password) {
         res.status(400).json({ message: "Missing email or password"})
         return
     }
-    const password_check = await db.login(req.body.password, req.body.email, (err) => {
-        if (err) {
-            is_err = true
-            res.status(400).json({ message: "Invalid credentials"})
+    db.login(req.body.password, req.body.email).then((token) => {
+        if (!token) {
+            res.status(400).json({message: "Invalid password"})
             return
         }
-    })
-    if (is_err)
-        return
-    if (!password_check) {
-        res.status(400).json({message: "Invalid password"})
-        return
-    }
-    res.status(200).json({
-        token: jwt.sign({ email: req.body.email } as JwtFormat,
-            process.env.JWT_KEY || '')
+        res.status(200).json({
+            token: jwt.sign(token,
+                process.env.JWT_KEY || '')
+        })
+    }).catch((err) => {
+        next(err)
     })
 })
 

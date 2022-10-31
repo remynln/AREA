@@ -5,14 +5,16 @@ import AreaFunc from "~/core/global";
 import { Action, Area, Reaction } from "~/core/types";
 import JwtFormat from "~/routes/auth/jwtFormat"
 import jwt from "jsonwebtoken"
+import { checkConditionSyntax } from "~/core/formatting";
+import { AreaError } from "~/core/errors";
 
 var area: Router = Router()
 
 function checkActionReaction(body: any) {
     if (!body.action.name || ! (typeof body.action.name === 'string'))
-        throw Error(`missing or invalid property 'name' in action request`)
+        throw new AreaError(`missing or invalid property 'name' in action request`, 400)
     if (!body.reaction.name || ! (typeof body.reaction.name === 'string'))
-        throw Error(`missing or invalid property 'name' in reaction request`)
+        throw new AreaError(`missing or invalid property 'name' in reaction request`, 400)
 
     let action = AreaFunc.getAction(body.action.name)
     let reaction = AreaFunc.getReaction(body.reaction.name)
@@ -21,33 +23,31 @@ function checkActionReaction(body: any) {
     return {action, reaction}
 }
 
-area.use("/create", checkBody(["action", "reaction"]),
-(req, res) => {
-    var action: Action
-    var reaction: Reaction
-    try {
-        let ret = checkActionReaction(req.body)
-        action = ret.action;
-        reaction = ret.reaction;
-    } catch (err) {
-        console.log("err", err)
-        res.status(400).json({
-            message: (err as Error).message
-        })
-        return
+area.post("/create", checkBody(["action", "reaction"]),
+(req, res, next) => {
+    
+    let ret = checkActionReaction(req.body)
+    var action: Action = ret.action;
+    var reaction: Reaction = ret.reaction
+    var condition: string | undefined = req.body.condition
+
+    if (condition) {
+        console.log(action.propertiesType)
+        checkConditionSyntax(condition, action.propertiesType)
     }
-    let area = new Area(action, req.body.action.params,
+    let area = new Area(action, req.body.action.params, condition,
         reaction, req.body.reaction.params)
     let decoded = jwt.decode(req.headers.authorization?.split(' ')[1] || '')
     area.setTokens((decoded as JwtFormat).email).then(() => {
-        area.start()
-        res.status(201).json({
-            message: 'OK'
-        })    
+        area.start().catch((err) => {
+            next(err)
+        }).then(() => {
+            res.status(201).json({
+                message: 'OK'
+            })
+        })
     }).catch((err) => {
-        res.status(403).json({
-            message: (err as Error).message
-        }) 
+        next(err)
     })
 })
 
