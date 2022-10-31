@@ -171,6 +171,7 @@ interface NewMail extends Action {
 const newMail: NewMail = {
     description: "When a new mail is received in the gmail mailbox",
     serviceName: 'google',
+    name: 'newMail',
     paramTypes: {},
     propertiesType: {
         'from': {
@@ -205,13 +206,19 @@ const newMail: NewMail = {
         }
     },
 
-    async start(trigger, params, serviceToken, accountMail) {
+    async start(params, serviceToken, accountMail, trigger, error) {
         if (!this.subs)
             this.subs = new Map([])
         console.log("initializing sub")
         if (!this._sub) {
             this._sub = await initSub()
-            this._sub.on('message', (mess) =>  this._newMessageCallback(mess))
+            this._sub.on('message', (mess) => {
+                try {
+                    this._newMessageCallback(mess)
+                } catch (err) {
+                    error(err as Error)
+                }
+            })
         }
         console.log("getting account info")
         var sub = this.subs.get(accountMail)

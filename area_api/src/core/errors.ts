@@ -16,7 +16,9 @@ export class DatabaseError extends Error {
 }
 
 export class AreaError extends Error {
-    constructor(msg: string) {
+    code: number;
+    constructor(msg: string, code: number) {
         super(msg)
+        this.code = code
     }
 }

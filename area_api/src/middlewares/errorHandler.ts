@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { DatabaseError, ParsingError } from "~/core/errors";
+import { AreaError, DatabaseError, ParsingError } from "~/core/errors";
 
 export default function errorMiddleware(error: Error, req: Request, res: Response, next: any) {
     console.log("passed in middleware !")
@@ -21,6 +21,9 @@ export default function errorMiddleware(error: Error, req: Request, res: Respons
     if (error instanceof ParsingError) {
         res.status(400).json({ message: error.message })
         return
+    }
+    if (error instanceof AreaError) {
+        res.status(error.code).json({message: error.message})
     }
     console.log(error.message)
     res.status(500).json({ message: "Internal server error" })
