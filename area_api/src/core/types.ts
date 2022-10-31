@@ -1,5 +1,7 @@
+import { AxiosError } from "axios";
 import passport from "passport"
 import db from "~/database/db";
+import { AreaError } from "./errors";
 import { checkCondition, formatContent } from "./formatting";
 import Global from "./global"
 
@@ -21,14 +23,16 @@ export enum AreaRet {
 
 export interface Action {
     serviceName: string | null
+    name: string
     description: string
     propertiesType: any
     paramTypes: any
     start: (
-        trigger: (properties: any) => void,
         params: any,
         token: string,
         accountMail: string,
+        trigger: (properties: any) => void,
+        error: (err: Error) => void
     ) => Promise<AreaRet>,
     stop: () => void
     destroy: () => void
@@ -37,6 +41,7 @@ export interface Action {
 
 export interface Reaction {
     serviceName: string | null
+    name: string
     description: string
     paramTypes: any
     launch: (params: any, serviceToken: string) => Promise<AreaRet>
@@ -113,39 +118,43 @@ export class Area {
         return formatted
     }
 
-    launchReaction(formatted: string) {
+    launchReaction(formatted: string, tokenRefreshed: boolean = false) {
         this._reaction.ref.launch(formatted,
         this._reaction.token || '').then((res) => {
             if (res == AreaRet.AccessTokenExpired) {
-                console.log("reaction token expired")
+                if (tokenRefreshed) {
+                    return
+                }
                 this.refreshToken(this._reaction).then((res) => {
-                    this._reaction.ref.launch(formatted,
-                        this._reaction.token || '')
+                    this.launchReaction(formatted, true)
                 })
             }
+        }).catch((err) => {
+            console.log("Reaction " +
+                this._reaction.ref.serviceName + "/" + this._reaction.ref.name +
+                " failed")
+            console.log(err)
         })
     }
 
-    private startPrivate() {
-        this._action.ref.start((properties) => {
+    public async start() {
+        const res = await this._action.ref.start(this._action.params, this._action.token || '',
+        this._accountMail || '', (properties) => {
             if (this._condition && !checkCondition(this._condition, properties))
                 return;
             var formatted = this.formatParams(properties)
             this.launchReaction(formatted)
-        }, this._action.params, this._action.token || '',
-            this._accountMail || '')
-        .then((res) => {
-            if (res == AreaRet.AccessTokenExpired) {
-                console.log("action token expired")
-                this.refreshToken(this._action).then((res) => {
-                    this.start()
-                })
-            }
+        }, (err) => {
+            console.log("Actio trigger" +
+                this._action.ref.serviceName + "/" + this._action.ref.name +
+                "failed")
         })
-    }
-
-    public start() {
-        this.startPrivate()
+        if (res == AreaRet.AccessTokenExpired) {
+            console.log("action token expired")
+            this.refreshToken(this._action).then((res) => {
+                this.start()
+            })
+        }
     }
 
     public destroy() {

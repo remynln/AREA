@@ -6,6 +6,7 @@ import { getMailFromToken } from "../utils";
 const sendMail: Reaction = {
     serviceName: 'google',
     description: "Send a mail from the gmail's mailbox",
+    name: "sendMail",
     paramTypes: {
         'recipient': 'string',
         'object': 'string',
@@ -44,7 +45,6 @@ const sendMail: Reaction = {
             if (err.response.status == 401) {
                 return AreaRet.AccessTokenExpired
             }
-            console.log(err.response)
             throw err
         }
         return AreaRet.Ok

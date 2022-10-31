@@ -12,9 +12,9 @@ var area: Router = Router()
 
 function checkActionReaction(body: any) {
     if (!body.action.name || ! (typeof body.action.name === 'string'))
-        throw new AreaError(`missing or invalid property 'name' in action request`)
+        throw new AreaError(`missing or invalid property 'name' in action request`, 400)
     if (!body.reaction.name || ! (typeof body.reaction.name === 'string'))
-        throw new AreaError(`missing or invalid property 'name' in reaction request`)
+        throw new AreaError(`missing or invalid property 'name' in reaction request`, 400)
 
     let action = AreaFunc.getAction(body.action.name)
     let reaction = AreaFunc.getReaction(body.reaction.name)
@@ -24,7 +24,7 @@ function checkActionReaction(body: any) {
 }
 
 area.post("/create", checkBody(["action", "reaction"]),
-(req, res) => {
+(req, res, next) => {
     
     let ret = checkActionReaction(req.body)
     var action: Action = ret.action;
@@ -39,10 +39,15 @@ area.post("/create", checkBody(["action", "reaction"]),
         reaction, req.body.reaction.params)
     let decoded = jwt.decode(req.headers.authorization?.split(' ')[1] || '')
     area.setTokens((decoded as JwtFormat).email).then(() => {
-        area.start()
-        res.status(201).json({
-            message: 'OK'
-        })    
+        area.start().catch((err) => {
+            next(err)
+        }).then(() => {
+            res.status(201).json({
+                message: 'OK'
+            })
+        })
+    }).catch((err) => {
+        next(err)
     })
 })
 
