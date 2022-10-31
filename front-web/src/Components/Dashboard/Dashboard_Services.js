@@ -12,7 +12,7 @@ function Dashboard_Services(props) {
         <div className="DashboardServices" style={props.inCreation ? Hide : undefined}>
             <div className="ServicesContentTitle">
                 <p className="BasicServicesTitle">Basic Services</p>
-                <p className="VideoGamesTitle">Video Games</p>
+                <p className="VideoGamesTitle">Game Services</p>
             </div>
             <Services />
         </div>
