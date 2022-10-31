@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:area/front/standard_pages/pages.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -71,7 +72,13 @@ class _DashboardWidgetState extends State<DashboardWidget> {
             Padding(
                 padding: EdgeInsetsDirectional.only(end: 20),
                 child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PagesWidget(token: widget.token, index: 2)));
+                    },
                     child: const Text("View All",
                         style: TextStyle(
                             color: Color.fromRGBO(238, 13, 36, 100),

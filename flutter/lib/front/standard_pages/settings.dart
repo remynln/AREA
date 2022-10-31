@@ -18,9 +18,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: Center(child: ListView(children: <Widget>[
+      const SizedBox(height: 20),
       Container(
         height: 30,
-        alignment: Alignment.topLeft,
+        alignment: Alignment.topCenter,
         child: ElevatedButton(
             onPressed: () {
               openIP(context);
