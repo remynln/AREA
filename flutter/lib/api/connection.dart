@@ -15,7 +15,8 @@ class ApiService {
   Future<RegisterAnswer?> handleRegister(
       String email, String username, String password) async {
     try {
-      final uri = Uri.http(ApiConstants.baseUrl, ApiConstants.registerEndpoint);
+      final uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.registerEndpoint);
       final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
       final body_data = {
         'email': email,
@@ -24,8 +25,7 @@ class ApiService {
       };
       var response =
           await http.post(uri, headers: headers, body: json.encode(body_data));
-      if (response.statusCode != 200)
-        log(response.statusCode.toString());
+      if (response.statusCode != 200) log(response.statusCode.toString());
       RegisterAnswer _model = registerAnswerFromJson(response.body);
       return _model;
     } catch (e) {
@@ -35,13 +35,13 @@ class ApiService {
 
   Future<LoginAnswer?> handleLogin(String email, String password) async {
     try {
-      final uri = Uri.http(ApiConstants.baseUrl, ApiConstants.loginEndpoint);
+      final uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.loginEndpoint);
       final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
       final body_data = {'email': email, 'password': password};
       var response =
           await http.post(uri, headers: headers, body: json.encode(body_data));
-      if (response.statusCode != 200)
-        log(response.statusCode.toString());
+      if (response.statusCode != 200) log(response.statusCode.toString());
       LoginAnswer _model = loginAnswerFromJson(response.body);
       return _model;
     } catch (e) {
@@ -51,11 +51,8 @@ class ApiService {
 
   Future<void> handleGoogleLogin(String callback) async {
     try {
-      final uri = Uri.http(
-        ApiConstants.baseUrl,
-        ApiConstants.googleLoginEndpoint,
-        {'callback': callback}
-      );
+      final uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.googleLoginEndpoint, {'callback': callback});
       if (await canLaunchUrl(uri))
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       else

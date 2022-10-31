@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:area/api/answer/register_answer.dart';
 import 'package:area/api/connection.dart';
 
+import 'package:area/front/ip.dart';
 import 'package:area/front/connection_pages/login.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -35,11 +36,19 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   }
 
   void handleRegister() async {
-    if (getCredentialStatus() == false)
-      return;
+    if (getCredentialStatus() == false) return;
     registerAnswer = await ApiService().handleRegister(
         emailController.text, nameController.text, passwordController.text);
-    if (registerAnswer?.message != null) {
+    if (registerAnswer == null) {
+      Fluttertoast.showToast(
+          msg: "Error : Invalid IP Address!",
+          timeInSecForIosWeb: 3,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Color.fromRGBO(191, 27, 44, 1),
+          textColor: Colors.white,
+          fontSize: 14);
+    } else if (registerAnswer?.message != null) {
       Fluttertoast.showToast(
           msg: "Error : ${registerAnswer?.message}!",
           timeInSecForIosWeb: 3,
@@ -55,8 +64,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   bool getCredentialStatus() {
     if (emailController.text.isEmpty ||
         nameController.text.isEmpty ||
-        passwordController.text.length < 8)
-      return false;
+        passwordController.text.length < 8) return false;
     return true;
   }
 
@@ -72,6 +80,21 @@ class _RegisterWidgetState extends State<RegisterWidget> {
     return Scaffold(
         body: Center(
             child: ListView(children: <Widget>[
+      Container(
+        height: 30,
+        alignment: Alignment.topLeft,
+        child: ElevatedButton(
+            child: const Text('IP'),
+            onPressed: () {
+              openIP(context);
+            },
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    const Color.fromRGBO(191, 27, 44, 1)),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9.0))))),
+      ),
       Image.asset(
         'assets/sergify.png',
         height: 200,

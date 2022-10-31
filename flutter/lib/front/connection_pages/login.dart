@@ -9,6 +9,7 @@ import 'package:area/api/answer/login_answer.dart';
 import 'package:area/api/answer/google_answer.dart';
 import 'package:area/api/connection.dart';
 
+import 'package:area/front/ip.dart';
 import 'package:area/front/connection_pages/register.dart';
 import 'package:area/front/standard_pages/pages.dart';
 
@@ -133,7 +134,16 @@ class _LoginWidgetState extends State<LoginWidget> {
     if (getCredentialsStatus() == false) return;
     loginAnswer = await ApiService()
         .handleLogin(nameController.text, passwordController.text);
-    if (loginAnswer?.message != null) {
+    if (loginAnswer == null) {
+      Fluttertoast.showToast(
+          msg: "Error : Invalid IP Address!",
+          timeInSecForIosWeb: 3,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Color.fromRGBO(191, 27, 44, 1),
+          textColor: Colors.white,
+          fontSize: 14);
+    } else if (loginAnswer?.message != null) {
       Fluttertoast.showToast(
           msg: "Error : ${loginAnswer?.message}!",
           timeInSecForIosWeb: 3,
@@ -177,6 +187,21 @@ class _LoginWidgetState extends State<LoginWidget> {
     return Scaffold(
         body: Center(
             child: ListView(children: <Widget>[
+      Container(
+        height: 30,
+        alignment: Alignment.topLeft,
+        child: ElevatedButton(
+            onPressed: () {
+              openIP(context);
+            },
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    const Color.fromRGBO(191, 27, 44, 1)),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9.0)))),
+            child: const Text('IP')),
+      ),
       Image.asset(
         'assets/sergify.png',
         height: 200,
