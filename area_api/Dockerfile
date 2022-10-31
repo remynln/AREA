@@ -16,10 +16,6 @@ WORKDIR /usr/src/app
 
 COPY --from=builder /usr/src/app/dist /usr/src/app/
 
-COPY --from=builder /usr/src/app/.env /usr/src/app/
-
-RUN export $(cat .env)
-
 EXPOSE 8080
 
 CMD ["npm", "run", "start"]
