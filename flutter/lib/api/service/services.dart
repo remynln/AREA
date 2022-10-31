@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Services {
-  static Twitter twitter = Twitter();
   static Google google = Google();
-  static Outlook outlook = Outlook();
-  static Instagram instagram = Instagram();
-  static Facebook facebook = Facebook();
-  static Github github = Github();
 
   static List<Service> BasicServices = [
     google

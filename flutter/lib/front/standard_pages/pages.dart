@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:area/front/standard_pages/dashboard.dart';
+import 'package:area/front/standard_pages/settings.dart';
+import 'package:area/front/standard_pages/notification.dart';
+import 'package:area/front/standard_pages/workflows.dart';
 
 class PagesWidget extends StatefulWidget {
   final String token;
@@ -16,6 +19,9 @@ class _PagesWidgetState extends State<PagesWidget> {
   int _index = 0;
 
   late DashboardWidget dashboard;
+  late NotificationWidget notification;
+  late WorkflowsWidget workflows;
+  late SettingsWidget settings;
   static List<Widget> _pagesWidget = <Widget>[];
 
   @override
@@ -23,14 +29,14 @@ class _PagesWidgetState extends State<PagesWidget> {
     super.initState();
     token = widget.token;
     dashboard = DashboardWidget(token: token);
+    notification = const NotificationWidget();
+    workflows = const WorkflowsWidget();
+    settings = const SettingsWidget();
     _pagesWidget = [
       dashboard,
-      const Text("NOTIF", style: TextStyle(color: Colors.white)),
-      const Text("WORKFLOW", style: TextStyle(color: Colors.white)),
-      ElevatedButton(onPressed: (){setState(() {
-        _index = 2;
-        print("A");
-      });}, child: Text("HEY", style: TextStyle(color: Colors.white)))
+      notification,
+      workflows,
+      settings
     ];
   }
 
