@@ -5,6 +5,7 @@ import GetToken from "./getToken";
 import getServices from "./getServices";
 import loginService from "./loginService";
 import setArea from "./area/set";
+import getUsers from "./user/getMany";
 
 const db = {
     register:Register,
@@ -15,6 +16,9 @@ const db = {
     loginService,
     area: {
         set: setArea
+    },
+    user: {
+        getMany: getUsers
     }
 }
 

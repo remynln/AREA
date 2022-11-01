@@ -10,8 +10,10 @@ import mongoose from 'mongoose';
 import serviceConnect from './routes/service/connect'
 import serviceGet from './routes/service/get'
 import services from './routes/service/services'
+import users from "./routes/users"
 import { checkCondition, checkConditionSyntax, checkSimpleCondition } from './core/formatting';
 import errorMiddleware from './middlewares/errorHandler';
+import checkAdmin from './middlewares/checkAdmin';
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
@@ -44,6 +46,8 @@ app.use('/area', checkToken, area)
 app.use('/service', checkToken, serviceConnect)
 app.use('/services', checkToken, services)
 app.use('/service', checkToken, serviceGet)
+
+app.use('/users', checkToken, checkAdmin, users)
 
 // home route
 app.get('/', (req, res) => res.send('hello world'))
