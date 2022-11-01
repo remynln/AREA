@@ -125,7 +125,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         ]),
         SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: ServiceDisplay(isBasicService: _isBasicService)),
+            child: ServiceDisplay(isBasicService: _isBasicService, token: widget.token)),
       ])),
     );
   }

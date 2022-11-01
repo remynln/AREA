@@ -1,10 +1,15 @@
 import React from "react";
-import "./Dashboard.css"
 import Services from "../Services/Services"
+import "./Dashboard.css"
 
-function Dashboard_Services() {
+function Dashboard_Services(props) {
+
+    let Hide = {
+        display: "none"
+    };
+
     return (
-        <div className="DashboardServices">
+        <div className="DashboardServices" style={props.inCreation ? Hide : undefined}>
             <div className="ServicesContentTitle">
                 <p className="BasicServicesTitle">Basic Services</p>
                 <p className="VideoGamesTitle">Video Games</p>
