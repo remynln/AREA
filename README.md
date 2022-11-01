@@ -163,7 +163,7 @@ condition is formatted like every basic programming language.
 You can compare properties of type number using comparisons operators: `>`, `<`, `<=`, `>=`, `==`
 You can compare properties of type string using operators: `==` (case insensitive comparison), `===` (case sensitive comparison), `in` (leftstring is a substring of rightstring exemple: `"can" in "you can do it"` is true)
 
-### User gesture
+### User managment
 Every routes in this categry have a `[user_id]` parameter, this param is an hexadecimal value, accessible only by admin users.
 But [user_id] can also be set to `me`, this will reffer to the currently connected account (with jwt token passed in header), and many routes can be accessed without being an admin with the `me` parameter.
 
@@ -171,3 +171,33 @@ But [user_id] can also be set to `me`, this will reffer to the currently connect
 There is one superuser, with username "root", this is the only user that can set other users to administrators.<br />
 there is as many as superuser the superuser wants to set.<br />
 admins can't affect other admin accounts.<br />
+
+#### Endpoints
+
+`/users`: *GET Method* (Only for admins)
+- **Query params**
+  - `limit`: the number of users that will be sent in response (Default: 100)
+  - `page`: Depending on limit, an offset to get next users after the limit (`limit`*`page` users will be skipped)
+- **Response**:
+  - 200 ->
+    - [list of users { `id`, `username`, `email` }]
+
+`/user/[user_id]`: *GET Method*
+- **Response**:
+  - 200 ->
+    - `id`: The user id
+    - `username`: the user's username
+    - `email`: the user's email
+
+`/user/[user_id]`: *PUT Method*
+- **Request body**
+  - `username`: The new username of the user
+  - `admin`: Boolean to set or unset administrator (Only for superuser)
+- **Response**:
+  - 200 ->
+    - `message`: Account updated successfully
+
+`/user/[user_id]`: *DELETE Method*
+- **Response**:
+  - 200 -> OK
+    - `message`: Account deleted successfully
