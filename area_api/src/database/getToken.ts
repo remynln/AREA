@@ -1,19 +1,16 @@
 import User from '../models/user'
 import Token from '../models/token'
-import db from './db'
+import { DatabaseError } from '~/core/errors'
 
 
-export default async function setToken(email: string, callback: (err: Error |  null) => void, service_name?: string | null) {
-    const user = await User.findOne({username: email})
+export default async function setToken(email: string, service_name: string) {
+    const user = await User.findOne({mail: email})
     if (!user) {
-        callback(new Error("Precise an email"))
-        return
+        throw new DatabaseError(`Account with email ${email} does not exists`, 404)
     }
-    const token = await (service_name) ? 
-    Token.find({user_id: user._id, service_name: service_name}) :
-    Token.find({user_id: user._id})
-
-    // console.log(token)
-
-    return token
+    const token = await Token.findOne({user_id: user._id, service_name: service_name})
+    if (!token || !token.service_token) {
+        throw new DatabaseError(`You are not authentified to service ${service_name}`, 403)
+    }
+    return [token.service_token, token.service_refresh_token]
 }

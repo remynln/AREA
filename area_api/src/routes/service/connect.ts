@@ -1,5 +1,5 @@
 import passport, { Strategy } from "passport";
-import express, { Request, Response, Router } from "express";
+import express, { Router } from "express";
 import "dotenv/config"
 import url from "url";
 import jwt from "jsonwebtoken";
@@ -25,20 +25,32 @@ router.get('/:serviceName', (req, res) => {
     if (!req.query.callback) {
         res.status(403).send("Missing callback_url")
     }
-    const state = req.query.callback as string
-    passport.authenticate(req.params.serviceName, {
-        state: state,
-        callbackURL: "/service/google/callback"
-    } as any)(req, res)
+    let service = Area.services.get(req.params.serviceName)
+    if (!service) {
+        res.status(404).json({
+            message: `Service '${req.params.serviceName}' not found`
+        })
+        return
+    }
+    let authParams = service.authParams;
+    authParams.state = req.query.callback as string
+    authParams.callbackURL = "/service/google/callback"
+    passport.authenticate(req.params.serviceName, authParams)(req, res)
 }, (req, res) => {
-    console.log("nsm")
 })
 
 router.get('/:serviceName/callback', (req, res, next) => {
-    passport.authenticate(req.params.serviceName, {
-        failureRedirect: "http://localhost:8080/",
-        callbackURL: "/service/google/callback"
-    } as any, (err, user, info) => {
+    let service = Area.services.get(req.params.serviceName)
+    if (!service) {
+        res.status(404).json({
+            message: `Service '${req.params.serviceName}' not found`
+        })
+        return
+    }
+    let authParams = service.authParams;
+    authParams.failureRedirect = "http://localhost:8080/"
+    authParams.callbackURL = "/service/google/callback"
+    passport.authenticate(req.params.serviceName, authParams, (err, user, info) => {
         console.log("user: ", user)
         res.locals.user = user;
         next()
@@ -50,12 +62,7 @@ router.get('/:serviceName/callback', (req, res, next) => {
         });
         return;
     }
-    res.redirect(url.format({
-        pathname: req.query.state as string,
-        query: {
-            token: jwt.sign(res.locals.user, process.env.JWT_KEY || "")
-        }
-    }))
+    res.redirect(req.query.state as string)
 })
 
 export default router
