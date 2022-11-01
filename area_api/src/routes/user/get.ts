@@ -1,9 +1,28 @@
 import { Router } from "express";
 import db from "~/database/db";
 import User from "~/models/user";
-
+import { UserPut } from "~/database/user/update"
 var router = Router()
 
+router.put("/", (req, res, next) => {
+    let values: UserPut = {
+        admin: req.body.admin || undefined,
+        username: req.body.username || undefined
+    }
+    if (values.admin != undefined && res.locals.userInfo.email != "root") {
+        res.status(403).json({
+            message: "Only root have right to set admin"
+        })
+        return
+    }
+    db.user.update(res.locals.targetUser, req.body).then((user) => {
+        res.status(200).json({
+            message: "OK"
+        })
+    }).catch((err) => {
+        next(err)
+    })
+})
 
 router.get("/", (req, res, next) => {
     db.user.get(res.locals.targetUser).then((user) => {
