@@ -1,3 +1,5 @@
+import { AreaError } from "./errors"
+import { formatContent } from "./formatting"
 import google from "./services/google"
 import { Action, Area, Reaction } from "./types"
 
@@ -8,71 +10,52 @@ const services = new Map([
 function getAction(actionName: string) {
     const splitted = actionName.split('/')
     if (splitted.length != 2) {
-        throw Error(`Invalid action name ${actionName}`)
+        throw new AreaError(`Invalid action name ${actionName}`, 400)
     }
     let service = services.get(splitted[0])
     if (!service)
-        throw Error(`Service ${splitted[0]} does not exists`)
+        throw new AreaError(`Service ${splitted[0]} does not exists`, 404)
     let action = service.actions.get(splitted[1])
     if (!action)
-        throw Error(`Service ${splitted[0]} does not have ${splitted[1]} action`)
+        throw new AreaError(`Service ${splitted[0]} does not have ${splitted[1]} action`, 404)
     return action;
 }
 
 function getReaction(reactionName: string) {
     const splitted = reactionName.split('/')
     if (splitted.length != 2) {
-        throw Error(`Invalid reaction name ${reactionName}`)
+        throw new AreaError(`Invalid reaction name ${reactionName}`, 400)
     }
     let service = services.get(splitted[0])
     if (!service)
-        throw Error(`Service ${splitted[0]} does not exists`)
+        throw new AreaError(`Service ${splitted[0]} does not exists`, 404)
     let action = service.reactions.get(splitted[1])
     if (!action)
-        throw Error(`Service ${splitted[0]} does not have ${splitted[1]} reaction`)
+        throw new AreaError(`Service ${splitted[0]} does not have ${splitted[1]} reaction`, 404)
     return action;
 }
 
-function checkParams(actionReaction: Action | Reaction, givedParams: any) {
+function checkParams(actionReaction: Action | Reaction, givedParams: any,
+    properties: any = undefined) {
     for (let i of Object.entries(actionReaction.paramTypes)) {
         if (!givedParams) {
             if ((i[1] as string).endsWith('?'))
                 continue
-            throw Error(`Required param '${i[0]}' not found`)
+            throw new AreaError(`Required param '${i[0]}' not found`, 400)
         }
         let current = givedParams[i[0]]
         if (!current) {
             if ((i[1] as string).endsWith('?'))
                 continue
-            throw Error(`Required param '${i[0]}' not found`)
+            throw new AreaError(`Required param '${i[0]}' not found`, 400)
         }
         let type = (i[1] as string).replace('?', '')
         if (typeof current != type)
-            throw Error(`type of param '${i[0]}' is ${typeof current}, expected ${type}`)
+            throw new AreaError(`type of param '${i[0]}' is ${typeof current}, expected ${type}`, 400)
+        if (type == "string" && properties) {
+            formatContent(current, properties)
+        }
     }
-}
-
-function checkPropertyExistance(
-    action: Action,
-    completePropertyName: string,
-    propertyExpectedType: string | null = null) {
-    let splitted = completePropertyName.split('.')
-
-    if (splitted.length < 2)
-        throw Error("Invalid property usage")
-    if (splitted[0] != "Action")
-        throw Error("Properties not attached to action are not implemented")
-    if (!action.propertiesType[splitted[1]])
-        throw Error(`Property ${completePropertyName} does not exists`)
-    if (propertyExpectedType != null && action.propertiesType[splitted[1]] != propertyExpectedType)
-        throw Error(`Property type must be ${propertyExpectedType}, but it's ${action.propertiesType[splitted[1]]}`)
-}
-
-function createArea(
-    action: Action, actionParams: any,
-    reaction: Reaction, reactionParams: any
-) {
-    //let area = new Area(action, actionParams, reaction, reactionParams)
 }
 
 export default {
@@ -80,5 +63,4 @@ export default {
     getReaction,
     checkParams,
     services,
-    checkPropertyExistance
 }

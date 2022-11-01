@@ -1,14 +1,13 @@
 import {Mongoose, Schema, model} from "mongoose";
 
 const TriggerSchema = new Schema({
-    trigger_id: {type: Number},
     user_id: {type: Number},
-    action_id: {type: Number},
-    action_params: {type: String},
     title: {type: String},
     description: {type: String},
+    action: {type: String},
+    action_params: {type: String},
     condition: {type: String},
-    reaction_id: {type: Number},
+    reaction: {type: String},
     reaction_params: {type: String}
 })
 
