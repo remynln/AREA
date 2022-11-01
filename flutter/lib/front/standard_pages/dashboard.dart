@@ -42,7 +42,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     child: Text("Welcome back on Sergify.",
                         style: TextStyle(
                             fontSize: 16,
-                            color: Color.fromRGBO(95, 100, 126, 100),
+                            color: Color.fromRGBO(200, 200, 200, 100),
                             fontFamily: "RobotoMono")))
               ]),
           Spacer(),
@@ -77,7 +77,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  PagesWidget(token: widget.token, index: 2)));
+                                  PagesWidget(token: widget.token, index: 3)));
                     },
                     child: const Text("View All",
                         style: TextStyle(
@@ -88,11 +88,15 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         ),
         GestureDetector(
             onTap: () {
-              print("coucou");
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          PagesWidget(token: widget.token, index: 2)));
             },
             child: SvgPicture.asset("assets/dashboard/add.svg",
                 alignment: Alignment.topLeft)),
-        SizedBox(height: 25),
+        SizedBox(height: 20),
         Row(children: <Widget>[
           Padding(
               padding: EdgeInsetsDirectional.only(start: 15),
