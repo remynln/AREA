@@ -27,6 +27,7 @@ for (var i of Area.services) {
 router.get('/:serviceName', (req, res) => {
     if (!req.query.callback) {
         res.status(403).send("Missing callback_url")
+        return
     }
     let service = global.services.get(req.params.serviceName)
     if (!service) {
