@@ -23,7 +23,7 @@ function checkActionReaction(body: any) {
     return {action, reaction}
 }
 
-area.post("/create", checkBody(["action", "reaction"]),
+area.post("/create", checkBody(["action", "reaction", "title"]),
 (req, res, next) => {
     
     let ret = checkActionReaction(req.body)
@@ -35,8 +35,12 @@ area.post("/create", checkBody(["action", "reaction"]),
         console.log(action.propertiesType)
         checkConditionSyntax(condition, action.propertiesType)
     }
-    let area = new Area(action, req.body.action.params, condition,
-        reaction, req.body.reaction.params)
+    let area = new Area(
+        action, req.body.action.params,
+        condition,
+        reaction, req.body.reaction.params,
+        req.body.title, req.body.description || ''
+    )
     let decoded = jwt.decode(req.headers.authorization?.split(' ')[1] || '')
     area.setTokens((decoded as JwtFormat).email).then(() => {
         area.start().catch((err) => {
