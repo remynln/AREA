@@ -6,6 +6,8 @@ import getServices from "./getServices";
 import loginService from "./loginService";
 import setArea from "./area/set";
 import getUsers from "./user/getMany";
+import getUserId from "./user/getId";
+import getUser from "./user/get";
 
 const db = {
     register:Register,
@@ -18,6 +20,8 @@ const db = {
         set: setArea
     },
     user: {
+        getId: getUserId,
+        get: getUser,
         getMany: getUsers
     }
 }

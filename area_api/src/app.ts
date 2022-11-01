@@ -11,6 +11,7 @@ import serviceConnect from './routes/service/connect'
 import serviceGet from './routes/service/get'
 import services from './routes/service/services'
 import users from "./routes/users"
+import user from "./routes/user/root"
 import { checkCondition, checkConditionSyntax, checkSimpleCondition } from './core/formatting';
 import errorMiddleware from './middlewares/errorHandler';
 import checkAdmin from './middlewares/checkAdmin';
@@ -48,6 +49,7 @@ app.use('/services', checkToken, services)
 app.use('/service', checkToken, serviceGet)
 
 app.use('/users', checkToken, checkAdmin, users)
+app.use('/user', checkToken, user)
 
 // home route
 app.get('/', (req, res) => res.send('hello world'))
