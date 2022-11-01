@@ -4,6 +4,7 @@ import SetToken from "./setToken";
 import GetToken from "./getToken";
 import getServices from "./getServices";
 import loginService from "./loginService";
+import setArea from "./area/set";
 
 const db = {
     register:Register,
@@ -11,7 +12,10 @@ const db = {
     setToken:SetToken,
     getToken:GetToken,
     getServices,
-    loginService
+    loginService,
+    area: {
+        set: setArea
+    }
 }
 
 export default db
