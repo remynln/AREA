@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:area/api/endpoints.dart';
 import 'package:area/api/answer/login_answer.dart';
 import 'package:area/api/answer/register_answer.dart';
+import 'package:area/api/answer/services_answer.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -60,5 +61,22 @@ class ApiService {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  Future<ServicesAnswer?> getConnectedServices(String token) async {
+    try {
+      final uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.servicesEndpoint);
+      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      var response = await http.get(uri, headers: headers);
+      if (response.statusCode != 200) {
+        log(response.statusCode.toString());
+      }
+      ServicesAnswer model = servicesAnswerFromJson(response.body);
+      return model;
+    } catch (e) {
+      log(e.toString());
+    }
+    return null;
   }
 }

@@ -4,9 +4,11 @@
 
 import 'dart:convert';
 
-GoogleLoginAnswer googleLoginAnswerFromJson(String str) => GoogleLoginAnswer.fromJson(json.decode(str));
+GoogleLoginAnswer googleLoginAnswerFromJson(String str) =>
+    GoogleLoginAnswer.fromJson(json.decode(str));
 
-String googleLoginAnswerToJson(GoogleLoginAnswer data) => json.encode(data.toJson());
+String googleLoginAnswerToJson(GoogleLoginAnswer data) =>
+    json.encode(data.toJson());
 
 class GoogleLoginAnswer {
   GoogleLoginAnswer({
@@ -15,11 +17,12 @@ class GoogleLoginAnswer {
 
   String token;
 
-  factory GoogleLoginAnswer.fromJson(Map<String, dynamic> json) => GoogleLoginAnswer(
-    token: json["token"],
-  );
+  factory GoogleLoginAnswer.fromJson(Map<String, dynamic> json) =>
+      GoogleLoginAnswer(
+        token: json["token"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "token": token,
-  };
+        "token": token,
+      };
 }
