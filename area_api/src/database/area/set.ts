@@ -5,7 +5,6 @@ import { Area } from '~/core/types';
 import { describe } from 'node:test';
 
 
-// get the connected service in function of user email
 export default async function setArea(area: Area) {
     let user = await User.findOne({ mail: area.accountMail });
     if (!user) {

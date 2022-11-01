@@ -5,6 +5,7 @@ const userSchema = new Schema({
     mail: {type: String},
     username: {type: String},
     password: {type: String},
+    admin: {type: Boolean}
 })
 
 const userModel = model('User', userSchema)
