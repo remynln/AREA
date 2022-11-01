@@ -70,18 +70,8 @@ flutter:
      - assets/sergify.png
      - assets/google_login.png
      - assets/dashboard/add.svg
-     - assets/dashboard/service/facebook_icon.png
-     - assets/dashboard/service/github_icon.png
-     - assets/dashboard/service/google_icon.png
-     - assets/dashboard/service/instagram_icon.png
-     - assets/dashboard/service/outlook_icon.png
-     - assets/dashboard/service/twitter_icon.png
-     - assets/dashboard/service/facebook.png
-     - assets/dashboard/service/github.png
-     - assets/dashboard/service/google.png
-     - assets/dashboard/service/instagram.png
-     - assets/dashboard/service/outlook.png
-     - assets/dashboard/service/twitter.png
+     - assets/dashboard/service/google_connected.png
+     - assets/dashboard/service/google_not_connected.png
 
   fonts:
     - family: RobotoMono
