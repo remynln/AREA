@@ -162,3 +162,12 @@ condition is formatted like every basic programming language.
 
 You can compare properties of type number using comparisons operators: `>`, `<`, `<=`, `>=`, `==`
 You can compare properties of type string using operators: `==` (case insensitive comparison), `===` (case sensitive comparison), `in` (leftstring is a substring of rightstring exemple: `"can" in "you can do it"` is true)
+
+### User gesture
+Every routes in this categry have a `[user_id]` parameter, this param is an hexadecimal value, accessible only by admin users.
+But [user_id] can also be set to `me`, this will reffer to the currently connected account (with jwt token passed in header), and many routes can be accessed without being an admin with the `me` parameter.
+
+#### Admin
+There is one superuser, with username "root", this is the only user that can set other users to administrators
+there is as many as superuser the superuser wants to set.
+admins can't affect other admin accounts
