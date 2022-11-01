@@ -22,7 +22,6 @@ class ServiceDisplay extends StatefulWidget {
 }
 
 class _ServiceDisplayState extends State<ServiceDisplay> {
-
   Widget handleDisplayColumn(
       List<Service> service_list, var index, List<dynamic> connectedServices) {
     late String firstServiceImage;
@@ -74,13 +73,12 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
     }
   }
 
-  Future<List<Widget>> createWidgetList(List<Service> service_list) async {
+  Widget createWidgetList(
+      List<Service> service_list, ServicesAnswer? servicesAnswer) {
     List<Widget> list = [];
-    ServicesAnswer? servicesAnswer =
-        await ApiService().getConnectedServices(widget.token);
 
     if (servicesAnswer == null) {
-      return [];
+      return Container();
     }
     for (var index = 0; index < service_list.length; index++) {
       list.add(
@@ -90,8 +88,7 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
         index++;
       }
     }
-    print(list);
-    return (list);
+    return (Row(children: list));
   }
 
   @override
@@ -106,12 +103,19 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
     return Padding(
         padding: const EdgeInsetsDirectional.only(start: 20),
         child: Row(children: [
-          FutureBuilder<List<Widget>>(
-              future: createWidgetList(service_list),
-              builder:
-                  (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-                    return Text("SALUT", style: TextStyle(color: Colors.white));
-              })
+          FutureBuilder(
+            future: ApiService().getConnectedServices(widget.token),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: createWidgetList(service_list, snapshot.data));
+              } else {
+                return const Center(
+                    child: CircularProgressIndicator(color: Colors.white));
+              }
+            },
+          )
         ]));
   }
 }
