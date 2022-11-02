@@ -44,7 +44,7 @@ app.use('/area', checkToken, area)
 
 
 // service route
-app.use('/service', checkToken, serviceConnect)
+app.use('/service', serviceConnect)
 app.use('/services', checkToken, services)
 app.use('/service', checkToken, serviceGet)
 
