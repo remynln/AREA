@@ -34,9 +34,9 @@ router.use("/:userId", checkAdmin, (req, res, next) => {
             })
             return
         }
+        res.locals.targetUser = req.params.userId;
+        next()
     }).catch((err) => next(err))
-    res.locals.targetUser = req.params.userId;
-    next()
 }, userDefinedRouter)
 
 export default router
