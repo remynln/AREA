@@ -27,6 +27,14 @@ router.use("/:userId", checkAdmin, (req, res, next) => {
         res.status(400).json({message: "Invalid userId"})
         return
     }
+    db.user.get(req.params.userId).then((user) => {
+        if (user.admin && res.locals.userInfo.email != "root") {
+            res.status(403).json({
+                message: "You don't have rights to access admin users"
+            })
+            return
+        }
+    }).catch((err) => next(err))
     res.locals.targetUser = req.params.userId;
     next()
 }, userDefinedRouter)
