@@ -4,6 +4,16 @@ import User from "~/models/user";
 import { UserPut } from "~/database/user/update"
 var router = Router()
 
+router.delete("/", (req, res, next) => {
+    db.user.delete(res.locals.targetUser).then((user) => {
+        res.status(200).json({
+            message: "OK"
+        })
+    }).catch((err) => {
+        next(err)
+    })
+})
+
 router.put("/", (req, res, next) => {
     let values: UserPut = {
         admin: req.body.admin || undefined,
