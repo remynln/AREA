@@ -9,6 +9,7 @@ import getUsers from "./user/getMany";
 import getUserId from "./user/getId";
 import getUser from "./user/get";
 import updateUser from "./user/update";
+import deleteUser from "./user/delete";
 
 const db = {
     register:Register,
@@ -24,7 +25,8 @@ const db = {
         getId: getUserId,
         get: getUser,
         getMany: getUsers,
-        update: updateUser
+        update: updateUser,
+        delete: deleteUser
     }
 }
 
