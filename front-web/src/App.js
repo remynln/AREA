@@ -8,6 +8,7 @@ import { Login } from './Pages/Login'
 import { Register } from './Pages/Register'
 import { PrivateRoutes } from './Components/LoginPage/PrivateRoutes'
 import { useEffect, useState } from 'react';
+import jwt from 'jwt-decode'
 import axios from "axios";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
   const loadUser = async () => {
     try {
       const res = await axios.get("/services/", { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+      const user = jwt(JSON.parse(localStorage.getItem("jwt")))
 
       if (res.status === 200) {
         res.data.connected.map(service => {
