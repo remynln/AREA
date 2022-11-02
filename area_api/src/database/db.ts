@@ -4,6 +4,11 @@ import SetToken from "./setToken";
 import GetToken from "./getToken";
 import getServices from "./getServices";
 import loginService from "./loginService";
+import setArea from "./area/set";
+import getUsers from "./user/getMany";
+import getUserId from "./user/getId";
+import getUser from "./user/get";
+import updateUser from "./user/update";
 
 const db = {
     register:Register,
@@ -11,7 +16,16 @@ const db = {
     setToken:SetToken,
     getToken:GetToken,
     getServices,
-    loginService
+    loginService,
+    area: {
+        set: setArea
+    },
+    user: {
+        getId: getUserId,
+        get: getUser,
+        getMany: getUsers,
+        update: updateUser
+    }
 }
 
 export default db

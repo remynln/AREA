@@ -48,7 +48,7 @@ const google: Service = {
         }, function(req: any, accessToken: any, refresh_token: any, profile: any, callback: any) {
             console.log((req as Request).baseUrl)
             console.log(profile)
-            let accountToken = req.headers.authorization;
+            let accountToken = req.query.state;
             let cbObj = {
                 data: profile._json.email,
                 username: profile._json.name,
