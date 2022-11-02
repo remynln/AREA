@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:area/api/endpoints.dart';
-
-void openIP(context) {
-  TextEditingController new_ip = TextEditingController();
-  TextEditingController new_port = TextEditingController();
-
-  showDialog(
+void openReactionService(context) {
+    showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Color.fromRGBO(60, 60, 60, 1),
+          backgroundColor: Color.fromRGBO(90, 90, 90, 100),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(
@@ -42,11 +37,9 @@ void openIP(context) {
                       child: Container(
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
-                          style: TextStyle(color: Colors.white),
-                          controller: new_ip,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              hintText: ApiConstants.ip,
+                              hintText: "TEST",
                               hintStyle: TextStyle(color: Colors.grey)),
                         ),
                       ),
@@ -59,11 +52,9 @@ void openIP(context) {
                       child: Container(
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
-                          style: TextStyle(color: Colors.white),
-                          controller: new_port,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              hintText: ApiConstants.port,
+                              hintText: "TEST2",
                               hintStyle: TextStyle(color: Colors.grey)),
                         ),
                       ),
@@ -75,12 +66,7 @@ void openIP(context) {
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        if (new_ip.text.isNotEmpty) {
-                          ApiConstants.ip = new_ip.text;
-                        }
-                        if (new_port.text.isNotEmpty) {
-                          ApiConstants.port = new_port.text;
-                        }
+                        print("HERE");
                         Navigator.of(context).pop();
                       },
                       style: ElevatedButton.styleFrom(
