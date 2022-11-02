@@ -10,16 +10,18 @@ export default async function setArea(area: Area) {
     if (!user) {
         throw new DatabaseError(`Account with email ${area.accountMail} does not exists`, 404)
     }
+    console.log("n", user._id)
     const newTrigger = new Trigger({
         user_id: user._id,
         action:  area.action.ref.serviceName + "/" + area.action.ref.name,
-        action_params: area.action.params,
+        action_params: JSON.stringify(area.action.params),
         condition: area.condition,
         reaction:  area.reaction.ref.serviceName + "/" + area.reaction.ref.name,
-        reaction_params: area.reaction.params,
+        reaction_params: JSON.stringify(area.reaction.params),
         title: area.title,
         description: area.description
     })
     const savedInstance = await newTrigger.save()
-    return savedInstance._id;
+    console.log("sm")
+    return savedInstance._id
 }
