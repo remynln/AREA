@@ -3,6 +3,8 @@ declare global {
       interface ProcessEnv {
         GOOGLE_CLIENT_ID: string;
         GOOGLE_CLIENT_SECRET: string;
+        MICROSOFT_CLIENT_ID: string;
+        MICROSOFT_CLIENT_SECRET: string;
         JWT_KEY: string;
         GOOGLE_APPLICATION_CREDENTIALS: string;
         DB_USER: string;

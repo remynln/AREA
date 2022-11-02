@@ -1,10 +1,12 @@
 import { AreaError } from "./errors"
 import { formatContent } from "./formatting"
 import google from "./services/google"
+import microsoft from "./services/outlook"
 import { Action, Area, Reaction } from "./types"
 
 const services = new Map([
-    ["google", google]
+    ["google", google],
+    ["outlook", microsoft]
 ])
 
 function getAction(actionName: string) {

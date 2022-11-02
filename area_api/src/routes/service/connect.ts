@@ -34,8 +34,8 @@ router.get('/:serviceName', (req, res) => {
     }
     let authParams = service.authParams;
     authParams.state = req.query.callback as string
-    authParams.callbackURL = "/service/google/callback"
-    passport.authenticate(req.params.serviceName, authParams)(req, res)
+    authParams.callbackURL = `/service/${req.params.serviceName}/callback`
+    passport.authenticate(service.strategy, authParams)(req, res)
 }, (req, res) => {
 })
 
@@ -49,8 +49,8 @@ router.get('/:serviceName/callback', (req, res, next) => {
     }
     let authParams = service.authParams;
     authParams.failureRedirect = "http://localhost:8080/"
-    authParams.callbackURL = "/service/google/callback"
-    passport.authenticate(req.params.serviceName, authParams, (err, user, info) => {
+    authParams.callbackURL = `/service/${req.params.serviceName}/callback`
+    passport.authenticate(service.strategy, authParams, (err, user, info) => {
         console.log("user: ", user)
         res.locals.user = user;
         next()

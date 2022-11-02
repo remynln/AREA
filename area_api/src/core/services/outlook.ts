@@ -1,25 +1,22 @@
 import { Area, Service } from "../types";
-const GoogleStrategy = require("passport-google-oauth20")
-import { PubSub } from '@google-cloud/pubsub';
+const OutlookStrategy = require("passport-outlook")
 import { readFileSync } from "fs";
 import { exit } from "process";
 import axios from "axios";
-import newMail from "~/areas/gmail/actions/newMail";
-import sendMail from "~/areas/gmail/reactions/sendMail";
+// import newMail from "~/areas/outlook/actions/newMail";
+import sendMail from "~/areas/outlook/reactions/sendMail";
 import { Request } from "express";
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
-var Gmail = require("node-gmail-api")
 import jwt from "jsonwebtoken"
-const pubsub = new PubSub({ projectId: "sergify" });
 import qs from "qs"
 
-const google: Service = {
+const outlook: Service = {
     refreshToken: async (it: string) => {
         let res
-        res = await axios.post("https://oauth2.googleapis.com/token", qs.stringify({
-            client_id: process.env.GOOGLE_CLIENT_ID,
-            client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        res = await axios.post("https://login.microsoftonline.com/common/oauth2/v2.0/token", qs.stringify({
+            client_id: process.env.MICROSOFT_CLIENT_ID,
+            client_secret: process.env.MICROSOFT_CLIENT_SECRET,
             grant_type: "refresh_token",
             refresh_token: it
         }), {
@@ -30,28 +27,31 @@ const google: Service = {
         return res.data.access_token;
     },
     actions: new Map([
-        ["newMail", newMail]
+        // ["newMail", newMail]
     ]),
     reactions: new Map([
         ["sendMail", sendMail]
     ]),
     authParams: {
-        accessType: 'offline',
-        approvalPrompt: 'force',
     },
-    strategy: new GoogleStrategy({
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    strategy: new OutlookStrategy({
+        clientID: process.env.MICROSOFT_CLIENT_ID,
+        clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
         passReqToCallback: true,
-        scope: ['profile', 'email',
-            'https://mail.google.com/']
+        scope: [
+            'openid',
+            'profile',
+            'offline_access',
+            'https://outlook.office.com/Mail.Read',
+            'https://outlook.office.com/Mail.Send'
+        ],
         }, function(req: any, accessToken: any, refresh_token: any, profile: any, callback: any) {
-            console.log((req as Request).baseUrl)
+            // console.log((req as Request).baseUrl)
             console.log(profile)
             let accountToken = req.headers.authorization;
             let cbObj = {
-                data: profile._json.email,
-                username: profile._json.name,
+                data: profile._json.EmailAddress,
+                username: profile._json.DisplayName,
                 refreshToken: refresh_token,
                 accessToken: accessToken
             }
@@ -61,7 +61,7 @@ const google: Service = {
             }
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
             if (!(req as Request).baseUrl.includes("/auth/")) {
-                db.setToken(accessToken, refresh_token, mail, 'google').then(() => {
+                db.setToken(accessToken, refresh_token, mail, 'outlook').then(() => {
                     callback(null, cbObj, null)
                 })
             } else {
@@ -70,4 +70,4 @@ const google: Service = {
       })
 }
 
-export default google
+export default outlook
