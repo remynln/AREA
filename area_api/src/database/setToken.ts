@@ -13,7 +13,7 @@ export default async function setToken(token: string, refreshToken: string,
         user_id: user._id,
         service_token: token,
         service_refresh_token: refreshToken,
-        service_name: service,
+        service_name: service
     })
     await newToken.save()
 }
