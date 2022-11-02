@@ -27,7 +27,7 @@ mongoose.connect(url).then(() => {
 app.use(express.json())
 
 //maybe useless
-app.use(cors())
+app.use(cors());
 
 app.use(session({
     secret: 'keyboard cat',
