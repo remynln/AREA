@@ -43,8 +43,10 @@ export const Login = (props) => {
             password: password
         })
         .then(res => {
-            if (res.status === 200)
+            if (res.status === 200) {
                 localStorage.setItem('jwt', JSON.stringify(res.data.token))
+                navigate('/dashboard')
+            }
         })
         .catch(error => {
             console.log(error)
