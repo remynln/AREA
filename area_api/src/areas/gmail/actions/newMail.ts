@@ -1,6 +1,6 @@
-import { Action, AreaRet } from "~/core/types";
+import { Action, AreaRet, RefreshTokenFunction } from "~/core/types";
 import { PubSub, Subscription } from '@google-cloud/pubsub';
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { getMailFromToken } from "../utils";
 const pubsub = new PubSub({ projectId: "sergify" });
 
@@ -23,14 +23,24 @@ interface Mail {
 
 async function getMailFromId(token: string,
     mailId: string,
-    trigger: (mail: Mail) => void
+    trigger: (mail: Mail) => void,
+    refresh: RefreshTokenFunction
 ) {
-    const res = await axios.get(`https://gmail.googleapis.com/gmail/v1/users/me/messages/` + mailId, {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
+    const res = await refresh(async () => {
+        try {
+            return await axios.get(`https://gmail.googleapis.com/gmail/v1/users/me/messages/` + mailId, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+        } catch (err: any) {
+            if (!err.response || err.response.status != 401)
+                throw err
+            return AreaRet.AccessTokenExpired
         }
     })
+    
     for (let i of res.data.labelIds) {
         if (i == 'SENT')
             return
@@ -64,17 +74,29 @@ async function getMailFromId(token: string,
 async function getLastMails(
     token: string,
     historyId: string,
+    refresh: RefreshTokenFunction,
     trigger: (mail: Mail) => void
 ) {
     var newHistoryId = historyId
-    const res = await axios.get("https://gmail.googleapis.com/gmail/v1/users/me/history", {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        },
-        params: {
-            startHistoryId: historyId
+    const res: AxiosResponse = await refresh(async () => {
+        try {
+            const res = await axios.get("https://gmail.googleapis.com/gmail/v1/users/me/history", {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                params: {
+                    startHistoryId: historyId
+                }
+            })
+        } catch (err: any) {
+            if (!err.response)
+                throw err
+            if (err.response.status == 401)
+                return AreaRet.AccessTokenExpired
+            throw err
         }
+        return res
     })
     if (!res.data.history)
         return historyId
@@ -82,7 +104,7 @@ async function getLastMails(
         if (!i.messagesAdded)
             continue;
         for (let messagesAdded of i.messagesAdded) {
-            await getMailFromId(token, messagesAdded.message.id, trigger)
+            await getMailFromId(token, messagesAdded.message.id, trigger, refresh)
         }
     }
     newHistoryId = res.data.historyId;
@@ -165,7 +187,7 @@ interface Sub {
 interface NewMail extends Action {
     subs: Map<string, Sub> | undefined,
     _sub: Subscription | undefined,
-    _newMessageCallback: (mess: any) => Promise<void>
+    _newMessageCallback: (mess: any, refresh: RefreshTokenFunction) => Promise<void>
 }
 
 const newMail: NewMail = {
@@ -189,7 +211,7 @@ const newMail: NewMail = {
     subs: undefined,
     _sub: undefined,
 
-    async _newMessageCallback(mess) {
+    async _newMessageCallback(mess, refresh) {
         if (!this.subs) {
             console.log("subs undefined")
             return
@@ -198,7 +220,7 @@ const newMail: NewMail = {
         for (let [key, value] of this.subs) {
             if (data.emailAddress != value.email)
                 continue;
-            value.historyId = await getLastMails(value.token, value.historyId, (mail) => {
+            value.historyId = await getLastMails(value.token, value.historyId, refresh, (mail) => {
                 for (let i of value.triggers) {
                     i(mail)
                 }
@@ -206,7 +228,7 @@ const newMail: NewMail = {
         }
     },
 
-    async start(params, serviceToken, accountMail, trigger, error) {
+    async start(params, serviceToken, accountMail, trigger, error, refresh) {
         if (!this.subs)
             this.subs = new Map([])
         console.log("initializing sub")
@@ -214,7 +236,7 @@ const newMail: NewMail = {
             this._sub = await initSub()
             this._sub.on('message', (mess) => {
                 try {
-                    this._newMessageCallback(mess)
+                    this._newMessageCallback(mess, refresh)
                 } catch (err) {
                     error(err as Error)
                 }
@@ -225,15 +247,18 @@ const newMail: NewMail = {
         if (!sub) {
             var historyId: string = ''
             var email: string = ''
-            try {
-                historyId = await watchForMail(serviceToken)
-                email = await getMailFromToken(serviceToken)
-            } catch (err: any) {
-                if (!err.response)
-                    throw err
-                if ((err as AxiosError).response?.status == 401)
-                    return AreaRet.AccessTokenExpired
-            }
+            refresh(async () => {
+                try {
+                    historyId = await watchForMail(serviceToken)
+                    email = await getMailFromToken(serviceToken)
+                } catch (err: any) {
+                    if (!err.response)
+                        throw err
+                    if ((err as AxiosError).response?.status == 401)
+                        return AreaRet.AccessTokenExpired
+                }
+                return AreaRet.Ok
+            })
             sub = {
                 historyId: historyId,
                 token: serviceToken,
@@ -244,7 +269,6 @@ const newMail: NewMail = {
         }
         console.log("done")
         sub.triggers.push(trigger)
-        return AreaRet.Ok
     },
     stop() {
     },

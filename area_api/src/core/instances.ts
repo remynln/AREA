@@ -17,6 +17,9 @@ const AreaInstances = {
     async add(area: Area) {
         let id = await db.area.set(area)
         areas.set(id.toHexString(), area)
+    },
+    async load() {
+        
     }
 }
 

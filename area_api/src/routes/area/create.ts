@@ -7,6 +7,7 @@ import JwtFormat from "~/routes/auth/jwtFormat"
 import jwt from "jsonwebtoken"
 import { checkConditionSyntax } from "~/core/formatting";
 import { AreaError } from "~/core/errors";
+import AreaInstances from "~/core/instances";
 
 var area: Router = Router()
 
@@ -46,9 +47,11 @@ area.post("/create", checkBody(["action", "reaction", "title"]),
         area.start().catch((err) => {
             next(err)
         }).then(() => {
-            res.status(201).json({
-                message: 'OK'
-            })
+            AreaInstances.add(area).then(() => {
+                res.status(201).json({
+                    message: 'OK'
+                })
+            }).catch((err) => next(err))
         })
     }).catch((err) => {
         next(err)

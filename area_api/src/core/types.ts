@@ -1,4 +1,5 @@
 import { AxiosError } from "axios";
+import { Types } from "mongoose";
 import passport from "passport"
 import db from "~/database/db";
 import { AreaError } from "./errors";
@@ -32,12 +33,15 @@ export interface Action {
         token: string,
         accountMail: string,
         trigger: (properties: any) => void,
-        error: (err: Error) => void
-    ) => Promise<AreaRet>,
+        error: (err: Error) => void,
+        refreshToken: RefreshTokenFunction
+    ) => Promise<void>,
     stop: () => void
     destroy: () => void
     [x: string | number | symbol]: unknown;
 }
+
+export type RefreshTokenFunction<T = any> = (requestFunc: () => Promise<AreaRet | T>) => Promise<T>
 
 export interface Reaction {
     serviceName: string | null
@@ -60,8 +64,27 @@ export interface Service {
 interface AreaWrapper<T extends Action | Reaction> {
     ref: T,
     params: any,
-    token: string | undefined,
-    refreshToken: string | undefined,
+    tokens: Tokens | undefined
+}
+
+export class Tokens {
+    access: string
+    refresh: string
+    dbId: Types.ObjectId | undefined
+
+    constructor(token: string, refreshToken: string) {
+        this.access = token
+        this.refresh = token
+    }
+    async save(email: string, service: string) {
+        this.dbId = await db.setToken(this.access, this.refresh, email, service)
+    }
+    async refreshToken(newAccessToken: string) {
+        this.access = newAccessToken
+        if (!this.dbId)
+            return
+        db.token.refresh(this.dbId, newAccessToken)
+    }
 }
 
 export class Area {
@@ -86,34 +109,37 @@ export class Area {
         this.action = {
             ref: action,
             params: actionParams,
-            token: undefined,
-            refreshToken: undefined,
+            tokens: undefined
         }
         this.reaction = {
             ref: reaction,
             params: reactionParams,
-            token: undefined,
-            refreshToken: undefined,
+            tokens: undefined
         }
         this.condition = condition
         this.accountMail = undefined
     }
+
     public async setTokens(
+        tokens: Map<string, Tokens>,
         accountMail: string
     ) {
         this.accountMail = accountMail
         for (let i of [this.action, this.reaction]) {
             if (!i.ref.serviceName)
                 continue
-            [i.token, i.refreshToken] = await db.getToken(accountMail, i.ref.serviceName)
+            let res = tokens.get(i.ref.serviceName)
+            if (!res)
+                throw new AreaError(`Not connected to service ${i.ref.serviceName}`, 403)
+            i.tokens = res
         }
     }
 
     private async refreshToken(aorea: AreaWrapper<any>) {
         let service = Global.services.get(aorea.ref.serviceName);
-        if (!service || !aorea.refreshToken)
+        if (!service || !aorea.tokens)
             return;
-        aorea.token = await service.refreshToken(aorea.refreshToken)
+        aorea.tokens.refreshToken(await service.refreshToken(aorea.tokens.refresh))
     }
 
     public formatParams(actionProperties: any) {
@@ -126,7 +152,7 @@ export class Area {
 
     launchReaction(formatted: string, tokenRefreshed: boolean = false) {
         this.reaction.ref.launch(formatted,
-        this.reaction.token || '').then((res) => {
+        this.reaction.tokens?.access || '').then((res) => {
             if (res == AreaRet.AccessTokenExpired) {
                 if (tokenRefreshed) {
                     return
@@ -143,24 +169,35 @@ export class Area {
         })
     }
 
+    async refreshTokenFunc<T>(func: () => Promise<AreaRet | T>, aorea: AreaWrapper<Action | Reaction>) {
+        let ret = await func()
+        if (ret != AreaRet.AccessTokenExpired)
+            return ret
+        if (!aorea.ref.serviceName)
+            return ret
+        let service = Global.services.get(aorea.ref.serviceName);
+        if (!service || !aorea.tokens)
+            return ret;
+        aorea.tokens.refreshToken(await service.refreshToken(aorea.tokens.refresh))
+        let ret2 = await func()
+        if (ret2 == AreaRet.AccessTokenExpired)
+            throw new AreaError(`Impossible to refresh token for service ${aorea.ref.serviceName}`, 500) 
+        return ret2
+    }
+
     public async start() {
-        const res = await this.action.ref.start(this.action.params, this.action.token || '',
+        await this.action.ref.start(this.action.params,
+            this.action.tokens?.access || '',
         this.accountMail || '', (properties) => {
             if (this.condition && !checkCondition(this.condition, properties))
                 return;
             var formatted = this.formatParams(properties)
             this.launchReaction(formatted)
         }, (err) => {
-            console.log("Actio trigger" +
+            console.log("Action trigger" +
                 this.action.ref.serviceName + "/" + this.action.ref.name +
                 "failed")
-        })
-        if (res == AreaRet.AccessTokenExpired) {
-            console.log("action token expired")
-            this.refreshToken(this.action).then((res) => {
-                this.start()
-            })
-        }
+        }, (func) => this.refreshTokenFunc(func, this.action))
     }
 
     public destroy() {
