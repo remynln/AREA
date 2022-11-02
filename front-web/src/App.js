@@ -12,29 +12,50 @@ import jwt from 'jwt-decode'
 import axios from "axios";
 
 function App() {
-  const [user, setUser] = useState(false)
+  const [user, setUser] = useState(localStorage.getItem("jwt")===null?false:{username: null})
+  const [services, setServices] = useState([])
 
   axios.defaults.baseURL = process.env.REACT_APP_SERVER_IP;
 
   useEffect(() => {
-    if (localStorage.getItem("jwt") !== null && user === false)
-      setUser(true)
-    loadUser()
-  });
+    if (user.username === null) {
+      loadUser()
+      loadServices()
+    }
+  }, [localStorage.getItem("jwt")]);
+
+  function serviceExists(serviceName) {
+    return services.some(function(el) {
+      return el[serviceName] === "connected" || el[serviceName] === "disconnected";
+    });
+  }
+
+  const loadServices = async () => {
+    try {
+      const res = await axios.get("/services/", { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+
+      await res.data.connected.map(service => {
+        if (serviceExists(service) === false)
+          services.push({[service]: "connected"})
+        else
+          setServices({[service]: "connected"})
+      })
+      await res.data.not_connected.map(service => {
+        if (serviceExists(service) === false)
+          services.push({[service]: "disconnected"})
+        else
+          setServices({[service]: "disconnected"})
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const loadUser = async () => {
     try {
-      const res = await axios.get("/services/", { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
-      const user = jwt(JSON.parse(localStorage.getItem("jwt")))
+      const user = await jwt(JSON.parse(localStorage.getItem("jwt")))
 
-      if (res.status === 200) {
-        res.data.connected.map(service => {
-          localStorage.setItem(service, JSON.stringify("connected"))
-        })
-        res.data.not_connected.map(service => {
-          localStorage.setItem(service, JSON.stringify("disconnected"))
-        })
-      }
+      setUser({username: user.username})
     } catch (error) {
       console.log(error)
     }
@@ -45,7 +66,7 @@ function App() {
       <Router>
         <Routes>
           <Route element={<PrivateRoutes user={user} />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard user={user} services={services}/>} />
             <Route path="/workflows" element={<Workflows />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/settings" element={<Settings />} />
@@ -53,8 +74,8 @@ function App() {
             <Route path="/" element={<Navigate to="/dashboard" />} />
             <Route path="/home" element={<Navigate to="/dashboard" />} />
           </Route>
-          <Route path="/login" element={<Login user={user} setUser={setUser} />} />
-          <Route path="/register" element={<Register user={user} />} />
+          <Route path="/login" element={<Login user={user} setUser={setUser} setServices={setServices}/>} />
+          <Route path="/register" element={<Register user={user} setUser={setUser}/>} />
         </Routes>
       </Router>
     </div>

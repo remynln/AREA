@@ -14,7 +14,7 @@ function Dashboard_Services(props) {
                 <p className="BasicServicesTitle">Basic Services</p>
                 <p className="VideoGamesTitle">Game Services</p>
             </div>
-            <Services />
+            <Services services={props.services}/>
         </div>
     )
 }

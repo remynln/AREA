@@ -3,12 +3,12 @@ import "./Services.css"
 import SingleService from "./SingleService"
 import { ServicesContent } from "./ServicesContent"
 
-function Services() {
+function Services(props) {
     return (
         <div className="Services">
             {ServicesContent.map((val, key) => {
                 return (  
-                   <SingleService link={val.link} logo={val.logo} name={val.name}/>   
+                   <SingleService link={val.link} logo={val.logo} name={val.name} servicesState={props.services}/>   
                 )
             })}
         </div>

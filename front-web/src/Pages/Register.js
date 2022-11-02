@@ -5,7 +5,7 @@ import axios from "axios";
 import './Login.css'
 
 export const Register = (props) => {
-    const [username, setUser] = useState("");
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setError] = useState("");
@@ -18,7 +18,7 @@ export const Register = (props) => {
     };
 
     useEffect(() => {
-        if (props.user === true && localStorage.getItem("jwt") !== null)
+        if (props.user.username !== undefined && localStorage.getItem("jwt") !== null)
             navigate('/dashboard')
         if (password.length < 8 && password.length > 0)
             setError("Password must be more than 8 caracters")
@@ -43,6 +43,7 @@ export const Register = (props) => {
         .then(res => {
             if (res.status === 201)
                 localStorage.setItem('jwt', JSON.stringify(res.data.token))
+                props.setUser({username: null})
                 navigate("/dashboard")
         })
         .catch(error => {
@@ -54,7 +55,7 @@ export const Register = (props) => {
         <div className="LoginPage">
             <img src={Logo} className="LoginLogo" alt="Login_Logo"/>
             <div className="InputBackground">
-                <input className="Input" placeholder="Username" onChange={(event) => setUser(event.target.value)}></input>
+                <input className="Input" placeholder="Username" onChange={(event) => setUsername(event.target.value)}></input>
             </div>
             <div className="InputBackground" type="email">
                 <input className="Input" placeholder="Email" onChange={(event) => setEmail(event.target.value)}></input>
