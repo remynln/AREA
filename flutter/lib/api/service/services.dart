@@ -9,7 +9,7 @@ class Services {
 
 class Google extends Service {
   Google()
-      : super("Google", "assets/dashboard/service/google_connected.png",
+      : super("google", "assets/dashboard/service/google_connected.png",
             "assets/dashboard/service/google_not_connected.png", []);
 }
 
