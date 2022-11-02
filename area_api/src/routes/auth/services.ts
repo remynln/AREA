@@ -27,6 +27,7 @@ for (var i of Area.services) {
 router.get('/:serviceName', (req, res) => {
     if (!req.query.callback) {
         res.status(403).send("Missing callback_url")
+        return
     }
     let service = global.services.get(req.params.serviceName)
     if (!service) {
@@ -37,7 +38,7 @@ router.get('/:serviceName', (req, res) => {
     }
     let authParams = service.authParams;
     authParams.failureRedirect = req.query.callback as string
-    authParams.callbackURL = "/auth/service/google/callback"
+    authParams.callbackURL = "/auth/service/" + req.params.serviceName + "/callback"
     authParams.state = req.query.callback as string
     passport.authenticate(req.params.serviceName, authParams)(req, res)
 }, (req, res) => {
@@ -54,7 +55,7 @@ router.get('/:serviceName/callback', (req, res, next) => {
     }
     let authParams = service.authParams;
     authParams.failureRedirect = "http://localhost:8080/"
-    authParams.callbackURL = "/auth/service/google/callback"
+    authParams.callbackURL = "/auth/service/" + req.params.serviceName + "/callback"
     passport.authenticate(req.params.serviceName, authParams, (err, user, info) => {
         console.log("user: ", user)
         res.locals.user = user;
@@ -72,11 +73,12 @@ router.get('/:serviceName/callback', (req, res, next) => {
     db.loginService(
         req.params.serviceName,
         res.locals.user.data,
-        res.locals.user.username).then((mail) => {
+        res.locals.user.username).then(([mail, admin]) => {
         db.setToken(res.locals.user.accessToken, res.locals.user.refreshToken, mail,req.params.serviceName).then(() => {
             let token: JwtFormat = {
                 email: mail,
-                username: res.locals.username
+                username: res.locals.username,
+                admin: admin
             }
             res.redirect(url.format({
                 pathname: req.query.state as string,
