@@ -146,7 +146,7 @@ In order to do create an area correctly without doing a bad request: you can req
 `/service/[service_name]/reaction/[reaction_name]`: *GET Method*
 - **Response**:
   - 200 ->
-    - `properties`: [list of available properties]
+    - `parameters`: [list of available parameters]
   - 404 -> Service with name `service_name` not found
   - 404 -> Reaction `reaction_name` not found
 
