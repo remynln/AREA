@@ -21,6 +21,7 @@ export default async function forEach(area: Area,
     let hmm  = await User.findOne()
     for await (let user of User.find()) {
         let tokens = await Token.find({ user_id: user._id })
+        for (i of )
         trigger(user.mail, )
     }
 }
