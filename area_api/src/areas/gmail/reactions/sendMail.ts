@@ -31,8 +31,6 @@ const sendMail: Reaction = {
         msg.setRecipient(params.recipient)
         msg.setSubject(params.object)
         msg.setMessage('text/plain', params.body)
-        console.log(msg)
-        console.log(msg.asEncoded())
         try {
             await axios.post("https://gmail.googleapis.com/upload/gmail/v1/users/me/messages/send",
                 msg.asRaw(), {

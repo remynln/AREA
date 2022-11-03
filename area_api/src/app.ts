@@ -14,6 +14,7 @@ import users from "./routes/users"
 import user from "./routes/user/root"
 import errorMiddleware from './middlewares/errorHandler';
 import checkAdmin from './middlewares/checkAdmin';
+import AreaInstances from './core/instances';
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
@@ -61,6 +62,10 @@ app.use(errorMiddleware)
 /**
  * On demande à Express d'ecouter les requêtes sur le port défini dans la config
  */
-app.listen(config.API_PORT, () => {
-    console.log(`Launched on port ${config.API_PORT}`)
+
+AreaInstances.load().then(() => {
+    app.listen(config.API_PORT, () => {
+        console.log(`Launched on port ${config.API_PORT}`)
+    })
 })
+

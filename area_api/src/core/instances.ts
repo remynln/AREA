@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import db from "~/database/db";
+import global from "./global";
 import { Area, Tokens } from "./types";
 
 // This map stores areas instances, with db trigger id as key
@@ -33,7 +34,34 @@ const AreaInstances = {
         })
     },
     async load() {
-        
+        console.log("starting area instances")
+        await db.area.forEach(async (accMail, newTokens, area) => {
+            if (!tokens.has(accMail))
+                tokens.set(accMail, newTokens)
+            try {
+                let action = global.getAction(area.action)
+                let reaction = global.getReaction(area.reaction)
+                console.log("area.action_params", area.action_params)
+                let areaInstance = new Area(
+                    action,
+                    area.action_params == '' ? undefined : JSON.parse(area.action_params),
+                    area.condition,
+                    reaction,
+                    JSON.parse(area.reaction_params),
+                    area.title,
+                    area.description,
+                )
+                await areaInstance.setTokens(tokens.get(accMail)!, accMail)
+                areas.set(area._id.toHexString(), areaInstance)
+                await areaInstance.start((err) => {
+                    console.log("area error", err)
+                })
+                console.log("yes yes yes")
+            } catch (err) {
+                console.log("area initiation error", err)
+            }
+        })
+        console.log("instanciated")
     }
 }
 
