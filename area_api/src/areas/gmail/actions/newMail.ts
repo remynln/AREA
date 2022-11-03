@@ -89,6 +89,7 @@ async function getLastMails(
                     startHistoryId: historyId
                 }
             })
+            return res
         } catch (err: any) {
             if (!err.response)
                 throw err
@@ -247,16 +248,22 @@ const newMail: NewMail = {
         if (!sub) {
             var historyId: string = ''
             var email: string = ''
-            refresh(async () => {
+            await refresh(async () => {
+                console.log("trop bizarre")
                 try {
                     historyId = await watchForMail(serviceToken)
                     email = await getMailFromToken(serviceToken)
+                    console.log("dddd")    
                 } catch (err: any) {
-                    if (!err.response)
+                    if (!err.response) {
                         throw err
-                    if ((err as AxiosError).response?.status == 401)
+                    }
+                    if ((err as AxiosError).response?.status == 401) {
                         return AreaRet.AccessTokenExpired
+                    }
+                    throw err
                 }
+                console.log("lets go")
                 return AreaRet.Ok
             })
             sub = {
