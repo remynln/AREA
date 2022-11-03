@@ -11,6 +11,8 @@ import getUser from "./user/get";
 import updateUser from "./user/update";
 import deleteUser from "./user/delete";
 import refreshToken from "./tokens/refresh";
+import getFromUser from "./tokens/getFromUser";
+import getFromMail from "./user/getFromMail";
 
 const db = {
     register:Register,
@@ -27,10 +29,12 @@ const db = {
         get: getUser,
         getMany: getUsers,
         update: updateUser,
-        delete: deleteUser
+        delete: deleteUser,
+        getFromMail: getFromMail
     },
     token: {
-        refresh: refreshToken 
+        refresh: refreshToken,
+        getFromUser: getFromUser
     }
 }
 
