@@ -249,11 +249,9 @@ const newMail: NewMail = {
             var historyId: string = ''
             var email: string = ''
             await refresh(async () => {
-                console.log("trop bizarre")
                 try {
                     historyId = await watchForMail(serviceToken)
                     email = await getMailFromToken(serviceToken)
-                    console.log("dddd")    
                 } catch (err: any) {
                     if (!err.response) {
                         throw err
@@ -263,7 +261,6 @@ const newMail: NewMail = {
                     }
                     throw err
                 }
-                console.log("lets go")
                 return AreaRet.Ok
             })
             sub = {

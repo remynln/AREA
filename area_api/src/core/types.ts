@@ -190,7 +190,6 @@ export class Area {
         try {
             ret = await func()
         } catch (err) {
-            console.log("func refresh errr")
             error(err as Error)
             return
         }
