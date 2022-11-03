@@ -13,6 +13,7 @@ import deleteUser from "./user/delete";
 import refreshToken from "./tokens/refresh";
 import getFromUser from "./tokens/getFromUser";
 import getFromMail from "./user/getFromMail";
+import forEach from "./area/forEach";
 
 const db = {
     register:Register,
@@ -22,7 +23,8 @@ const db = {
     getServices,
     loginService,
     area: {
-        set: setArea
+        set: setArea,
+        forEach: forEach
     },
     user: {
         getId: getUserId,
