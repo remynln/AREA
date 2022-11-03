@@ -5,7 +5,7 @@ export default function checkBody(properties: Array<string>) {
         for (let i of properties) {
             if (!(i in req.body)) {
                 res.status(400).json({
-                    message: `missing '${i}' in body request`
+                    message: `Missing '${i}' in body request`
                 })
             }
         }

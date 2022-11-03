@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+.LoginPage {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.LoginLogo {
+    width: 500px;
+    height: 500px;
+    margin-bottom: -12vh;
+}
+
+.GoogleSignIn {
+    width: 320px;
+    height: 65px;
+    border-radius: 14px;
+    margin-bottom: 4vh;
+    background-color: #EDEDED;
+    display: flex;
+    align-items: center;
+    color: #444444;
+    font-family: Poppins;
+    text-decoration: none;
+}
+
+.GoogleSignIn:hover {
+    box-shadow: 0px 0px 0px 1.2px #f10c23 inset;
+}
+
+.GoogleSignInLogo {
+    margin-left: 2.5%;
+    margin-right: 7.5%;
+    width: 60px;
+    height: 60px;
+}
+
+.InputBackground {
+    width: 320px;
+    height: 65px;
+    border-radius: 14px;
+    background-color: #444444;
+    margin-bottom: 4vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Input {
+    width: 90%;
+    height: 55px;
+    border-radius: 14px;
+    text-align: center;
+    background-color: #444444;
+    border: none;
+    outline: none;
+    font-family: Poppins;
+    color: #EDEDED;
+}
+
+.LoginButton {
+    border-radius: 14px;
+    width: 160px;
+    height: 55px;
+    background-color: #BF1B2C;
+    text-align: center;
+    font-family: Poppins;
+    font-weight: bold;
+    color: #EDEDED;
+}
+
+.LoginButton:hover {
+    box-shadow: 0px 0px 0px 1.2px #EDEDED inset;
+}
+
+.RegisterText {
+    color: #EDEDED;
+    font-family: Poppins;
+    text-align: center;
+}
+
+.RegisterRedirection {
+    margin-top: -8%;
+    color: #EE0D24;
+}
+
+.RegisterRedirection:hover {
+    color: #EDEDED;
+}
+
+.ErrorMessage {
+    color: #f10c23;
+    font-family: Poppins;
+    font-size: 13px;
+    margin-top: -1%;
+}
+
+@media only screen and (max-height: 900px) {
+    .LoginLogo {
+        width: 390px;
+        height: 390px;
+        margin-bottom: -10vh;
+    }
+
+    .InputBackground {
+        width: 280px;
+        height: 60px;
+        margin-bottom: 3vh;
+    }
+
+    .Input {
+        font-size: 12px;
+    }
+
+    .GoogleSignIn {
+        width: 280px;
+        height: 60px;
+        margin-bottom: 3vh;
+        font-size: 12px;
+    }
+
+    .GoogleSignInLogo {
+        width: 40px;
+        height: 40px;
+        margin-right: 12.5%;
+    }
+
+    .LoginButton {
+        width: 130px;
+        height: 45px;
+        font-size: 14px;
+    }
+
+    .RegisterText {
+        font-size: 12px;
+    }
+}

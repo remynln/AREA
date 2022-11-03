@@ -3,16 +3,19 @@ import { Link } from 'react-router-dom'
 import { WorkflowCreate } from "../Workflows/WorkflowCreate";
 import "./Dashboard.css"
 
-function Dashboard_Workflows() {
+function Dashboard_Workflows(props) {
+
+    let Hide = {
+        display: "none"
+    };
+
     return (
-        <div className="DashboardWorkflows">
+        <div className="DashboardWorkflows" style={props.inCreation ? Hide : undefined}>
             <div classname="WorkflowContentTitle">
                 <p className="WorkflowTitle">Workflows</p>
                 <Link to={"/workflows"} className="WorkflowRedirection"><p>View all</p></Link>
             </div>
-            <div>
-                <WorkflowCreate />
-            </div>
+            <WorkflowCreate setInCreation={props.setInCreation}/>
         </div>
     )
 }
