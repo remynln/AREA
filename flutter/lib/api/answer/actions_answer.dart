@@ -9,13 +9,15 @@ class ActionsAnswer {
     this.name = "",
     this.description = "",
     this.parameters = const {},
-    this.properties = const {}
+    this.properties = const {},
+    this.detail = false
   });
 
   String name;
   String description;
   Map<String, dynamic> parameters;
   Map<String, dynamic> properties;
+  bool detail;
 
   factory ActionsAnswer.fromJson(Map<String, dynamic> json) => ActionsAnswer(
     name: json["name"],
