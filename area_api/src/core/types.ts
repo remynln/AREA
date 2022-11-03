@@ -56,7 +56,7 @@ export interface Service {
     actions: Map<string, Action>
     reactions: Map<string, Reaction>
     authParams: any
-    refreshToken: (refreshToken: string) => Promise<string>
+    refreshToken: (refreshToken: string) => Promise<string | null>
     [x: string | number | symbol]: unknown;
 }
 
@@ -135,11 +135,22 @@ export class Area {
         }
     }
 
-    private async refreshToken(aorea: AreaWrapper<any>) {
-        let service = Global.services.get(aorea.ref.serviceName);
+    private async refreshToken(aorea: AreaWrapper<Action | Reaction>) {
+        let service = Global.services.get(aorea.ref.serviceName || '');
         if (!service || !aorea.tokens)
             return;
-        aorea.tokens.refreshToken(await service.refreshToken(aorea.tokens.refresh))
+        var token: string | null = null
+        try {
+            token = await service.refreshToken(aorea.tokens.refresh)
+        } catch (err: any) {
+            console.log("Refresh token error for service: " + aorea.ref.serviceName, err)
+        }
+        if (token == null) {
+            console.log(`refresh token expired for service ${aorea.ref.serviceName}`)
+            // Todo disconnect user from service
+            return
+        }
+        await aorea.tokens.refreshToken(token)
     }
 
     public formatParams(actionProperties: any) {
@@ -178,11 +189,21 @@ export class Area {
         let service = Global.services.get(aorea.ref.serviceName);
         if (!service || !aorea.tokens)
             return ret;
-        aorea.tokens.refreshToken(await service.refreshToken(aorea.tokens.refresh))
+        var token = null
+        try {
+            token = await service.refreshToken(aorea.tokens.refresh)
+        } catch (err: any) {
+            console.log("Refresh token error for service: " + aorea.ref.serviceName, err)
+        }
+        if (token == null) {
+            console.log(`refresh token expired for service ${aorea.ref.serviceName}`)
+            return
+        }
+        aorea.tokens.refreshToken(token)
         let ret2 = await func()
-        if (ret2 == AreaRet.AccessTokenExpired)
-            throw new AreaError(`Impossible to refresh token for service ${aorea.ref.serviceName}`, 500) 
-        return ret2
+        if (ret2 == AreaRet.AccessTokenExpired) {
+            console.log()
+        }
     }
 
     public async start() {
