@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { Types } from "mongoose";
 import passport from "passport"
 import db from "~/database/db";
-import { AreaError } from "./errors";
+import { AreaError, ProcessError } from "./errors";
 import { checkCondition, formatContent } from "./formatting";
 import Global from "./global"
 
@@ -33,8 +33,8 @@ export interface Action {
         token: string,
         accountMail: string,
         trigger: (properties: any) => void,
-        error: (err: Error) => void,
-        refreshToken: RefreshTokenFunction
+        refreshToken: RefreshTokenFunction,
+        error: (err: Error) => void
     ) => Promise<void>,
     stop: () => void
     destroy: () => void
@@ -43,12 +43,14 @@ export interface Action {
 
 export type RefreshTokenFunction<T = any> = (requestFunc: () => Promise<AreaRet | T>) => Promise<T>
 
+export type ErrorFunction = (err: Error) => void
+
 export interface Reaction {
     serviceName: string | null
     name: string
     description: string
     paramTypes: any
-    launch: (params: any, serviceToken: string) => Promise<AreaRet>
+    launch: (params: any, serviceToken: string, refresh: RefreshTokenFunction) => Promise<void>
 }
 
 export interface Service {
@@ -135,24 +137,6 @@ export class Area {
         }
     }
 
-    private async refreshToken(aorea: AreaWrapper<Action | Reaction>) {
-        let service = Global.services.get(aorea.ref.serviceName || '');
-        if (!service || !aorea.tokens)
-            return;
-        var token: string | null = null
-        try {
-            token = await service.refreshToken(aorea.tokens.refresh)
-        } catch (err: any) {
-            console.log("Refresh token error for service: " + aorea.ref.serviceName, err)
-        }
-        if (token == null) {
-            console.log(`refresh token expired for service ${aorea.ref.serviceName}`)
-            // Todo disconnect user from service
-            return
-        }
-        await aorea.tokens.refreshToken(token)
-    }
-
     public formatParams(actionProperties: any) {
         var formatted: any = {}
         for (let key in this.reaction.params) {
@@ -161,37 +145,24 @@ export class Area {
         return formatted
     }
 
-    launchReaction(formatted: string, tokenRefreshed: boolean = false, error: (err: Error) => void) {
+    launchReaction(formatted: string, tokenRefreshed: boolean = false, refresh: RefreshTokenFunction, error: (err: ProcessError) => void) {
         this.reaction.ref.launch(formatted,
-        this.reaction.tokens?.access || '').then((res) => {
-            if (res == AreaRet.AccessTokenExpired) {
-                if (tokenRefreshed) {
-                    return
-                }
-                this.refreshToken(this.reaction).then((res) => {
-                    this.launchReaction(formatted, true, error)
-                })
-            }
-        }).catch((err) => {
-            console.log("Reaction " +
-                this.reaction.ref.serviceName + "/" + this.reaction.ref.name +
-                " failed")
-            console.log(err)
-            error(err)
+        this.reaction.tokens?.access || '', refresh).catch((err) => {
+            error(new ProcessError(this.reaction.ref.serviceName || "None", this.reaction.ref.name, err))
         })
     }
 
     async refreshTokenFunc<T>(
         func: () => Promise<AreaRet | T>,
         aorea: AreaWrapper<Action | Reaction>,
-        error: (err: Error) => void
+        error: (err: ProcessError) => void
     ) {
         var ret
         try {
             ret = await func()
-        } catch (err) {
-            error(err as Error)
-            return
+        } catch (err: any) {
+            error(new ProcessError(aorea.ref.serviceName || "None", aorea.ref.name, err))
+            throw Error()
         }
         if (ret != AreaRet.AccessTokenExpired)
             return ret
@@ -204,39 +175,47 @@ export class Area {
         try {
             token = await service.refreshToken(aorea.tokens.refresh)
         } catch (err: any) {
-            console.log("Refresh token error for service: " + aorea.ref.serviceName, err)
+            error(new ProcessError(aorea.ref.serviceName || "None", "refreshToken", err))
+            throw Error()
         }
         if (token == null) {
+            // TODO disconnect user from service
             console.log(`refresh token expired for service ${aorea.ref.serviceName}`)
-            return
+            throw Error()
         }
         aorea.tokens.refreshToken(token)
         try {
             ret = await func()
         } catch(err) {
-            console.log("func refresh errr")
-            error(err as Error)
-            return
+            error(new ProcessError(aorea.ref.serviceName || "None", aorea.ref.name, err))
+            throw Error()
         }
         if (ret == AreaRet.AccessTokenExpired) {
-            error(new AreaError(`can't refresh access token for service '${aorea.ref.serviceName}`, 500))
+            let err = new AreaError(`can't refresh access token for service '${aorea.ref.serviceName}`, 500)
+            error(new ProcessError(aorea.ref.serviceName || "None", aorea.ref.name, err))
+            throw Error()
         }
+        return ret
     }
 
-    public async start(error: (err: Error) => void) {
-        await this.action.ref.start(this.action.params,
+    public async start(error: (err: ProcessError) => void) {
+        await this.action.ref.start(
+            this.action.params,
             this.action.tokens?.access || '',
-        this.accountMail || '', (properties) => {
-            if (this.condition && !checkCondition(this.condition, properties))
-                return;
-            var formatted = this.formatParams(properties)
-            this.launchReaction(formatted, false, error)
-        }, (err) => {
-            console.log("Action trigger" +
-                this.action.ref.serviceName + "/" + this.action.ref.name +
-                "failed")
-            error(err)
-        }, (func) => this.refreshTokenFunc(func, this.action, error))
+            this.accountMail || '',
+            (properties) => {
+                if (this.condition && !checkCondition(this.condition, properties))
+                    return;
+                var formatted = this.formatParams(properties)
+                this.launchReaction(
+                    formatted, false,
+                    (func) => this.refreshTokenFunc(func, this.action, error),
+                    error
+                )
+        }, (func) => this.refreshTokenFunc(func, this.action, error),
+        (err) => {
+            error(new ProcessError(this.action.ref.serviceName || "None", this.action.ref.name, err))
+        })
     }
 
     public destroy() {

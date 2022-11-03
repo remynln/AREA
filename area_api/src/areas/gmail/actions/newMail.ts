@@ -40,7 +40,7 @@ async function getMailFromId(token: string,
             return AreaRet.AccessTokenExpired
         }
     })
-    
+
     for (let i of res.data.labelIds) {
         if (i == 'SENT')
             return
@@ -97,7 +97,6 @@ async function getLastMails(
                 return AreaRet.AccessTokenExpired
             throw err
         }
-        return res
     })
     if (!res.data.history)
         return historyId
@@ -213,11 +212,13 @@ const newMail: NewMail = {
     _sub: undefined,
 
     async _newMessageCallback(mess, refresh) {
+        console.log("received !")
         if (!this.subs) {
             console.log("subs undefined")
             return
         }
         let data = JSON.parse(mess.data)
+        console.log("haaa ha")
         for (let [key, value] of this.subs) {
             if (data.emailAddress != value.email)
                 continue;
@@ -229,18 +230,16 @@ const newMail: NewMail = {
         }
     },
 
-    async start(params, serviceToken, accountMail, trigger, error, refresh) {
+    async start(params, serviceToken, accountMail, trigger, refresh, error) {
         if (!this.subs)
             this.subs = new Map([])
         console.log("initializing sub")
         if (!this._sub) {
             this._sub = await initSub()
             this._sub.on('message', (mess) => {
-                try {
-                    this._newMessageCallback(mess, refresh)
-                } catch (err) {
+                this._newMessageCallback(mess, refresh).catch((err) => {
                     error(err as Error)
-                }
+                })
             })
         }
         console.log("getting account info")
