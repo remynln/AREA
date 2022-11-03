@@ -1,15 +1,12 @@
 import 'dart:ui';
 
+import 'package:area/api/answer/actions_answer.dart';
 import 'package:flutter/material.dart';
 
 import 'package:area/api/service/services.dart';
 import 'package:area/api/connection.dart';
 import 'package:area/api/answer/services_answer.dart';
-
-import 'package:area/front/standard_pages/create_popup/action_service.dart';
-import 'package:area/front/standard_pages/create_popup/action_trigger.dart';
-import 'package:area/front/standard_pages/create_popup/reaction_service.dart';
-import 'package:area/front/standard_pages/create_popup/reaction_trigger.dart';
+import 'package:area/api/area.dart';
 
 class CreateWidget extends StatefulWidget {
   final String token;
@@ -22,12 +19,12 @@ class CreateWidget extends StatefulWidget {
 
 class _CreateWidgetState extends State<CreateWidget> {
   Service _actionService = Service("", "", "", []);
-  Service _actionTrigger = Service("", "", "", []);
+  ActionService _actionTrigger = ActionService("", "", {}, {});
   Service _reactionService = Service("", "", "", []);
-  Service _reactionTrigger = Service("", "", "", []);
+  ReactionService _reactionTrigger = ReactionService("", "", {});
 
-  Color switchColor() {
-    if (_actionService.name.isEmpty) {
+  Color switchColor(Service service) {
+    if (service.name.isEmpty) {
       return (Colors.grey);
     } else {
       return (const Color.fromRGBO(191, 27, 44, 1));
@@ -35,7 +32,7 @@ class _CreateWidgetState extends State<CreateWidget> {
   }
 
   Widget displayActionServices(
-      ServicesAnswer? servicesAnswer, context, bool changed, setState, setStateWidget) {
+      ServicesAnswer? servicesAnswer, context, setState, setStateWidget) {
     List<Widget> list = [];
     List<Service> allServices = Services.BasicServices + Services.GamesServices;
 
@@ -48,7 +45,6 @@ class _CreateWidgetState extends State<CreateWidget> {
       }
       list.add(GestureDetector(
           onTap: () {
-            changed = !changed;
             _actionService.name = allServices[index].name;
             setState(() {});
           },
@@ -66,12 +62,14 @@ class _CreateWidgetState extends State<CreateWidget> {
           if (_actionService.name.isNotEmpty) {
             _actionService = allServices
                 .firstWhere((element) => _actionService.name == element.name);
-            setStateWidget((){});
-          } else
+            setStateWidget(() {});
+          } else {
             return;
+          }
           Navigator.of(context).pop();
         },
-        style: ElevatedButton.styleFrom(backgroundColor: switchColor()),
+        style: ElevatedButton.styleFrom(
+            backgroundColor: switchColor(_actionService)),
         child: const Text(
           "CONFIRM",
         ),
@@ -80,7 +78,7 @@ class _CreateWidgetState extends State<CreateWidget> {
     return (Column(children: list));
   }
 
-  Widget getActionServices(context, bool changed, setState, setStateWidget) {
+  Widget getActionServices(context, setState, setStateWidget) {
     return FutureBuilder(
       future: ApiService().getConnectedServices(widget.token),
       builder: (context, snapshot) {
@@ -88,7 +86,7 @@ class _CreateWidgetState extends State<CreateWidget> {
           return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: displayActionServices(
-                  snapshot.data, context, changed, setState, setStateWidget));
+                  snapshot.data, context, setState, setStateWidget));
         } else {
           return Container(
               width: MediaQuery.of(context).size.width / 1.8,
@@ -101,8 +99,116 @@ class _CreateWidgetState extends State<CreateWidget> {
   }
 
   void openActionService(context, StateSetter setStateWidget) {
-    bool changed = false;
+    if (_actionTrigger.name.isNotEmpty &&
+        _actionService.not_connected_image.isEmpty) {
+      _actionService.name = "";
+    }
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (builder, setState) {
+            return AlertDialog(
+                backgroundColor: Color.fromRGBO(60, 60, 60, 1),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(
+                      30,
+                    ),
+                  ),
+                ),
+                title: const Text(
+                  "Action's Service",
+                  style: TextStyle(
+                      fontSize: 23,
+                      color: Colors.white,
+                      fontFamily: "RobotoMono",
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                content: SizedBox(
+                    height: 500,
+                    width: 600,
+                    child: Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 20),
+                        child: Row(children: <Widget>[
+                          getActionServices(context, setState, setStateWidget)
+                        ]))));
+          });
+        });
+  }
 
+  Widget displayActionTriggers(List<ActionsAnswer>? actionsAnswer, context, setState, setStateWidget) {
+    if (actionsAnswer == null) {
+      return Container();
+    }
+    for (ActionsAnswer answer in actionsAnswer!) {
+      print(answer.name);
+      print(answer.description);
+      print(answer.parameters);
+      print(answer.properties);
+    }
+    return (const Text("HEY", style: TextStyle(color: Colors.white)));
+  }
+
+  Widget getActionTriggers(context, setState, setStateWidget) {
+    return FutureBuilder(
+      future: ApiService().getActionsFromService(widget.token, _actionService.name),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: displayActionTriggers(
+                  snapshot.data, context, setState, setStateWidget));
+        } else {
+          return Container(
+              width: MediaQuery.of(context).size.width / 1.8,
+              height: MediaQuery.of(context).size.height / 2,
+              child: Center(
+                  child: CircularProgressIndicator(color: Colors.white)));
+        }
+      },
+    );
+  }
+
+  void openActionTrigger(context, StateSetter setStateWidget) {
+    if (_actionTrigger.name.isNotEmpty && _actionTrigger.description.isEmpty) {
+      _actionTrigger.name = "";
+    }
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (builder, setState) {
+            return AlertDialog(
+                backgroundColor: Color.fromRGBO(60, 60, 60, 1),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(
+                      30,
+                    ),
+                  ),
+                ),
+                title: const Text(
+                  "Action's Trigger",
+                  style: TextStyle(
+                      fontSize: 23,
+                      color: Colors.white,
+                      fontFamily: "RobotoMono",
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                content: SizedBox(
+                    height: 500,
+                    width: 600,
+                    child: Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 20),
+                        child: Row(children: <Widget>[
+                          getActionTriggers(context, setState, setStateWidget)
+                        ]))));
+          });
+        });
+  }
+
+  void openReactionService(context, StateSetter setStateWidget) {
     if (_actionService.name.isNotEmpty &&
         _actionService.not_connected_image.isEmpty) {
       _actionService.name = "";
@@ -135,7 +241,46 @@ class _CreateWidgetState extends State<CreateWidget> {
                     child: Padding(
                         padding: const EdgeInsetsDirectional.only(start: 20),
                         child: Row(children: <Widget>[
-                          getActionServices(context, changed, setState, setStateWidget)
+                          getActionServices(context, setState, setStateWidget)
+                        ]))));
+          });
+        });
+  }
+
+  void openReactionTrigger(context, StateSetter setStateWidget) {
+    if (_actionService.name.isNotEmpty &&
+        _actionService.not_connected_image.isEmpty) {
+      _actionService.name = "";
+    }
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (builder, setState) {
+            return AlertDialog(
+                backgroundColor: Color.fromRGBO(60, 60, 60, 1),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(
+                      30,
+                    ),
+                  ),
+                ),
+                title: const Text(
+                  "Action's Service",
+                  style: TextStyle(
+                      fontSize: 23,
+                      color: Colors.white,
+                      fontFamily: "RobotoMono",
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                content: SizedBox(
+                    height: 500,
+                    width: 600,
+                    child: Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 20),
+                        child: Row(children: <Widget>[
+                          getActionServices(context, setState, setStateWidget)
                         ]))));
           });
         });
@@ -201,22 +346,22 @@ class _CreateWidgetState extends State<CreateWidget> {
       }),
       _actionService.not_connected_image.isNotEmpty
           ? displayButton(
-              "Action's Trigger", _actionTrigger.not_connected_image, true, () {
-              openActionTrigger(context);
+              "Action's Trigger", _actionService.not_connected_image, true, () {
+              openActionTrigger(context, setState);
             })
           : Container(),
-      _actionTrigger.not_connected_image.isNotEmpty
+      _actionTrigger.description.isNotEmpty
           ? displayButton(
               "Reaction's Service", _reactionService.not_connected_image, true,
               () {
-              openReactionService(context);
+              openReactionService(context, setState);
             })
           : Container(),
       _reactionService.not_connected_image.isNotEmpty
           ? displayButton(
-              "Reaction's Trigger", _reactionTrigger.not_connected_image, true,
+              "Reaction's Trigger", _reactionService.not_connected_image, true,
               () {
-              openReactionTrigger(context);
+              openReactionTrigger(context, setState);
             })
           : Container()
     ])));

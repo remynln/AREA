@@ -9,6 +9,8 @@ import 'package:area/api/endpoints.dart';
 import 'package:area/api/answer/login_answer.dart';
 import 'package:area/api/answer/register_answer.dart';
 import 'package:area/api/answer/services_answer.dart';
+import 'package:area/api/answer/actions_answer.dart';
+import 'package:area/api/area.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -73,6 +75,37 @@ class ApiService {
         log(response.statusCode.toString());
       }
       ServicesAnswer model = servicesAnswerFromJson(response.body);
+      return model;
+    } catch (e) {
+      log(e.toString());
+    }
+    return null;
+  }
+
+  Future<List<ActionsAnswer>?> getActionsFromService(
+      String token, String service) async {
+    try {
+      var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.actionsEndpoint(service));
+      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      var response = await http.get(uri, headers: headers);
+      if (response.statusCode != 200) {
+        log(response.statusCode.toString());
+        throw response.body;
+      }
+      List<ActionsAnswer> model = actionsAnswerFromJson(response.body);
+      for (var index = 0; index < model.length; index++) {
+        uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+            ApiConstants.actionEndpoint(service, model[index].name));
+        response = await http.get(uri, headers: headers);
+        if (response.statusCode != 200) {
+          log(response.statusCode.toString());
+          throw response.body;
+        }
+        ActionAnswerDetails detail = actionAnswerDetailsFromJson(response.body);
+        model[index].parameters = detail.parameters;
+        model[index].properties = detail.properties;
+      }
       return model;
     } catch (e) {
       log(e.toString());

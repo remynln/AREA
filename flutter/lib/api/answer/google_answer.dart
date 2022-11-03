@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final googleAnswer = googleAnswerFromJson(jsonString);
-
 import 'dart:convert';
 
 GoogleLoginAnswer googleLoginAnswerFromJson(String str) =>
