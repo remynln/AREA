@@ -28,7 +28,9 @@ const AreaInstances = {
         await area.setTokens(_tokens, accountMail)
         let id = await db.area.set(area)
         areas.set(id.toHexString(), area)
-        await area.start()
+        await area.start((err) => {
+            console.log("area error", err)
+        })
     },
     async load() {
         

@@ -161,7 +161,7 @@ export class Area {
         return formatted
     }
 
-    launchReaction(formatted: string, tokenRefreshed: boolean = false) {
+    launchReaction(formatted: string, tokenRefreshed: boolean = false, error: (err: Error) => void) {
         this.reaction.ref.launch(formatted,
         this.reaction.tokens?.access || '').then((res) => {
             if (res == AreaRet.AccessTokenExpired) {
@@ -169,7 +169,7 @@ export class Area {
                     return
                 }
                 this.refreshToken(this.reaction).then((res) => {
-                    this.launchReaction(formatted, true)
+                    this.launchReaction(formatted, true, error)
                 })
             }
         }).catch((err) => {
@@ -177,11 +177,23 @@ export class Area {
                 this.reaction.ref.serviceName + "/" + this.reaction.ref.name +
                 " failed")
             console.log(err)
+            error(err)
         })
     }
 
-    async refreshTokenFunc<T>(func: () => Promise<AreaRet | T>, aorea: AreaWrapper<Action | Reaction>) {
-        let ret = await func()
+    async refreshTokenFunc<T>(
+        func: () => Promise<AreaRet | T>,
+        aorea: AreaWrapper<Action | Reaction>,
+        error: (err: Error) => void
+    ) {
+        var ret
+        try {
+            ret = await func()
+        } catch (err) {
+            console.log("func refresh errr")
+            error(err as Error)
+            return
+        }
         if (ret != AreaRet.AccessTokenExpired)
             return ret
         if (!aorea.ref.serviceName)
@@ -200,25 +212,32 @@ export class Area {
             return
         }
         aorea.tokens.refreshToken(token)
-        let ret2 = await func()
-        if (ret2 == AreaRet.AccessTokenExpired) {
-            console.log()
+        try {
+            ret = await func()
+        } catch(err) {
+            console.log("func refresh errr")
+            error(err as Error)
+            return
+        }
+        if (ret == AreaRet.AccessTokenExpired) {
+            error(new AreaError(`can't refresh access token for service '${aorea.ref.serviceName}`, 500))
         }
     }
 
-    public async start() {
+    public async start(error: (err: Error) => void) {
         await this.action.ref.start(this.action.params,
             this.action.tokens?.access || '',
         this.accountMail || '', (properties) => {
             if (this.condition && !checkCondition(this.condition, properties))
                 return;
             var formatted = this.formatParams(properties)
-            this.launchReaction(formatted)
+            this.launchReaction(formatted, false, error)
         }, (err) => {
             console.log("Action trigger" +
                 this.action.ref.serviceName + "/" + this.action.ref.name +
                 "failed")
-        }, (func) => this.refreshTokenFunc(func, this.action))
+            error(err)
+        }, (func) => this.refreshTokenFunc(func, this.action, error))
     }
 
     public destroy() {
