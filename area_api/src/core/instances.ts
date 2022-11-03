@@ -1,5 +1,7 @@
+import { AxiosError } from "axios";
 import { Types } from "mongoose";
 import db from "~/database/db";
+import { ProcessError } from "./errors";
 import global from "./global";
 import { Area, Tokens } from "./types";
 
@@ -9,6 +11,16 @@ var areas: Map<string, Area> = new Map([])
 // This map stores access and refresh token for each users,
 // with user's mail as key, the second key is service name
 var tokens: Map<string, Map<string, Tokens>> = new Map([])
+
+function callbackErrorFun(err: ProcessError) {
+    console.log("new error from: " + err.serviceName + "/" + err.name);
+    if (err.err instanceof AxiosError) {
+        console.log("acios error")
+        console.log(err.err.response)
+    } else {
+        console.log(err.err)
+    }
+}
 
 const AreaInstances = {
     get(id: string) {
@@ -29,9 +41,7 @@ const AreaInstances = {
         await area.setTokens(_tokens, accountMail)
         let id = await db.area.set(area)
         areas.set(id.toHexString(), area)
-        await area.start((err) => {
-            console.log("area error", err)
-        })
+        await area.start(callbackErrorFun)
     },
     async load() {
         console.log("starting area instances")
@@ -53,9 +63,7 @@ const AreaInstances = {
                 )
                 await areaInstance.setTokens(tokens.get(accMail)!, accMail)
                 areas.set(area._id.toHexString(), areaInstance)
-                await areaInstance.start((err) => {
-                    console.log("area error", err)
-                })
+                await areaInstance.start(callbackErrorFun)
                 console.log("yes yes yes")
             } catch (err) {
                 console.log("area initiation error", err)
