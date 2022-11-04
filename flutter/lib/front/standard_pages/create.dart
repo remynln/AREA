@@ -62,10 +62,10 @@ class _CreateWidgetState extends State<CreateWidget> {
             setState(() {});
           },
           child: allServices[index].name ==
-              (isAction ? _actionService.name : _reactionService.name)
+                  (isAction ? _actionService.name : _reactionService.name)
               ? Image.asset(allServices[index].not_connected_image)
               : Image.asset(allServices[index].connected_image,
-              filterQuality: FilterQuality.high)));
+                  filterQuality: FilterQuality.high)));
       list.add(const SizedBox(height: 20));
     }
     list.add(Container(
@@ -108,14 +108,8 @@ class _CreateWidgetState extends State<CreateWidget> {
                   snapshot.data, context, setState, setStateWidget, isAction));
         } else {
           return Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width / 1.8,
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2,
+              width: MediaQuery.of(context).size.width / 1.8,
+              height: MediaQuery.of(context).size.height / 2,
               child: Center(
                   child: CircularProgressIndicator(color: Colors.white)));
         }
@@ -189,8 +183,8 @@ class _CreateWidgetState extends State<CreateWidget> {
         ])));
   }
 
-  Widget displayActionTriggers(List<ActionsAnswer>? actionsAnswer, context,
-      setState, setStateWidget) {
+  Widget displayActionTriggers(
+      List<ActionsAnswer>? actionsAnswer, context, setState, setStateWidget) {
     List<Widget> list = [];
 
     if (actionsAnswer == null) {
@@ -207,13 +201,13 @@ class _CreateWidgetState extends State<CreateWidget> {
               },
               child: actionsAnswer[index].name == _actionTrigger.name
                   ? getTriggerText(
-                  actionsAnswer[index].name,
-                  actionsAnswer[index].description,
-                  const Color.fromRGBO(191, 27, 44, 1))
+                      actionsAnswer[index].name,
+                      actionsAnswer[index].description,
+                      const Color.fromRGBO(191, 27, 44, 1))
                   : getTriggerText(
-                  actionsAnswer[index].name,
-                  actionsAnswer[index].description,
-                  const Color.fromRGBO(62, 149, 49, 1)))));
+                      actionsAnswer[index].name,
+                      actionsAnswer[index].description,
+                      const Color.fromRGBO(62, 149, 49, 1)))));
       list.add(const SizedBox(height: 20));
     }
     list.add(Container(
@@ -258,13 +252,13 @@ class _CreateWidgetState extends State<CreateWidget> {
               },
               child: reactionsAnswer[index].name == _reactionTrigger.name
                   ? getTriggerText(
-                  reactionsAnswer[index].name,
-                  reactionsAnswer[index].description,
-                  const Color.fromRGBO(191, 27, 44, 1))
+                      reactionsAnswer[index].name,
+                      reactionsAnswer[index].description,
+                      const Color.fromRGBO(191, 27, 44, 1))
                   : getTriggerText(
-                  reactionsAnswer[index].name,
-                  reactionsAnswer[index].description,
-                  const Color.fromRGBO(62, 149, 49, 1)))));
+                      reactionsAnswer[index].name,
+                      reactionsAnswer[index].description,
+                      const Color.fromRGBO(62, 149, 49, 1)))));
       list.add(const SizedBox(height: 20));
     }
     list.add(Container(
@@ -294,7 +288,7 @@ class _CreateWidgetState extends State<CreateWidget> {
   Widget getActionTriggers(context, setState, setStateWidget) {
     return FutureBuilder(
       future:
-      ApiService().getActionsFromService(widget.token, _actionService.name),
+          ApiService().getActionsFromService(widget.token, _actionService.name),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return SingleChildScrollView(
@@ -303,14 +297,8 @@ class _CreateWidgetState extends State<CreateWidget> {
                   snapshot.data, context, setState, setStateWidget));
         } else {
           return Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width / 1.8,
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2,
+              width: MediaQuery.of(context).size.width / 1.8,
+              height: MediaQuery.of(context).size.height / 2,
               child: Center(
                   child: CircularProgressIndicator(color: Colors.white)));
         }
@@ -320,8 +308,8 @@ class _CreateWidgetState extends State<CreateWidget> {
 
   Widget getReactionTriggers(context, setState, setStateWidget) {
     return FutureBuilder(
-      future:
-      ApiService().getReactionsFromService(widget.token, _reactionService.name),
+      future: ApiService()
+          .getReactionsFromService(widget.token, _reactionService.name),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return SingleChildScrollView(
@@ -330,14 +318,8 @@ class _CreateWidgetState extends State<CreateWidget> {
                   snapshot.data, context, setState, setStateWidget));
         } else {
           return Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width / 1.8,
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2,
+              width: MediaQuery.of(context).size.width / 1.8,
+              height: MediaQuery.of(context).size.height / 2,
               child: Center(
                   child: CircularProgressIndicator(color: Colors.white)));
         }
@@ -346,10 +328,12 @@ class _CreateWidgetState extends State<CreateWidget> {
   }
 
   void openTrigger(context, StateSetter setStateWidget, isAction) {
-    if (isAction && _actionTrigger.name.isNotEmpty &&
+    if (isAction &&
+        _actionTrigger.name.isNotEmpty &&
         _actionTrigger.description.isEmpty) {
       _actionTrigger.name = "";
-    } else if (!isAction && _reactionTrigger.name.isNotEmpty &&
+    } else if (!isAction &&
+        _reactionTrigger.name.isNotEmpty &&
         _reactionTrigger.description.isEmpty) {
       _reactionTrigger.name = "";
     }
@@ -381,9 +365,11 @@ class _CreateWidgetState extends State<CreateWidget> {
                     child: Padding(
                         padding: const EdgeInsetsDirectional.only(start: 20),
                         child: Row(children: <Widget>[
-                          isAction ?
-                          getActionTriggers(context, setState, setStateWidget) :
-                          getReactionTriggers(context, setState, setStateWidget)
+                          isAction
+                              ? getActionTriggers(
+                                  context, setState, setStateWidget)
+                              : getReactionTriggers(
+                                  context, setState, setStateWidget)
                         ]))));
           });
         });
@@ -453,7 +439,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                     side: const BorderSide(color: Colors.black)),
                 fillColor: const Color.fromRGBO(80, 80, 80, 100),
                 constraints:
-                const BoxConstraints(minWidth: 230, minHeight: 120),
+                    const BoxConstraints(minWidth: 230, minHeight: 120),
                 child: getButtonImage(isTrigger, isAction, image),
               ),
               const SizedBox(height: 10),
@@ -481,7 +467,36 @@ class _CreateWidgetState extends State<CreateWidget> {
     return (newMap);
   }
 
-  List<Widget> displayActionDetail() {
+  void completeActionForm(
+      Map<String, dynamic> triggerValues, Map<String, dynamic> data) {
+    triggerValues.clear();
+    triggerValues.addAll(getMapFromDetail(_actionTrigger.properties));
+    triggerValues.forEach((key, value) {
+      data["data"][0]["questions"].add({
+        "question_id": String,
+        "fields": [],
+        "_id": "sergify",
+        "title": key,
+        "description": "",
+        "remark": false,
+        "type": "text",
+        "is_mandatory": false
+      });
+    });
+    data["data"][0]["questions"].add({
+      "question_id": String,
+      "fields": [],
+      "_id": "dssfghjkl",
+      "title": "CONDITION",
+      "description":
+          "Use: '>, <, <=, >=, ==' to compare numbers and '== (case insensitive comparison), === (case sensitive comparison), in' to compare strings",
+      "remark": false,
+      "type": "text",
+      "is_mandatory": false
+    });
+  }
+
+  Widget createForm(bool isAction) {
     Map<String, dynamic> triggerValues = {};
     Map<String, dynamic> data = {
       "status": 1,
@@ -491,12 +506,13 @@ class _CreateWidgetState extends State<CreateWidget> {
     };
 
     try {
-      triggerValues.addAll(getMapFromDetail(_actionTrigger.parameters));
+      triggerValues.addAll(getMapFromDetail(
+          isAction ? _actionTrigger.parameters : _reactionTrigger.parameters));
       triggerValues.forEach((key, value) {
         data["data"][0]["questions"].add({
           "question_id": String,
           "fields": [],
-          "_id": "dssfghjkl",
+          "_id": "sergify",
           "title": key,
           "description": "",
           "remark": false,
@@ -504,63 +520,40 @@ class _CreateWidgetState extends State<CreateWidget> {
           "is_mandatory": false
         });
       });
-      triggerValues.clear();
-      triggerValues.addAll(getMapFromDetail(_actionTrigger.properties));
-      triggerValues.forEach((key, value) {
-        data["data"][0]["questions"].add({
-          "question_id": String,
-          "fields": [],
-          "_id": "dssfghjkl",
-          "title": key,
-          "description": "",
-          "remark": false,
-          "type": "text",
-          "is_mandatory": false
-        });
-      });
-      data["data"][0]["questions"].add({
-        "question_id": String,
-        "fields": [],
-        "_id": "dssfghjkl",
-        "title": "CONDITION",
-        "description":
-        "Use: '>, <, <=, >=, ==' to compare numbers and '== (case insensitive comparison), === (case sensitive comparison), in' to compare strings",
-        "remark": false,
-        "type": "text",
-        "is_mandatory": false
-      });
+      if (isAction) {
+        completeActionForm(triggerValues, data);
+      }
     } catch (e) {
       print(e.toString());
-      return (<Widget>[Container()]);
+      return (Container());
     }
-    return (<Widget>[
-      FormBuilder(
-          initialData: data,
-          index: 0,
-          submitButtonWidth: 0.5,
-          submitButtonDecoration: BoxDecoration(
-            color: Color.fromRGBO(191, 27, 44, 1),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          showIndex: false,
-          onSubmit: (ChecklistModel? val) {
-            if (_actionTrigger.parameters.isEmpty || val != null) {
-              setState(() => _actionTrigger.detail = true);
-            }
-            if (val == null) {
-              return;
-            }
-            _actionDetail = val!.toJson();
+    return (FormBuilder(
+        initialData: data,
+        index: 0,
+        submitButtonWidth: 0.5,
+        submitButtonDecoration: BoxDecoration(
+          color: Color.fromRGBO(191, 27, 44, 1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        showIndex: false,
+        onSubmit: (ChecklistModel? val) {
+          if (isAction && (_actionTrigger.parameters.isEmpty || val != null)) {
+            setState(() => _actionTrigger.detail = true);
+          } else if (!isAction &&
+              (_reactionTrigger.parameters.isEmpty || val != null)) {
+            setState(() => _reactionTrigger.detail = true);
+          }
+          if (val == null) {
+            return;
+          }
+          isAction ? _actionDetail : _reactionDetail = val!.toJson();
+          if (isAction) {
             _condition = _actionDetail["data"][0]["questions"]
                 .firstWhere((map) => map["title"] == "CONDITION")["answer"];
             _actionDetail["data"][0]["questions"]
                 .removeWhere((map) => map["title"] == "CONDITION");
-          })
-    ]);
-  }
-
-  List<Widget> displayReactionDetail() {
-    return (<Widget>[]);
+          }
+        }));
   }
 
   Container displayDetail(String title, bool isAction) {
@@ -570,23 +563,21 @@ class _CreateWidgetState extends State<CreateWidget> {
         width: 100.0,
         color: Colors.transparent,
         child: Container(
-          decoration: const BoxDecoration(
-              color: Color.fromRGBO(100, 100, 100, 100),
-              borderRadius: BorderRadius.all(Radius.circular(24))),
-          child: Column(
-              children: <Widget>[
-                Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: Text(title,
-                        style: const TextStyle(
-                            fontSize: 23,
-                            color: Colors.white,
-                            fontFamily: "RobotoMono",
-                            fontWeight: FontWeight.bold)))
-              ] +
-                  (isAction ? displayActionDetail() : displayReactionDetail()) +
-                  <Widget>[const SizedBox(height: 20)]),
-        ));
+            decoration: const BoxDecoration(
+                color: Color.fromRGBO(100, 100, 100, 100),
+                borderRadius: BorderRadius.all(Radius.circular(24))),
+            child: Column(children: <Widget>[
+              Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Text(title,
+                      style: const TextStyle(
+                          fontSize: 23,
+                          color: Colors.white,
+                          fontFamily: "RobotoMono",
+                          fontWeight: FontWeight.bold))),
+              createForm(isAction),
+              const SizedBox(height: 20)
+            ])));
   }
 
   @override
@@ -594,46 +585,70 @@ class _CreateWidgetState extends State<CreateWidget> {
     return Scaffold(
         body: Center(
             child: ListView(children: <Widget>[
-              const Padding(
-                  padding: EdgeInsetsDirectional.only(start: 20),
-                  child: Text("New Workflow",
-                      style: TextStyle(
-                          fontSize: 26,
-                          color: Colors.white,
-                          fontFamily: "RobotoMono",
-                          fontWeight: FontWeight.bold))),
-              SizedBox(height: 50),
-              displayButton(
-                  "Action's Service", _actionService.not_connected_image, false,
-                  true, () {
-                openService(context, setState, true);
-              }),
-              _actionService.not_connected_image.isNotEmpty
-                  ? displayButton(
-                  "Action's Trigger", _actionService.not_connected_image, true,
-                  true, () {
-                openTrigger(context, setState, true);
-              })
-                  : Container(),
-              _actionTrigger.description.isNotEmpty
-                  ? displayDetail("Action's Details", true)
-                  : Container(),
-              _actionTrigger.detail
-                  ? displayButton(
-                  "Reaction's Service", _reactionService.not_connected_image,
-                  false, false,
-                      () {
-                    openService(context, setState, false);
-                  })
-                  : Container(),
-              _reactionService.not_connected_image.isNotEmpty
-                  ? displayButton(
-                  "Reaction's Trigger", _reactionService.not_connected_image,
-                  true, false,
-                      () {
-                        openTrigger(context, setState, false);
-                  })
-                  : Container()
-            ])));
+      const Padding(
+          padding: EdgeInsetsDirectional.only(start: 20),
+          child: Text("New Workflow",
+              style: TextStyle(
+                  fontSize: 26,
+                  color: Colors.white,
+                  fontFamily: "RobotoMono",
+                  fontWeight: FontWeight.bold))),
+      SizedBox(height: 50),
+      displayButton(
+          "Action's Service", _actionService.not_connected_image, false, true,
+          () {
+        openService(context, setState, true);
+      }),
+      _actionService.not_connected_image.isNotEmpty
+          ? displayButton("Action's Trigger",
+              _actionService.not_connected_image, true, true, () {
+              openTrigger(context, setState, true);
+            })
+          : Container(),
+      _actionTrigger.description.isNotEmpty
+          ? displayDetail("Action's Details", true)
+          : Container(),
+      _actionTrigger.detail
+          ? displayButton("Reaction's Service",
+              _reactionService.not_connected_image, false, false, () {
+              openService(context, setState, false);
+            })
+          : Container(),
+      _reactionService.not_connected_image.isNotEmpty
+          ? displayButton("Reaction's Trigger",
+              _reactionService.not_connected_image, true, false, () {
+              openTrigger(context, setState, false);
+            })
+          : Container(),
+      _reactionTrigger.description.isNotEmpty
+          ? displayDetail("Reaction's Details", false)
+          : Container(),
+      _reactionTrigger.detail
+          ? Container(
+              height: 85,
+              padding: const EdgeInsets.only(left: 60, right: 60, bottom: 40),
+              child: ElevatedButton(
+                  child: const Text('CONFIRM'),
+                  onPressed: () {
+                    print("-- ACTION --");
+                    print(_actionService.name);
+                    print(_actionTrigger.name);
+                    print(_actionTrigger.description);
+                    print("");
+                    print("-- REACTION --");
+                    print(_reactionService.name);
+                    print(_reactionTrigger.name);
+                    print(_reactionTrigger.description);
+                    print("");
+                  },
+                  style: ButtonStyle(
+                      backgroundColor: const MaterialStatePropertyAll<Color>(
+                          Color.fromRGBO(191, 27, 44, 1)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(9.0))))),
+            )
+          : Container(),
+    ])));
   }
 }
