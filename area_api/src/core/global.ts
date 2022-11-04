@@ -1,7 +1,7 @@
 import { AreaError } from "./errors"
 import { formatContent } from "./formatting"
 import google from "./services/google"
-import { Action, Area, Reaction } from "./types"
+import { Action, Reaction } from "./types"
 
 const services = new Map([
     ["google", google]
@@ -35,9 +35,9 @@ function getReaction(reactionName: string) {
     return action;
 }
 
-function checkParams(actionReaction: Action | Reaction, givedParams: any,
+function checkParams(paramTypes: {[x: string]: string}, givedParams: any,
     properties: any = undefined) {
-    for (let i of Object.entries(actionReaction.paramTypes)) {
+    for (let i of Object.entries(paramTypes)) {
         if (!givedParams) {
             if ((i[1] as string).endsWith('?'))
                 continue
