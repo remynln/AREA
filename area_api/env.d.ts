@@ -7,6 +7,7 @@ declare global {
         GOOGLE_APPLICATION_CREDENTIALS: string;
         DB_USER: string;
         DB_PASSWORD: string;
+        ROOT_PASSWORD: string;
       }
     }
   }
