@@ -28,7 +28,8 @@ class ServiceDisplay extends StatefulWidget {
 class _ServiceDisplayState extends State<ServiceDisplay> {
   void callApiFunction(String service_name) async {
     try {
-      await ApiService().connectToService(widget.token, service_name, "sergify://");
+      await ApiService()
+          .connectToService(widget.token, service_name, "sergify://");
     } catch (e) {
       print(e.toString());
     }
@@ -114,20 +115,18 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
     }
     return Padding(
         padding: const EdgeInsetsDirectional.only(start: 20),
-        child: Row(children: [
-          FutureBuilder(
-            future: ApiService().getConnectedServices(widget.token),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: createWidgetList(service_list, snapshot.data));
-              } else {
-                return const Center(
-                    child: CircularProgressIndicator(color: Colors.white));
-              }
-            },
-          )
-        ]));
+        child: FutureBuilder(
+          future: ApiService().getConnectedServices(widget.token),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: createWidgetList(service_list, snapshot.data));
+            } else {
+              return const Center(
+                  child: CircularProgressIndicator(color: Colors.white));
+            }
+          },
+        ));
   }
 }
