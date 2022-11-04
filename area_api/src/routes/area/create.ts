@@ -7,6 +7,7 @@ import JwtFormat from "~/routes/auth/jwtFormat"
 import jwt from "jsonwebtoken"
 import { checkConditionSyntax } from "~/core/formatting";
 import { AreaError } from "~/core/errors";
+import AreaInstances from "~/core/instances";
 
 var area: Router = Router()
 
@@ -23,7 +24,7 @@ function checkActionReaction(body: any) {
     return {action, reaction}
 }
 
-area.post("/create", checkBody(["action", "reaction"]),
+area.post("/create", checkBody(["action", "reaction", "title"]),
 (req, res, next) => {
     
     let ret = checkActionReaction(req.body)
@@ -31,24 +32,28 @@ area.post("/create", checkBody(["action", "reaction"]),
     var reaction: Reaction = ret.reaction
     var condition: string | undefined = req.body.condition
 
+    if (!res.locals.userInfo) {
+        res.status(500).send({
+            message: "Internal server error"
+        })
+        console.log("create route needs checkToken middleware")
+    }
     if (condition) {
         console.log(action.propertiesType)
         checkConditionSyntax(condition, action.propertiesType)
     }
-    let area = new Area(action, req.body.action.params, condition,
-        reaction, req.body.reaction.params)
+    let area = new Area(
+        action, req.body.action.params,
+        condition,
+        reaction, req.body.reaction.params,
+        req.body.title, req.body.description || ''
+    )
     let decoded = jwt.decode(req.headers.authorization?.split(' ')[1] || '')
-    area.setTokens((decoded as JwtFormat).email).then(() => {
-        area.start().catch((err) => {
-            next(err)
-        }).then(() => {
-            res.status(201).json({
-                message: 'OK'
-            })
+    AreaInstances.add(area, res.locals.userInfo.email).then(() => {
+        res.status(201).json({
+            message: 'OK'
         })
-    }).catch((err) => {
-        next(err)
-    })
+    }).catch((err) => next(err))
 })
 
 export default area;

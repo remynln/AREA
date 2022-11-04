@@ -16,7 +16,8 @@ export default async function login(
         return await bcrypt.compare(password, user.password)
             ? {
                 username: user.username,
-                email: user.mail
+                email: user.mail,
+                admin: user.admin || false
             }
             : undefined
     }

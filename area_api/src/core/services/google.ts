@@ -17,17 +17,23 @@ import qs from "qs"
 const google: Service = {
     refreshToken: async (it: string) => {
         let res
-        res = await axios.post("https://oauth2.googleapis.com/token", qs.stringify({
-            client_id: process.env.GOOGLE_CLIENT_ID,
-            client_secret: process.env.GOOGLE_CLIENT_SECRET,
-            grant_type: "refresh_token",
-            refresh_token: it
-        }), {
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded'
-            }
-        })
-        return res.data.access_token;
+        try {
+            res = await axios.post("https://oauth2.googleapis.com/token", qs.stringify({
+                client_id: process.env.GOOGLE_CLIENT_ID,
+                client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                grant_type: "refresh_token",
+                refresh_token: it
+            }), {
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                }
+            })
+            return res.data.access_token;
+        } catch (err: any) {
+            if (err.response && err.response.status == 400)
+                return null
+            throw err
+        }
     },
     actions: new Map([
         ["newMail", newMail]
@@ -48,7 +54,7 @@ const google: Service = {
         }, function(req: any, accessToken: any, refresh_token: any, profile: any, callback: any) {
             console.log((req as Request).baseUrl)
             console.log(profile)
-            let accountToken = req.headers.authorization;
+            let accountToken = req.query.state;
             let cbObj = {
                 data: profile._json.email,
                 username: profile._json.name,

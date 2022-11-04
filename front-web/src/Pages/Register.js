@@ -35,7 +35,7 @@ export const Register = (props) => {
     };
 
     const Register = () => {
-        axios.post("http://localhost:8080/auth/register", {
+        axios.post("/auth/register", {
             email: email,
             username: username,
             password: password
