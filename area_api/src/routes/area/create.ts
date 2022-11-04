@@ -25,8 +25,8 @@ function checkActionReaction(body: any) {
 }
 
 area.post("/create", checkBody(["action", "reaction", "title"]),
-(req, res, next) => {
-    
+    (req, res, next) => {
+
     let ret = checkActionReaction(req.body)
     var action: Action = ret.action;
     var reaction: Reaction = ret.reaction
