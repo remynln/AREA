@@ -6,12 +6,14 @@ String reactionAnswerToJson(List<ReactionsAnswer> data) => json.encode(List<dyna
 
 class ReactionsAnswer {
   ReactionsAnswer({
+    this.serviceName = "",
     this.name = "",
     this.description = "",
     this.parameters = const {},
     this.detail = false
   });
 
+  String serviceName;
   String name;
   String description;
   Map<String, dynamic> parameters;
