@@ -154,9 +154,15 @@ class ApiService {
       final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
       final body_data = {
         'title': "test",
-        'action': {'name': "${action.serviceName}/${action.name}", 'params': action.parameters},
+        'action': {
+          'name': "${action.serviceName}/${action.name}",
+          'params': action.parameters
+        },
         'condition': condition,
-        'reaction': {'name': "${reaction.serviceName}/${reaction.name}", 'params': reaction.parameters}
+        'reaction': {
+          'name': "${reaction.serviceName}/${reaction.name}",
+          'params': reaction.parameters
+        }
       };
       print(body_data);
       var response =
@@ -169,5 +175,21 @@ class ApiService {
       log(e.toString());
     }
     return "";
+  }
+
+  Future<void> connectToService(
+      String token, String service_name, String callback) async {
+    try {
+      final uri = Uri.http(
+          "${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.serviceEndpoint(service_name),
+          {'callback': callback, 'jwt': token});
+      if (await canLaunchUrl(uri))
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      else
+        throw "Uri($uri) could not be launched";
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }
