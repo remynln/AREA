@@ -27,6 +27,7 @@ class _CreateWidgetState extends State<CreateWidget> {
   Service _actionService = Service("", "", "", []);
   ActionsAnswer _actionTrigger = ActionsAnswer();
   late Map<String, dynamic> _actionDetail;
+  late String _condition;
   Service _reactionService = Service("", "", "", []);
   ReactionService _reactionTrigger = ReactionService("", "", {});
   late Map<String, dynamic> _reactionDetail;
@@ -39,8 +40,8 @@ class _CreateWidgetState extends State<CreateWidget> {
     }
   }
 
-  Widget displayActionServices(
-      ServicesAnswer? servicesAnswer, context, setState, setStateWidget) {
+  Widget displayServices(ServicesAnswer? servicesAnswer, context, setState,
+      setStateWidget, bool isAction) {
     List<Widget> list = [];
     List<Service> allServices = Services.BasicServices + Services.GamesServices;
 
@@ -53,10 +54,15 @@ class _CreateWidgetState extends State<CreateWidget> {
       }
       list.add(GestureDetector(
           onTap: () {
-            _actionService.name = allServices[index].name;
+            if (isAction) {
+              _actionService.name = allServices[index].name;
+            } else {
+              _reactionService.name = allServices[index].name;
+            }
             setState(() {});
           },
-          child: allServices[index].name == _actionService.name
+          child: allServices[index].name ==
+                  (isAction ? _actionService.name : _reactionService.name)
               ? Image.asset(allServices[index].not_connected_image)
               : Image.asset(allServices[index].connected_image,
                   filterQuality: FilterQuality.high)));
@@ -67,9 +73,13 @@ class _CreateWidgetState extends State<CreateWidget> {
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(
         onPressed: () {
-          if (_actionService.name.isNotEmpty) {
+          if (isAction && _actionService.name.isNotEmpty) {
             _actionService = allServices
                 .firstWhere((element) => _actionService.name == element.name);
+            setStateWidget(() {});
+          } else if (!isAction && _reactionService.name.isNotEmpty) {
+            _reactionService = allServices
+                .firstWhere((element) => _reactionService.name == element.name);
             setStateWidget(() {});
           } else {
             return;
@@ -77,7 +87,8 @@ class _CreateWidgetState extends State<CreateWidget> {
           Navigator.of(context).pop();
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: switchColor(_actionService.name)),
+            backgroundColor: switchColor(
+                isAction ? _actionService.name : _reactionService.name)),
         child: const Text(
           "CONFIRM",
         ),
@@ -86,15 +97,15 @@ class _CreateWidgetState extends State<CreateWidget> {
     return (Column(children: list));
   }
 
-  Widget getActionServices(context, setState, setStateWidget) {
+  Widget getServices(context, setState, setStateWidget, bool isAction) {
     return FutureBuilder(
       future: ApiService().getConnectedServices(widget.token),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: displayActionServices(
-                  snapshot.data, context, setState, setStateWidget));
+              child: displayServices(
+                  snapshot.data, context, setState, setStateWidget, isAction));
         } else {
           return Container(
               width: MediaQuery.of(context).size.width / 1.8,
@@ -106,10 +117,15 @@ class _CreateWidgetState extends State<CreateWidget> {
     );
   }
 
-  void openActionService(context, StateSetter setStateWidget) {
-    if (_actionTrigger.name.isNotEmpty &&
+  void openService(context, StateSetter setStateWidget, bool isAction) {
+    if (isAction &&
+        _actionTrigger.name.isNotEmpty &&
         _actionService.not_connected_image.isEmpty) {
       _actionService.name = "";
+    } else if (!isAction &&
+        _reactionTrigger.name.isNotEmpty &&
+        _reactionService.not_connected_image.isEmpty) {
+      _reactionService.name = "";
     }
     showDialog(
         context: context,
@@ -124,9 +140,9 @@ class _CreateWidgetState extends State<CreateWidget> {
                     ),
                   ),
                 ),
-                title: const Text(
-                  "Action's Service",
-                  style: TextStyle(
+                title: Text(
+                  (isAction ? "Action's Service" : "Reaction's Service"),
+                  style: const TextStyle(
                       fontSize: 23,
                       color: Colors.white,
                       fontFamily: "RobotoMono",
@@ -139,7 +155,8 @@ class _CreateWidgetState extends State<CreateWidget> {
                     child: Padding(
                         padding: const EdgeInsetsDirectional.only(start: 20),
                         child: Row(children: <Widget>[
-                          getActionServices(context, setState, setStateWidget)
+                          getServices(
+                              context, setState, setStateWidget, isAction)
                         ]))));
           });
         });
@@ -276,45 +293,6 @@ class _CreateWidgetState extends State<CreateWidget> {
         });
   }
 
-  void openReactionService(context, StateSetter setStateWidget) {
-    if (_actionService.name.isNotEmpty &&
-        _actionService.not_connected_image.isEmpty) {
-      _actionService.name = "";
-    }
-    showDialog(
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(builder: (builder, setState) {
-            return AlertDialog(
-                backgroundColor: Color.fromRGBO(60, 60, 60, 1),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(
-                      30,
-                    ),
-                  ),
-                ),
-                title: const Text(
-                  "Action's Service",
-                  style: TextStyle(
-                      fontSize: 23,
-                      color: Colors.white,
-                      fontFamily: "RobotoMono",
-                      fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                content: SizedBox(
-                    height: 500,
-                    width: 600,
-                    child: Padding(
-                        padding: const EdgeInsetsDirectional.only(start: 20),
-                        child: Row(children: <Widget>[
-                          getActionServices(context, setState, setStateWidget)
-                        ]))));
-          });
-        });
-  }
-
   void openReactionTrigger(context, StateSetter setStateWidget) {
     if (_actionService.name.isNotEmpty &&
         _actionService.not_connected_image.isEmpty) {
@@ -348,7 +326,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                     child: Padding(
                         padding: const EdgeInsetsDirectional.only(start: 20),
                         child: Row(children: <Widget>[
-                          getActionServices(context, setState, setStateWidget)
+                          getServices(context, setState, setStateWidget, false)
                         ]))));
           });
         });
@@ -374,8 +352,21 @@ class _CreateWidgetState extends State<CreateWidget> {
     return (Container());
   }
 
-  Container displayButton(
-      String title, String image, bool isTrigger, Function function) {
+  Widget getButtonImage(bool isTrigger, bool isAction, String image) {
+    if (image.isEmpty) {
+      return const Icon(Icons.add, size: 30);
+    } else if (isTrigger == false) {
+      return Image.asset(image);
+    }
+    if ((isAction && _actionTrigger.description.isEmpty) ||
+        (!isAction && _reactionTrigger.description.isEmpty)) {
+      return const Icon(Icons.add, size: 30);
+    }
+    return Image.asset(image);
+  }
+
+  Container displayButton(String title, String image, bool isTrigger,
+      bool isAction, Function function) {
     return Container(
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 40),
       height: 270.0,
@@ -406,9 +397,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                 fillColor: const Color.fromRGBO(80, 80, 80, 100),
                 constraints:
                     const BoxConstraints(minWidth: 230, minHeight: 120),
-                child: image.isEmpty
-                    ? const Icon(Icons.add, size: 30)
-                    : Image.asset(image),
+                child: getButtonImage(isTrigger, isAction, image),
               ),
               const SizedBox(height: 10),
               isTrigger ? displayTriggerName(title) : Container()
@@ -477,7 +466,8 @@ class _CreateWidgetState extends State<CreateWidget> {
         "fields": [],
         "_id": "dssfghjkl",
         "title": "CONDITION",
-        "description": "Use: '>, <, <=, >=, ==' to compare numbers and '== (case insensitive comparison), === (case sensitive comparison), in' to compare strings",
+        "description":
+            "Use: '>, <, <=, >=, ==' to compare numbers and '== (case insensitive comparison), === (case sensitive comparison), in' to compare strings",
         "remark": false,
         "type": "text",
         "is_mandatory": false
@@ -504,6 +494,10 @@ class _CreateWidgetState extends State<CreateWidget> {
               return;
             }
             _actionDetail = val!.toJson();
+            _condition = _actionDetail["data"][0]["questions"]
+                .firstWhere((map) => map["title"] == "CONDITION")["answer"];
+            _actionDetail["data"][0]["questions"]
+                .removeWhere((map) => map["title"] == "CONDITION");
           })
     ]);
   }
@@ -553,12 +547,12 @@ class _CreateWidgetState extends State<CreateWidget> {
                   fontWeight: FontWeight.bold))),
       SizedBox(height: 50),
       displayButton(
-          "Action's Service", _actionService.not_connected_image, false, () {
-        openActionService(context, setState);
+          "Action's Service", _actionService.not_connected_image, false, true, () {
+        openService(context, setState, true);
       }),
       _actionService.not_connected_image.isNotEmpty
           ? displayButton(
-              "Action's Trigger", _actionService.not_connected_image, true, () {
+              "Action's Trigger", _actionService.not_connected_image, true, true, () {
               openActionTrigger(context, setState);
             })
           : Container(),
@@ -567,14 +561,14 @@ class _CreateWidgetState extends State<CreateWidget> {
           : Container(),
       _actionTrigger.detail
           ? displayButton(
-              "Reaction's Service", _reactionService.not_connected_image, true,
+              "Reaction's Service", _reactionService.not_connected_image, false, false,
               () {
-              openReactionService(context, setState);
+              openService(context, setState, false);
             })
           : Container(),
       _reactionService.not_connected_image.isNotEmpty
           ? displayButton(
-              "Reaction's Trigger", _reactionService.not_connected_image, true,
+              "Reaction's Trigger", _reactionService.not_connected_image, true, false,
               () {
               openReactionTrigger(context, setState);
             })
