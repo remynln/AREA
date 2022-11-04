@@ -117,6 +117,7 @@
     .Sidebar {
         height: 100%;
         width: 70px;
+        transition: 0.4s ease-in;
     }
     
     .SidebarTitle {

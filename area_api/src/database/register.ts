@@ -14,7 +14,8 @@ export default async function register(password:string, email:string, uname:stri
     const newUser = new User({
         username: uname,
         mail: email,
-        password: encryptedPassword
+        password: encryptedPassword,
+        admin: false
     })
     await newUser.save()
 }

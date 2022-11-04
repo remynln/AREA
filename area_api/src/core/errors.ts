@@ -22,3 +22,15 @@ export class AreaError extends Error {
         this.code = code
     }
 }
+
+export class ProcessError extends Error {
+    serviceName: string
+    name: string
+    err: any
+    constructor(serviceName: string, name: string, err: any) {
+        super("")
+        this.err = err
+        this.serviceName = serviceName
+        this.name = name
+    }
+}

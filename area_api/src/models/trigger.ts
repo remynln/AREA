@@ -1,7 +1,7 @@
-import {Mongoose, Schema, model} from "mongoose";
+import {Mongoose, Schema, model, Types} from "mongoose";
 
 const TriggerSchema = new Schema({
-    user_id: {type: Number},
+    user_id: {type: Types.ObjectId},
     title: {type: String},
     description: {type: String},
     action: {type: String},
