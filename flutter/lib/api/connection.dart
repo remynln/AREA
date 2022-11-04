@@ -10,7 +10,7 @@ import 'package:area/api/answer/login_answer.dart';
 import 'package:area/api/answer/register_answer.dart';
 import 'package:area/api/answer/services_answer.dart';
 import 'package:area/api/answer/actions_answer.dart';
-import 'package:area/api/area.dart';
+import 'package:area/api/answer/reactions_answer.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -105,6 +105,36 @@ class ApiService {
         ActionAnswerDetails detail = actionAnswerDetailsFromJson(response.body);
         model[index].parameters = detail.parameters;
         model[index].properties = detail.properties;
+      }
+      return model;
+    } catch (e) {
+      log(e.toString());
+    }
+    return null;
+  }
+
+  Future<List<ReactionsAnswer>?> getReactionsFromService(
+      String token, String service) async {
+    try {
+      var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.reactionsEndpoint(service));
+      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      var response = await http.get(uri, headers: headers);
+      if (response.statusCode != 200) {
+        log(response.statusCode.toString());
+        throw response.body;
+      }
+      List<ReactionsAnswer> model = reactionsAnswerFromJson(response.body);
+      for (var index = 0; index < model.length; index++) {
+        uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+            ApiConstants.reactionEndpoint(service, model[index].name));
+        response = await http.get(uri, headers: headers);
+        if (response.statusCode != 200) {
+          log(response.statusCode.toString());
+          throw response.body;
+        }
+        ReactionsAnswerDetails detail = reactionAnswerDetailsFromJson(response.body);
+        model[index].parameters = detail.parameters;
       }
       return model;
     } catch (e) {
