@@ -1,4 +1,4 @@
-import { Area, Service } from "../types";
+import { Service } from "../types";
 const GoogleStrategy = require("passport-google-oauth20")
 import { PubSub } from '@google-cloud/pubsub';
 import { readFileSync } from "fs";

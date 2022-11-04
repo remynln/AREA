@@ -1,7 +1,8 @@
-import { Action, AreaRet, RefreshTokenFunction } from "~/core/types";
+import { Action, ActionConfig, ActionConstructor, AreaRet, RefreshTokenFunction } from "~/core/types";
 import { PubSub, Subscription } from '@google-cloud/pubsub';
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { getMailFromToken } from "../utils";
+import refreshToken from "~/database/tokens/refresh";
 const pubsub = new PubSub({ projectId: "sergify" });
 
 const TOPIC_NAME = "my-topic"
@@ -184,13 +185,77 @@ interface Sub {
     email: string
 }
 
-interface NewMail extends Action {
-    subs: Map<string, Sub> | undefined,
-    _sub: Subscription | undefined,
-    _newMessageCallback: (mess: any, refresh: RefreshTokenFunction) => Promise<void>
+class newMail extends Action {
+    static subs: undefined | Map<string, Sub>
+    static _sub: undefined | Subscription
+
+    async _newMessageCallback(mess: any) {
+        console.log("received !")
+        if (!newMail.subs) {
+            console.log("subs undefined")
+            return
+        }
+        let data = JSON.parse(mess.data)
+        console.log("haaa ha")
+        for (let [key, value] of newMail.subs) {
+            if (data.emailAddress != value.email)
+                continue;
+            value.historyId = await getLastMails(value.token, value.historyId, this.refresh, (mail) => {
+                for (let i of value.triggers) {
+                    i(mail)
+                }
+            })
+        }
+    }
+
+    override async start() {
+        if (!newMail.subs)
+        newMail.subs = new Map([])
+        console.log("initializing sub")
+        if (!newMail._sub) {
+            newMail._sub = await initSub()
+            newMail._sub.on('message', (mess) => {
+                this._newMessageCallback(mess).catch((err) => {
+                    this.error(err as Error)
+                })
+            })
+        }
+        console.log("getting account info")
+        var sub = newMail.subs.get(this.accountMail)
+        if (!sub) {
+            var historyId: string = ''
+            var email: string = ''
+            await this.refresh(async () => {
+                try {
+                    historyId = await watchForMail(this.token)
+                    email = await getMailFromToken(this.token)
+                } catch (err: any) {
+                    if (!err.response) {
+                        throw err
+                    }
+                    if ((err as AxiosError).response?.status == 401) {
+                        return AreaRet.AccessTokenExpired
+                    }
+                    throw err
+                }
+                return AreaRet.Ok
+            })
+            sub = {
+                historyId: historyId,
+                token: this.token,
+                triggers: [],
+                email: email
+            }
+            newMail.subs.set(this.accountMail, sub)
+        }
+        console.log("done")
+        sub.triggers.push(this.trigger)
+    }
+    override stop() {
+    }
 }
 
-const newMail: NewMail = {
+let config: ActionConfig = {
     description: "When a new mail is received in the gmail mailbox",
     serviceName: 'google',
     name: 'newMail',
@@ -208,76 +273,7 @@ const newMail: NewMail = {
         'body': 'string',
         'date': 'string'
     },
-    subs: undefined,
-    _sub: undefined,
-
-    async _newMessageCallback(mess, refresh) {
-        console.log("received !")
-        if (!this.subs) {
-            console.log("subs undefined")
-            return
-        }
-        let data = JSON.parse(mess.data)
-        console.log("haaa ha")
-        for (let [key, value] of this.subs) {
-            if (data.emailAddress != value.email)
-                continue;
-            value.historyId = await getLastMails(value.token, value.historyId, refresh, (mail) => {
-                for (let i of value.triggers) {
-                    i(mail)
-                }
-            })
-        }
-    },
-
-    async start(params, serviceToken, accountMail, trigger, refresh, error) {
-        if (!this.subs)
-            this.subs = new Map([])
-        console.log("initializing sub")
-        if (!this._sub) {
-            this._sub = await initSub()
-            this._sub.on('message', (mess) => {
-                this._newMessageCallback(mess, refresh).catch((err) => {
-                    error(err as Error)
-                })
-            })
-        }
-        console.log("getting account info")
-        var sub = this.subs.get(accountMail)
-        if (!sub) {
-            var historyId: string = ''
-            var email: string = ''
-            await refresh(async () => {
-                try {
-                    historyId = await watchForMail(serviceToken)
-                    email = await getMailFromToken(serviceToken)
-                } catch (err: any) {
-                    if (!err.response) {
-                        throw err
-                    }
-                    if ((err as AxiosError).response?.status == 401) {
-                        return AreaRet.AccessTokenExpired
-                    }
-                    throw err
-                }
-                return AreaRet.Ok
-            })
-            sub = {
-                historyId: historyId,
-                token: serviceToken,
-                triggers: [],
-                email: email
-            }
-            this.subs.set(accountMail, sub)
-        }
-        console.log("done")
-        sub.triggers.push(trigger)
-    },
-    stop() {
-    },
-    destroy() {
-
-    }
+    create: newMail
 }
 
-export default newMail
+export default config

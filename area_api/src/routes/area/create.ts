@@ -2,12 +2,12 @@ import { Router } from "express";
 import checkBody from "~/middlewares/checkBody";
 import checkToken from "~/middlewares/checkToken";
 import AreaFunc from "~/core/global";
-import { Action, Area, Reaction } from "~/core/types";
+import { Action, ActionConfig, Reaction, ReactionConfig } from "~/core/types";
 import JwtFormat from "~/routes/auth/jwtFormat"
 import jwt from "jsonwebtoken"
 import { checkConditionSyntax } from "~/core/formatting";
 import { AreaError } from "~/core/errors";
-import AreaInstances from "~/core/instances";
+import AreaInstances, { AreaConfig } from "~/core/instances";
 
 var area: Router = Router()
 
@@ -19,8 +19,8 @@ function checkActionReaction(body: any) {
 
     let action = AreaFunc.getAction(body.action.name)
     let reaction = AreaFunc.getReaction(body.reaction.name)
-    AreaFunc.checkParams(action, body.action.params)
-    AreaFunc.checkParams(reaction, body.reaction.params, action.propertiesType)
+    AreaFunc.checkParams(action.paramTypes, body.action.params)
+    AreaFunc.checkParams(reaction.paramTypes, body.reaction.params, action.propertiesType)
     return {action, reaction}
 }
 
@@ -28,8 +28,8 @@ area.post("/create", checkBody(["action", "reaction", "title"]),
     (req, res, next) => {
 
     let ret = checkActionReaction(req.body)
-    var action: Action = ret.action;
-    var reaction: Reaction = ret.reaction
+    var action: ActionConfig = ret.action;
+    var reaction: ReactionConfig = ret.reaction
     var condition: string | undefined = req.body.condition
 
     if (!res.locals.userInfo) {
@@ -42,14 +42,21 @@ area.post("/create", checkBody(["action", "reaction", "title"]),
         console.log(action.propertiesType)
         checkConditionSyntax(condition, action.propertiesType)
     }
-    let area = new Area(
-        action, req.body.action.params,
-        condition,
-        reaction, req.body.reaction.params,
-        req.body.title, req.body.description || ''
-    )
+    let conf: AreaConfig = {
+        title: req.body.title,
+        condition: req.body.condition,
+        action: {
+            conf: action,
+            params: req.body.action.params
+        },
+        description: req.body.description || '',
+        reaction: {
+            conf: reaction,
+            params: req.body.reaction.params
+        }
+    }
     let decoded = jwt.decode(req.headers.authorization?.split(' ')[1] || '')
-    AreaInstances.add(area, res.locals.userInfo.email).then(() => {
+    AreaInstances.add(conf, res.locals.userInfo.email).then(() => {
         res.status(201).json({
             message: 'OK'
         })

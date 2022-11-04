@@ -1,7 +1,7 @@
 import User from '../../models/user'
 import Trigger from '../../models/trigger'
 import { DatabaseError } from '~/core/errors';
-import { Area } from '~/core/types';
+import { Area } from '~/core/area';
 import { Types } from 'mongoose';
 
 
@@ -17,11 +17,11 @@ export default async function setArea(area: Area) {
     }
     var newTrigger =  new Trigger({
         user_id: user._id,
-        action: area.action.ref.serviceName + "/" + area.action.ref.name,
+        action: area.actionConf.serviceName + "/" + area.actionConf.name,
         action_params: JSON.stringify(area.action.params),
         condition: area.condition,
         description: area.description,
-        reaction: area.reaction.ref.serviceName + "/" + area.reaction.ref.name,
+        reaction: area.reactionConf.serviceName + "/" + area.reactionConf.name,
         reaction_params: JSON.stringify(area.reaction.params),
         title: area.title
     })

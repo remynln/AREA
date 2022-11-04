@@ -1,7 +1,6 @@
 import User from '../../models/user'
 import Trigger from '../../models/trigger'
 import { DatabaseError } from '~/core/errors';
-import { Area } from '~/core/types';
 import { describe } from 'node:test';
 
 
