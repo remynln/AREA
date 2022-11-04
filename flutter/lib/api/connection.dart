@@ -95,6 +95,7 @@ class ApiService {
       }
       List<ActionsAnswer> model = actionsAnswerFromJson(response.body);
       for (var index = 0; index < model.length; index++) {
+        model[index].serviceName = service;
         uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
             ApiConstants.actionEndpoint(service, model[index].name));
         response = await http.get(uri, headers: headers);
@@ -126,6 +127,7 @@ class ApiService {
       }
       List<ReactionsAnswer> model = reactionsAnswerFromJson(response.body);
       for (var index = 0; index < model.length; index++) {
+        model[index].serviceName = service;
         uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
             ApiConstants.reactionEndpoint(service, model[index].name));
         response = await http.get(uri, headers: headers);
@@ -133,7 +135,8 @@ class ApiService {
           log(response.statusCode.toString());
           throw response.body;
         }
-        ReactionsAnswerDetails detail = reactionAnswerDetailsFromJson(response.body);
+        ReactionsAnswerDetails detail =
+            reactionAnswerDetailsFromJson(response.body);
         model[index].parameters = detail.parameters;
       }
       return model;
@@ -141,5 +144,30 @@ class ApiService {
       log(e.toString());
     }
     return null;
+  }
+
+  Future<String> createArea(String token, ActionsAnswer action,
+      String condition, ReactionsAnswer reaction) async {
+    try {
+      final uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.createEndpoint);
+      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      final body_data = {
+        'title': "test",
+        'action': {'name': "${action.serviceName}/${action.name}", 'params': action.parameters},
+        'condition': condition,
+        'reaction': {'name': "${reaction.serviceName}/${reaction.name}", 'params': reaction.parameters}
+      };
+      print(body_data);
+      var response =
+          await http.post(uri, headers: headers, body: json.encode(body_data));
+      if (response.statusCode != 200) {
+        log(response.statusCode.toString());
+      }
+      return json.decode(response.body)["message"];
+    } catch (e) {
+      log(e.toString());
+    }
+    return "";
   }
 }

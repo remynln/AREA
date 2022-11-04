@@ -6,6 +6,7 @@ String actionAnswerToJson(List<ActionsAnswer> data) => json.encode(List<dynamic>
 
 class ActionsAnswer {
   ActionsAnswer({
+    this.serviceName = "",
     this.name = "",
     this.description = "",
     this.parameters = const {},
@@ -13,6 +14,7 @@ class ActionsAnswer {
     this.detail = false
   });
 
+  String serviceName;
   String name;
   String description;
   Map<String, dynamic> parameters;

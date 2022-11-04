@@ -8,6 +8,7 @@ import 'package:area/api/service/services.dart';
 import 'package:area/api/connection.dart';
 import 'package:area/api/answer/services_answer.dart';
 import 'package:area/api/answer/actions_answer.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:simple_form_builder/formbuilder.dart';
 import 'package:simple_form_builder/global/checklistModel.dart';
@@ -517,7 +518,7 @@ class _CreateWidgetState extends State<CreateWidget> {
           "description": "",
           "remark": false,
           "type": "text",
-          "is_mandatory": false
+          "is_mandatory": true
         });
       });
       if (isAction) {
@@ -546,14 +547,41 @@ class _CreateWidgetState extends State<CreateWidget> {
           if (val == null) {
             return;
           }
-          isAction ? _actionDetail : _reactionDetail = val!.toJson();
           if (isAction) {
+            _actionDetail = val!.toJson();
             _condition = _actionDetail["data"][0]["questions"]
                 .firstWhere((map) => map["title"] == "CONDITION")["answer"];
             _actionDetail["data"][0]["questions"]
                 .removeWhere((map) => map["title"] == "CONDITION");
+            _actionDetail["data"][0]["questions"].forEach((map) {
+              if (_actionTrigger.parameters.containsKey(map["title"])) {
+                _actionTrigger.parameters[map["title"]] = map["answer"];
+              } else if (_actionTrigger.properties.containsKey(map["title"])) {
+                _actionTrigger.properties[map["title"]] = map["answer"];
+              }
+            });
+          } else {
+            _reactionDetail = val!.toJson();
+            _reactionDetail["data"][0]["questions"].forEach((map) {
+              if (_reactionTrigger.parameters.containsKey(map["title"])) {
+                _reactionTrigger.parameters[map["title"]] = map["answer"];
+              }
+            });
           }
+          print(_reactionTrigger.parameters);
         }));
+  }
+
+  void handleCreate() async {
+    String result = await ApiService().createArea(widget.token, _actionTrigger, _condition, _reactionTrigger);
+    Fluttertoast.showToast(
+        msg: result,
+        timeInSecForIosWeb: 3,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Color.fromRGBO(191, 27, 44, 1),
+        textColor: Colors.white,
+        fontSize: 14);
   }
 
   Container displayDetail(String title, bool isAction) {
@@ -640,6 +668,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                     print(_reactionTrigger.name);
                     print(_reactionTrigger.description);
                     print("");
+                    handleCreate();
                   },
                   style: ButtonStyle(
                       backgroundColor: const MaterialStatePropertyAll<Color>(
