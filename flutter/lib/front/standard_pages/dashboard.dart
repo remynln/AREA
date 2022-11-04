@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:area/front/standard_pages/pages.dart';
@@ -18,6 +19,20 @@ class DashboardWidget extends StatefulWidget {
 
 class _DashboardWidgetState extends State<DashboardWidget> {
   bool _isBasicService = true;
+  String user = "User";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    try {
+      user = widget.token.split('.')[1];
+      user += user.length % 4 == 0 ? '' : (user.length % 4 == 3 ? '=' : '==');
+      user = jsonDecode(utf8.fuse(base64).decode(user))["username"];
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,17 +42,17 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         Row(children: <Widget>[
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const <Widget>[
+              children: <Widget>[
                 Padding(
-                    padding: EdgeInsetsDirectional.only(start: 20),
-                    child: Text("Hello User !",
+                    padding: const EdgeInsetsDirectional.only(start: 20),
+                    child: Text("Hello $user !",
                         style: TextStyle(
                             fontSize: 26,
                             color: Colors.white,
                             fontFamily: "RobotoMono",
                             fontWeight: FontWeight.bold))),
-                SizedBox(height: 8),
-                Padding(
+                const SizedBox(height: 8),
+                const Padding(
                     padding: EdgeInsetsDirectional.only(start: 20),
                     child: Text("Welcome back on Sergify.",
                         style: TextStyle(
@@ -50,17 +65,17 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               padding: EdgeInsetsDirectional.only(end: 10),
               child: IconButton(
                   onPressed: () {
-                    print("HERE!");
+                    print("USERRR");
                   },
                   splashRadius: 22,
                   iconSize: 50,
                   icon: const Icon(Icons.account_circle_rounded,
                       color: Colors.white))),
         ]),
-        SizedBox(height: 40),
+        const SizedBox(height: 40),
         Row(
           children: <Widget>[
-            Padding(
+            const Padding(
                 padding: EdgeInsetsDirectional.only(start: 20),
                 child: Text("Workflows",
                     style: TextStyle(
