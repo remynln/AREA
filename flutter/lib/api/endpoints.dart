@@ -7,6 +7,9 @@ class ApiConstants {
   static String unregisterEndpoint = '/auth/unregister';
   static String createEndpoint = '/area/create';
   static String servicesEndpoint = '/services';
+  static String serviceEndpoint(String service_name) {
+    return "/service/$service_name";
+  }
   static String actionsEndpoint(String service_name) {
     return "/service/$service_name/actions";
   }

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:area/api/connection.dart';
+import 'package:area/api/endpoints.dart';
 import 'package:area/front/standard_pages/pages.dart';
 import 'package:flutter/material.dart';
 
