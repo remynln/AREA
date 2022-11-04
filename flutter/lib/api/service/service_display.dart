@@ -1,13 +1,17 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:area/api/service/services.dart';
 import 'package:area/api/answer/services_answer.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:area/api/connection.dart';
+import 'package:uni_links/uni_links.dart';
 
 class ServiceDisplay extends StatefulWidget {
   final String token;
@@ -22,6 +26,14 @@ class ServiceDisplay extends StatefulWidget {
 }
 
 class _ServiceDisplayState extends State<ServiceDisplay> {
+  void callApiFunction(String service_name) async {
+    try {
+      await ApiService().connectToService(widget.token, service_name, "sergify://");
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   Widget handleDisplayColumn(
       List<Service> service_list, var index, List<dynamic> connectedServices) {
     late String firstServiceImage;
@@ -41,14 +53,14 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
       return (Column(children: <Widget>[
         GestureDetector(
             onTap: () {
-              print(service_list[index].name);
+              callApiFunction(service_list[index].name);
             },
             child: Image.asset(firstServiceImage,
                 filterQuality: FilterQuality.high)),
         SizedBox(height: 10),
         GestureDetector(
             onTap: () {
-              print(service_list[index + 1].name);
+              callApiFunction(service_list[index + 1].name);
             },
             child: Image.asset(secondServiceImage,
                 filterQuality: FilterQuality.high)),
@@ -57,7 +69,7 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
       return (Column(children: <Widget>[
         GestureDetector(
             onTap: () {
-              print(service_list[index].name);
+              callApiFunction(service_list[index].name);
             },
             child: Image.asset(firstServiceImage,
                 filterQuality: FilterQuality.high)),
