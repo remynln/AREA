@@ -4,6 +4,8 @@ import "dotenv/config"
 import url from "url";
 import jwt from "jsonwebtoken";
 import Area from "../../core/global"
+import AreaInstances from "~/core/instances";
+import JwtFormat from "../auth/jwtFormat";
 
 var router: Router = Router()
 
@@ -64,7 +66,7 @@ router.get('/:serviceName/callback', (req, res, next) => {
         res.locals.user = user;
         next()
     })(req, res, next)
-}, (req, res) => {
+}, (req, res, next) => {
     if (req.errored || !res.locals.user) {
         res.status(500).json({
             message: "Internal server error"
@@ -72,7 +74,13 @@ router.get('/:serviceName/callback', (req, res, next) => {
         return;
     }
     let splitted = req.query.state?.toString().split(' ')
-    res.redirect(splitted![0])
+    let userInfo = jwt.decode(splitted![1]) as JwtFormat
+    AreaInstances.connectToService(userInfo.email, req.params.serviceName).then(() => {
+        res.redirect(splitted![0])
+    }).catch((err) => {
+        next(err)
+    })
 })
+
 
 export default router

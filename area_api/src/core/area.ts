@@ -23,7 +23,7 @@ export class Area {
     accountMail: string
     actionConf: ActionConfig
     reactionConf: ReactionConfig
-    status: "started" | "stopped" | "starting" | "stopping" | "errored" = "stopped"
+    status: "started" | "stopped" | "starting" | "stopping" | "errored" | "locked" = "stopped"
     error: (err: ProcessError) => void
 
     async refreshTokenFunc<T>(
@@ -123,9 +123,12 @@ export class Area {
         if (this.status != "stopped" && this.status != "errored")
             throw new AreaError(`can't start a ${this.status} area`, 403)
         this.status = "starting"
-        await this.action.start().catch((err) => {
+        try {
+            await this.action.start()
+        } catch (err) {
             this.status = "errored"
-        })
+            throw err
+        }
         this.status = "started"
     }
 
@@ -137,5 +140,12 @@ export class Area {
             this.status = "errored"
         })
         this.status = "stopped"
+    }
+
+    async forceStop() {
+        while(this.status == "starting" || this.status == "stopping") {}
+        if (this.status == "started") {
+            await this.stop()
+        }
     }
 }

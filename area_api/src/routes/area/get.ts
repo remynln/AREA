@@ -11,6 +11,7 @@ router.get("/", (req, res) => {
 })
 
 router.put("/enable", (req, res, next) => {
+    console.log("bizarre")
     AreaInstances.enable(res.locals.areaInfo.id).then(() => {
         res.status(200).send({
             message: "OK"
