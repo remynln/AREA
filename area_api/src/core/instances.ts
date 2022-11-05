@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { Types } from "mongoose";
 import db from "~/database/db";
 import { Area } from "./area";
-import { ProcessError } from "./errors";
+import { AreaError, ProcessError } from "./errors";
 import global from "./global";
 import { ActionConfig, ReactionConfig, Tokens } from "./types";
 
@@ -63,6 +63,8 @@ const AreaInstances = {
     async load() {
         console.log("starting area instances")
         await db.area.forEach(async (accMail, newTokens, area) => {
+            if (area.status != "enabled")
+                return
             if (!tokens.has(accMail))
                 tokens.set(accMail, newTokens)
             try {
@@ -96,6 +98,20 @@ const AreaInstances = {
             }
         })
         console.log("instanciated")
+    },
+    async enable(areaId: string) {
+        let area = areas.get(areaId)
+        if (!area)
+            throw new AreaError(`area with code ${areaId} does not exists`, 404)
+        await area.start()
+        await db.area.setStatus(areaId, "enabled")
+    },
+    async disable(areaId: string) {
+        let area = areas.get(areaId)
+        if (!area)
+            throw new AreaError(`area with code ${areaId} does not exists`, 404)
+        await area.stop()
+        await db.area.setStatus(areaId, "disabled")
     }
 }
 
