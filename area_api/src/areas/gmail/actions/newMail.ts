@@ -228,6 +228,9 @@ class newMail extends Action {
                     this.error(err as Error)
                 })
             })
+            newMail._sub.on('error', (err) => {
+                this.error(err as Error)
+            })
         }
         console.log("getting account info")
         var sub = newMail.subs.get(this.accountMail)
