@@ -15,7 +15,8 @@ interface ITrigger {
     action_params: string
     condition: string
     reaction: string
-    reaction_params: string
+    reaction_params: string,
+    status: string
 }
 
 export default async function forEach(
@@ -32,7 +33,8 @@ export default async function forEach(
                 action_params: triggerd.action_params || '',
                 condition: triggerd.condition || '',
                 reaction: triggerd.reaction || '',
-                reaction_params: triggerd.reaction_params || ''
+                reaction_params: triggerd.reaction_params || '',
+                status: triggerd.status || ''
             }
             await trigger(user.mail || '', tokens, area)
         }

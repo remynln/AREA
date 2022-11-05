@@ -39,7 +39,7 @@ export abstract class Action {
     token: string
     accountMail: string
     abstract start(): Promise<void>
-    abstract stop(): void
+    abstract stop(): Promise<void>
 
     constructor(
         trigger: (properties: any) => void,

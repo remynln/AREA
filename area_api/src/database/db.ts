@@ -16,6 +16,7 @@ import getFromMail from "./user/getFromMail";
 import forEach from "./area/forEach";
 import getArea from "./area/get";
 import getAreaFromUser from "./area/getFromUser";
+import setStatus from "./area/setStatus";
 
 const db = {
     register:Register,
@@ -26,6 +27,7 @@ const db = {
     loginService,
     area: {
         set: setArea,
+        setStatus: setStatus,
         forEach: forEach,
         get: getArea,
         getFromUser: getAreaFromUser

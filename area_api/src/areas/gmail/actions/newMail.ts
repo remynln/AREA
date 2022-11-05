@@ -124,6 +124,15 @@ async function initSub() {
 }
 
 async function watchForMail(token: string) {
+    await axios.post("https://www.googleapis.com/gmail/v1/users/me/stop", {
+        topicName: pubsub.topic(TOPIC_NAME).name,
+        labelIds: ["INBOX"],
+    }, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        }
+    })
     const res = await axios.post("https://www.googleapis.com/gmail/v1/users/me/watch", {
         topicName: pubsub.topic(TOPIC_NAME).name,
         labelIds: ["INBOX"],
@@ -251,7 +260,29 @@ class newMail extends Action {
         console.log("done")
         sub.triggers.push(this.trigger)
     }
-    override stop() {
+    override async stop() {
+        if (!newMail.subs)
+            return
+        var sub = newMail.subs.get(this.accountMail)
+        if (!sub)
+            return
+        sub.triggers = sub.triggers.filter((item) => item != this.trigger)
+        if (sub.triggers.length != 0)
+            return
+        try {
+            await axios.post("https://www.googleapis.com/gmail/v1/users/me/stop", {
+                topicName: pubsub.topic(TOPIC_NAME).name,
+                labelIds: ["INBOX"],
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.token
+                }
+            })
+        } catch {
+
+        }
+        newMail.subs.delete(this.accountMail)
     }
 }
 
