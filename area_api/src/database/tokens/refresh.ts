@@ -9,5 +9,5 @@ export default async function refreshToken(tokenId: Types.ObjectId, newAccessTok
     if (!token) {
         throw new DatabaseError(`refreshToken: Token does not exists`, 500)
     }
-    token.updateOne({ service_token: newAccessToken })
+    await token.updateOne({ service_token: newAccessToken })
 }

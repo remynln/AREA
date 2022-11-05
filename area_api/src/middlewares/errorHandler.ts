@@ -24,6 +24,7 @@ export default function errorMiddleware(error: Error, req: Request, res: Respons
     }
     if (error instanceof AreaError) {
         res.status(error.code).json({message: error.message})
+        return
     }
     console.log(error.message)
     res.status(500).json({ message: "Internal server error" })
