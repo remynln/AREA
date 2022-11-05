@@ -10,6 +10,7 @@ import mongoose from 'mongoose';
 import serviceConnect from './routes/service/connect'
 import serviceGet from './routes/service/get'
 import services from './routes/service/services'
+import serviceDisconnect from './routes/service/disconnect'
 import users from "./routes/users"
 import user from "./routes/user/root"
 import areaRoot from "./routes/area/root"
@@ -49,6 +50,7 @@ app.use('/area', checkToken, areaRoot)
 app.use('/service', serviceConnect)
 app.use('/services', checkToken, services)
 app.use('/service', checkToken, serviceGet)
+app.use('/service', checkToken, serviceDisconnect)
 
 app.use('/users', checkToken, checkAdmin, users)
 app.use('/user', checkToken, user)

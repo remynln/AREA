@@ -7,7 +7,7 @@ import { Types } from 'mongoose';
 // get the connected service in function of user email
 export default async function setStatus(
     id: string,
-    status: "enabled" | "disabled"
+    status: string
 ) {
     let area = Trigger.findById(id)
     if (!area) {
