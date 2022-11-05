@@ -44,9 +44,10 @@ const AreaInstances = {
         let objectId
         return areas.get(id)
     },
-    list(accountMail: string) {
+    async list(accountId: string) {
+        let user = await db.user.get(accountId)
         return Array.from(areas.entries())
-            .filter(([_, value]) => value.accountMail == accountMail)
+            .filter(([_, value]) => value.accountMail == user.mail)
     },
     async add(area: AreaConfig, accountMail: string) {
         let _tokens = tokens.get(accountMail)
@@ -71,8 +72,9 @@ const AreaInstances = {
     async load() {
         console.log("starting area instances")
         await db.area.forEach(async (accMail, newTokens, area) => {
-            if (!tokens.has(accMail))
+            if (!tokens.has(accMail)) {
                 tokens.set(accMail, newTokens)
+            }
             try {
                 let action = global.getAction(area.action)
                 let reaction = global.getReaction(area.reaction)
@@ -97,7 +99,7 @@ const AreaInstances = {
                     callbackErrorFun
                 )
                 areas.set(area._id.toHexString(), areaInstance)
-                if (area.status == "enabled") {
+                if (area.status == "enabled" && areaInstance.status != "locked") {
                     await areaInstance.start()
                 }
                 if (area.status == "locked")
@@ -139,15 +141,21 @@ const AreaInstances = {
                 continue
             try {
                 await value.forceStop()
-            } catch(err) {
+            } catch (err) {
                 callbackErrorFun(new ProcessError(value.actionConf.serviceName || 'None', value.actionConf.name, err))
             }
             value.status = "locked"
             await db.area.setStatus(key, "locked")
         }
-        let tok = tokens.get(user._id.toHexString())
+        let tok = tokens.get(user.mail || '')
         if (!tok)
             return
+            let serviceTok = tok.get(serviceName)
+        if (!serviceTok)
+            return
+        console.log("alllll")
+        if (serviceTok.dbId)
+            await db.token.delete(serviceTok.dbId)
         tok.delete(serviceName)
     },
     async connectToService(email: string, serviceName: string) {
