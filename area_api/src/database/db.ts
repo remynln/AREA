@@ -17,6 +17,7 @@ import forEach from "./area/forEach";
 import getArea from "./area/get";
 import getAreaFromUser from "./area/getFromUser";
 import setStatus from "./area/setStatus";
+import deleyeToken from "./tokens/delete";
 
 const db = {
     register:Register,
@@ -41,6 +42,7 @@ const db = {
         getFromMail: getFromMail
     },
     token: {
+        delete: deleyeToken,
         refresh: refreshToken,
         getFromUser: getFromUser
     }

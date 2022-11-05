@@ -7,7 +7,7 @@ import { checkCondition, formatContent } from "./formatting"
 function getToken(tokens: Map<string, Tokens>, serviceName: string) {
     let ret = tokens.get(serviceName)
     if (!ret)
-        throw new AreaError(`not connected to service ${serviceName}`, 403)
+        return undefined
     return ret
 }
 
@@ -16,8 +16,8 @@ export class Area {
     description: string
     action: Action
     reaction: Reaction
-    actionTokens: Tokens
-    reactionTokens: Tokens
+    actionTokens: Tokens | undefined
+    reactionTokens: Tokens | undefined
     reactionParams: any
     condition: string
     accountMail: string
@@ -30,7 +30,7 @@ export class Area {
         func: () => Promise<AreaRet | T>,
         aorea: Action | Reaction,
         aoreaConf: ActionConfig | ReactionConfig,
-        tokens: Tokens
+        tokens: Tokens | undefined
     ) {
         var ret
         try {
@@ -54,7 +54,7 @@ export class Area {
             throw Error()
         }
         if (token == null) {
-            // TODO disconnect user from service
+            await AreaInstances.disconnectFromService(this.accountMail, aoreaConf.serviceName)
             console.log(`refresh token expired for service ${aoreaConf.serviceName}`)
             throw Error()
         }
@@ -103,19 +103,22 @@ export class Area {
         this.condition = condition
         this.actionTokens = getToken(tokens, action.conf.serviceName || '')
         this.reactionTokens = getToken(tokens, reaction.conf.serviceName || '')
+        if (!this.actionTokens || !this.reactionTokens) {
+            this.status = "locked"
+        }
         this.reactionParams = reaction.params
         this.actionConf = action.conf
         this.reactionConf = reaction.conf
         this.reaction = new this.reactionConf.create(
             async (func) => this.refreshTokenFunc(func, this.reaction, this.reactionConf, this.reactionTokens),
-            this.reactionTokens.access
+            this.reactionTokens?.access || '' 
         )
         this.action = new this.actionConf.create(
             (properties) => { this.launchReaction(properties) },
             (func) => this.refreshTokenFunc(func, this.action, this.actionConf, this.actionTokens),
             (err) => error(new ProcessError(this.actionConf.serviceName || "None", this.actionConf.name, err)),
             action.params,
-            this.actionTokens.access,
+            this.actionTokens?.access || '',
             accMail
         )
     }
