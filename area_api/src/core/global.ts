@@ -1,10 +1,12 @@
 import { AreaError } from "./errors"
 import { formatContent } from "./formatting"
+import deezer from "./services/deezer"
 import google from "./services/google"
 import { Action, Reaction } from "./types"
 
 const services = new Map([
-    ["google", google]
+    ["google", google],
+    ["deezer", deezer]
 ])
 
 function getAction(actionName: string) {

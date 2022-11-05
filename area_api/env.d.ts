@@ -3,11 +3,14 @@ declare global {
       interface ProcessEnv {
         GOOGLE_CLIENT_ID: string;
         GOOGLE_CLIENT_SECRET: string;
+        DEEZER_CLIENT_ID: string;
+        DEEZER_CLIENT_SECRET: string;
         JWT_KEY: string;
         GOOGLE_APPLICATION_CREDENTIALS: string;
         DB_USER: string;
         DB_PASSWORD: string;
         ROOT_PASSWORD: string;
+        SESSION_SECRET: string;
       }
     }
   }
