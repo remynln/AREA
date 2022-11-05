@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken"
 import { checkConditionSyntax } from "~/core/formatting";
 import { AreaError } from "~/core/errors";
 import AreaInstances from "~/core/instances";
+import { privateEncrypt } from "node:crypto";
 
 var area: Router = Router()
 
@@ -26,7 +27,7 @@ function checkActionReaction(body: any) {
 
 area.post("/create", checkBody(["action", "reaction", "title"]),
 (req, res, next) => {
-    
+    console.log("HERE");
     let ret = checkActionReaction(req.body)
     var action: Action = ret.action;
     var reaction: Reaction = ret.reaction

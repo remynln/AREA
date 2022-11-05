@@ -146,30 +146,33 @@ class ApiService {
     return null;
   }
 
-  Future<String> createArea(String token, ActionsAnswer action,
+  Future<String> createArea(String title, String token, ActionsAnswer action,
       String condition, ReactionsAnswer reaction) async {
     try {
       final uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
           ApiConstants.createEndpoint);
-      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      final headers = {
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+        HttpHeaders.contentTypeHeader: 'application/json'
+      };
       final body_data = {
-        'title': "test",
-        'action': {
-          'name': "${action.serviceName}/${action.name}",
-          'params': action.parameters
+        "title": title,
+        "action": {
+          "name": "${action.serviceName}/${action.name}",
+          "params": action.parameters
         },
-        'condition': condition,
-        'reaction': {
-          'name': "${reaction.serviceName}/${reaction.name}",
-          'params': reaction.parameters
+        "condition": condition,
+        "reaction": {
+          "name": "${reaction.serviceName}/${reaction.name}",
+          "params": reaction.parameters
         }
       };
-      print(body_data);
       var response =
-          await http.post(uri, headers: headers, body: json.encode(body_data));
+          await http.post(uri, headers: headers, body: jsonEncode(body_data));
       if (response.statusCode != 200) {
         log(response.statusCode.toString());
-      }
+      } else
+        print("AYAYA");
       return json.decode(response.body)["message"];
     } catch (e) {
       log(e.toString());

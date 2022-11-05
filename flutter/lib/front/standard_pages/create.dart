@@ -25,6 +25,8 @@ class CreateWidget extends StatefulWidget {
 }
 
 class _CreateWidgetState extends State<CreateWidget> {
+  bool _titleSubmitment = false;
+  TextEditingController _titleController = TextEditingController();
   Service _actionService = Service("", "", "", []);
   ActionsAnswer _actionTrigger = ActionsAnswer();
   late Map<String, dynamic> _actionDetail;
@@ -573,7 +575,8 @@ class _CreateWidgetState extends State<CreateWidget> {
   }
 
   void handleCreate() async {
-    String result = await ApiService().createArea(widget.token, _actionTrigger, _condition, _reactionTrigger);
+    String result = await ApiService().createArea(_titleController.text,
+        widget.token, _actionTrigger, _condition, _reactionTrigger);
     Fluttertoast.showToast(
         msg: result,
         timeInSecForIosWeb: 3,
@@ -608,6 +611,59 @@ class _CreateWidgetState extends State<CreateWidget> {
             ])));
   }
 
+  Widget displayText() {
+    return Container(
+        constraints: BoxConstraints(minHeight: 270.0),
+        padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
+        width: 100.0,
+        color: Colors.transparent,
+        child: Container(
+            decoration: const BoxDecoration(
+                color: Color.fromRGBO(100, 100, 100, 100),
+                borderRadius: BorderRadius.all(Radius.circular(24))),
+            child: Column(children: <Widget>[
+              const Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Text("Workflow's Title",
+                      style: TextStyle(
+                          fontSize: 23,
+                          color: Colors.white,
+                          fontFamily: "RobotoMono",
+                          fontWeight: FontWeight.bold))),
+              const SizedBox(height: 40),
+              Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: TextField(
+                    controller: _titleController,
+                    style: const TextStyle(color: Colors.white),
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14.0)),
+                      filled: true,
+                      hintStyle: const TextStyle(
+                          color: Color.fromRGBO(148, 163, 184, 1),
+                          fontStyle: FontStyle.italic),
+                      hintText: "enter workflow title here",
+                      fillColor: const Color.fromRGBO(68, 68, 68, 1),
+                    ),
+                  )),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  _titleSubmitment = true;
+                  setState((){});
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromRGBO(191, 27, 44, 1)),
+                child: const Text(
+                  "SUBMIT",
+                ),
+              ),
+              const SizedBox(height: 20)
+            ])));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -622,11 +678,13 @@ class _CreateWidgetState extends State<CreateWidget> {
                   fontFamily: "RobotoMono",
                   fontWeight: FontWeight.bold))),
       SizedBox(height: 50),
-      displayButton(
-          "Action's Service", _actionService.not_connected_image, false, true,
-          () {
-        openService(context, setState, true);
-      }),
+      displayText(),
+      _titleSubmitment
+          ? displayButton("Action's Service",
+              _actionService.not_connected_image, false, true, () {
+              openService(context, setState, true);
+            })
+          : Container(),
       _actionService.not_connected_image.isNotEmpty
           ? displayButton("Action's Trigger",
               _actionService.not_connected_image, true, true, () {
@@ -658,16 +716,6 @@ class _CreateWidgetState extends State<CreateWidget> {
               child: ElevatedButton(
                   child: const Text('CONFIRM'),
                   onPressed: () {
-                    print("-- ACTION --");
-                    print(_actionService.name);
-                    print(_actionTrigger.name);
-                    print(_actionTrigger.description);
-                    print("");
-                    print("-- REACTION --");
-                    print(_reactionService.name);
-                    print(_reactionTrigger.name);
-                    print(_reactionTrigger.description);
-                    print("");
                     handleCreate();
                   },
                   style: ButtonStyle(

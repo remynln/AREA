@@ -113,20 +113,20 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
     } else {
       service_list = Services.GamesServices;
     }
-    return Padding(
-        padding: const EdgeInsetsDirectional.only(start: 20),
-        child: FutureBuilder(
-          future: ApiService().getConnectedServices(widget.token),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return SingleChildScrollView(
+    return FutureBuilder(
+      future: ApiService().getConnectedServices(widget.token),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Padding(
+              padding: const EdgeInsetsDirectional.only(start: 20),
+              child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: createWidgetList(service_list, snapshot.data));
-            } else {
-              return const Center(
-                  child: CircularProgressIndicator(color: Colors.white));
-            }
-          },
-        ));
+                  child: createWidgetList(service_list, snapshot.data)));
+        } else {
+          return const Center(
+              child: CircularProgressIndicator(color: Colors.white));
+        }
+      },
+    );
   }
 }
