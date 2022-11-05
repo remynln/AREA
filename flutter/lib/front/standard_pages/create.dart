@@ -33,7 +33,7 @@ class _CreateWidgetState extends State<CreateWidget> {
   late String _condition;
   Service _reactionService = Service("", "", "", []);
   ReactionsAnswer _reactionTrigger = ReactionsAnswer();
-  late Map<String, dynamic> _reactionDetail;
+  List<TextEditingController> _reactionDetail = [];
 
   Color switchColor(String name) {
     if (name.isEmpty) {
@@ -472,8 +472,7 @@ class _CreateWidgetState extends State<CreateWidget> {
 
   void completeActionForm(
       Map<String, dynamic> triggerValues, Map<String, dynamic> data) {
-    triggerValues.clear();
-    triggerValues.addAll(getMapFromDetail(_actionTrigger.properties));
+    triggerValues.addAll(getMapFromDetail(_actionTrigger.parameters));
     triggerValues.forEach((key, value) {
       data["data"][0]["questions"].add({
         "question_id": String,
@@ -483,7 +482,7 @@ class _CreateWidgetState extends State<CreateWidget> {
         "description": "",
         "remark": false,
         "type": "text",
-        "is_mandatory": false
+        "is_mandatory": value.contains('?') ? false : true
       });
     });
     data["data"][0]["questions"].add({
@@ -499,7 +498,7 @@ class _CreateWidgetState extends State<CreateWidget> {
     });
   }
 
-  Widget createForm(bool isAction) {
+  Widget createActionForm() {
     Map<String, dynamic> triggerValues = {};
     Map<String, dynamic> data = {
       "status": 1,
@@ -509,23 +508,7 @@ class _CreateWidgetState extends State<CreateWidget> {
     };
 
     try {
-      triggerValues.addAll(getMapFromDetail(
-          isAction ? _actionTrigger.parameters : _reactionTrigger.parameters));
-      triggerValues.forEach((key, value) {
-        data["data"][0]["questions"].add({
-          "question_id": String,
-          "fields": [],
-          "_id": "sergify",
-          "title": key,
-          "description": "",
-          "remark": false,
-          "type": "text",
-          "is_mandatory": true
-        });
-      });
-      if (isAction) {
-        completeActionForm(triggerValues, data);
-      }
+      completeActionForm(triggerValues, data);
     } catch (e) {
       print(e.toString());
       return (Container());
@@ -540,38 +523,85 @@ class _CreateWidgetState extends State<CreateWidget> {
         ),
         showIndex: false,
         onSubmit: (ChecklistModel? val) {
-          if (isAction && (_actionTrigger.parameters.isEmpty || val != null)) {
+          if (_actionTrigger.parameters.isEmpty || val != null) {
             setState(() => _actionTrigger.detail = true);
-          } else if (!isAction &&
-              (_reactionTrigger.parameters.isEmpty || val != null)) {
-            setState(() => _reactionTrigger.detail = true);
           }
           if (val == null) {
             return;
           }
-          if (isAction) {
-            _actionDetail = val!.toJson();
-            _condition = _actionDetail["data"][0]["questions"]
-                .firstWhere((map) => map["title"] == "CONDITION")["answer"];
-            _actionDetail["data"][0]["questions"]
-                .removeWhere((map) => map["title"] == "CONDITION");
-            _actionDetail["data"][0]["questions"].forEach((map) {
-              if (_actionTrigger.parameters.containsKey(map["title"])) {
-                _actionTrigger.parameters[map["title"]] = map["answer"];
-              } else if (_actionTrigger.properties.containsKey(map["title"])) {
-                _actionTrigger.properties[map["title"]] = map["answer"];
-              }
-            });
-          } else {
-            _reactionDetail = val!.toJson();
-            _reactionDetail["data"][0]["questions"].forEach((map) {
-              if (_reactionTrigger.parameters.containsKey(map["title"])) {
-                _reactionTrigger.parameters[map["title"]] = map["answer"];
-              }
-            });
-          }
-          print(_reactionTrigger.parameters);
+          _actionDetail = val!.toJson();
+          _condition = _actionDetail["data"][0]["questions"]
+              .firstWhere((map) => map["title"] == "CONDITION")["answer"];
+          _actionDetail["data"][0]["questions"]
+              .removeWhere((map) => map["title"] == "CONDITION");
+          _actionDetail["data"][0]["questions"].forEach((map) {
+            if (_actionTrigger.parameters.containsKey(map["title"])) {
+              _actionTrigger.parameters[map["title"]] = map["answer"];
+            } else if (_actionTrigger.properties.containsKey(map["title"])) {
+              _actionTrigger.properties[map["title"]] = map["answer"];
+            }
+          });
         }));
+  }
+
+  List<Widget> getReactionDetailWidgets(Map<String, dynamic> reactionInfo) {
+    List<Widget> reactionDetailWidgets = [];
+
+    reactionInfo.forEach((key, value) {
+      TextEditingController reactionDetailController = TextEditingController();
+      reactionDetailWidgets.add(Align(
+          alignment: Alignment.center,
+          child: Text(key.toUpperCase() + (value.contains('?') ? '' : '*'),
+              style: const TextStyle(color: Colors.white))));
+      reactionDetailWidgets.add(Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: TextField(
+            controller: reactionDetailController,
+            style: const TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+            decoration: InputDecoration(
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
+              filled: true,
+              hintStyle: const TextStyle(
+                  color: Color.fromRGBO(148, 163, 184, 1),
+                  fontStyle: FontStyle.italic),
+              hintText: "Enter text here",
+              fillColor: const Color.fromRGBO(68, 68, 68, 1),
+            ),
+          )));
+      reactionDetailWidgets.add(const SizedBox(height: 10));
+    });
+    reactionDetailWidgets.add(const Padding(
+        padding: EdgeInsets.only(left: 20),
+        child: Text("*: information must be complete",
+            style: TextStyle(color: Color.fromRGBO(148, 163, 184, 1)))));
+    reactionDetailWidgets.add(const SizedBox(height: 20));
+    reactionDetailWidgets.add(Align(
+        alignment: Alignment.center,
+        child: ElevatedButton(
+          onPressed: () {
+            _reactionTrigger.detail = true;
+            setState(() {});
+          },
+          style: ElevatedButton.styleFrom(
+            fixedSize: Size(150, 40),
+              backgroundColor: const Color.fromRGBO(191, 27, 44, 1)),
+          child: const Text(
+            "SUBMIT",
+          ),
+        )));
+    return (reactionDetailWidgets);
+  }
+
+  Widget createReactionForm() {
+    Map<String, dynamic> reactionInfo =
+        getMapFromDetail(_reactionTrigger.parameters);
+
+    return Form(
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: getReactionDetailWidgets(reactionInfo)));
   }
 
   void handleCreate() async {
@@ -606,7 +636,8 @@ class _CreateWidgetState extends State<CreateWidget> {
                           color: Colors.white,
                           fontFamily: "RobotoMono",
                           fontWeight: FontWeight.bold))),
-              createForm(isAction),
+              const SizedBox(height: 20),
+              isAction ? createActionForm() : createReactionForm(),
               const SizedBox(height: 20)
             ])));
   }
@@ -652,7 +683,7 @@ class _CreateWidgetState extends State<CreateWidget> {
               ElevatedButton(
                 onPressed: () {
                   _titleSubmitment = true;
-                  setState((){});
+                  setState(() {});
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromRGBO(191, 27, 44, 1)),
