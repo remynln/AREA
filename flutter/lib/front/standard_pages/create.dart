@@ -27,13 +27,17 @@ class CreateWidget extends StatefulWidget {
 class _CreateWidgetState extends State<CreateWidget> {
   bool _titleSubmitment = false;
   TextEditingController _titleController = TextEditingController();
+
   Service _actionService = Service("", "", "", []);
   ActionsAnswer _actionTrigger = ActionsAnswer();
   late Map<String, dynamic> _actionDetail;
+
   late String _condition;
+
   Service _reactionService = Service("", "", "", []);
   ReactionsAnswer _reactionTrigger = ReactionsAnswer();
-  List<TextEditingController> _reactionDetail = [];
+  Map<String, TextEditingController> _reactionDetail = {};
+  String _currentReactionField = "";
 
   Color switchColor(String name) {
     if (name.isEmpty) {
@@ -462,7 +466,7 @@ class _CreateWidgetState extends State<CreateWidget> {
         newMap.addAll(getMapFromDetail(value, primaryKey: key));
       } else {
         if (primaryKey.isNotEmpty)
-          newMap[primaryKey.toUpperCase() + ": " + key] = value;
+          newMap[primaryKey + "." + key] = value;
         else
           newMap[key] = value;
       }
@@ -537,16 +541,51 @@ class _CreateWidgetState extends State<CreateWidget> {
           _actionDetail["data"][0]["questions"].forEach((map) {
             if (_actionTrigger.parameters.containsKey(map["title"])) {
               _actionTrigger.parameters[map["title"]] = map["answer"];
-            } else if (_actionTrigger.properties.containsKey(map["title"])) {
-              _actionTrigger.properties[map["title"]] = map["answer"];
             }
           });
         }));
   }
 
+  void addReactionDetailProperties(List<Widget> reactionDetailWidgets) {
+    Map<String, dynamic> new_properties =
+        getMapFromDetail(_actionTrigger.properties);
+    List<Widget> buttonList = [];
+
+    reactionDetailWidgets.add(const Center(
+        child: Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: Text("Available Properties",
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontFamily: "RobotoMono")))));
+    new_properties.forEach((key, value) {
+      buttonList.add(ElevatedButton(
+        onPressed: () {
+          _reactionDetail[_currentReactionField]?.text += "[Action.$key]";
+        },
+        style: ElevatedButton.styleFrom(
+            minimumSize: Size(100, 40),
+            side: BorderSide(
+                width: 1.5, color: const Color.fromRGBO(4, 14, 145, 30)),
+            backgroundColor: Color.fromRGBO(100, 100, 100, 100)),
+        child: Text(
+          key,
+        ),
+      ));
+    });
+    reactionDetailWidgets.add(Center(
+        child: Wrap(
+            children: buttonList,
+            spacing: 10,
+            alignment: WrapAlignment.center)));
+    reactionDetailWidgets.add(SizedBox(height: 20));
+  }
+
   List<Widget> getReactionDetailWidgets(Map<String, dynamic> reactionInfo) {
     List<Widget> reactionDetailWidgets = [];
 
+    addReactionDetailProperties(reactionDetailWidgets);
     reactionInfo.forEach((key, value) {
       TextEditingController reactionDetailController = TextEditingController();
       reactionDetailWidgets.add(Align(
@@ -556,7 +595,12 @@ class _CreateWidgetState extends State<CreateWidget> {
       reactionDetailWidgets.add(Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: TextField(
-            controller: reactionDetailController,
+            onChanged: (String change) {
+              _currentReactionField = key;
+            },
+            controller: _reactionDetail.containsKey(key)
+                ? _reactionDetail[key]
+                : reactionDetailController,
             style: const TextStyle(color: Colors.white),
             textAlign: TextAlign.center,
             decoration: InputDecoration(
@@ -571,6 +615,9 @@ class _CreateWidgetState extends State<CreateWidget> {
             ),
           )));
       reactionDetailWidgets.add(const SizedBox(height: 10));
+      if (!_reactionDetail.containsKey(key)) {
+        _reactionDetail[key] = reactionDetailController;
+      }
     });
     reactionDetailWidgets.add(const Padding(
         padding: EdgeInsets.only(left: 20),
@@ -581,11 +628,33 @@ class _CreateWidgetState extends State<CreateWidget> {
         alignment: Alignment.center,
         child: ElevatedButton(
           onPressed: () {
+            bool isValid = true;
+            _reactionTrigger.parameters.forEach((key, value) {
+              if (!value.contains("?") && _reactionDetail[key]?.text == "") {
+                Fluttertoast.showToast(
+                    msg: "$key must be complete !",
+                    timeInSecForIosWeb: 3,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Color.fromRGBO(191, 27, 44, 1),
+                    textColor: Colors.white,
+                    fontSize: 14);
+                isValid = false;
+              }
+            });
+            if (!isValid) {
+              return;
+            }
             _reactionTrigger.detail = true;
+            _reactionDetail.forEach((key, value) {
+              if (_reactionTrigger.parameters.containsKey(key)) {
+                _reactionTrigger.parameters[key] = value.text;
+              }
+            });
             setState(() {});
           },
           style: ElevatedButton.styleFrom(
-            fixedSize: Size(150, 40),
+              fixedSize: Size(150, 40),
               backgroundColor: const Color.fromRGBO(191, 27, 44, 1)),
           child: const Text(
             "SUBMIT",
