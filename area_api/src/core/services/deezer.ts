@@ -33,7 +33,7 @@ const deezer: Service = {
                 return
             }
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
-            db.setToken(accessToken, refreshToken, mail, 'google').then(() => {
+            db.setToken(accessToken, refreshToken, mail, 'deezer').then(() => {
                 callback(null, cbObj)
             })
         }
