@@ -2,10 +2,13 @@ import { OAuthCallbackObj, Service } from "../types";
 import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
+import addedToPlaylist from '~/areas/deezer/action/addedToPlaylist'
 var DeezerStrategy = require("passport-deezer").Strategy
 
 const deezer: Service = {
-    actions: new Map([]),
+    actions: new Map([
+        ["addedToPlaylist", addedToPlaylist]
+    ]),
     reactions: new Map([]),
     authParams: {
         accessType: 'offline',

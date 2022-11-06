@@ -75,7 +75,7 @@ export class Area {
     }
 
     launchReaction(actionProperties: any) {
-        if (!checkCondition(this.condition, actionProperties))
+        if (this.condition && !checkCondition(this.condition, actionProperties))
             return
         var formatted: any = {}
         for (let key in this.reactionParams) {
@@ -97,6 +97,7 @@ export class Area {
         reaction: {conf: ReactionConfig, params: string | undefined},
         error: (err: ProcessError) => void
     ) {
+        this.error = error
         this.accountMail = accMail
         this.title = title
         this.description = description
