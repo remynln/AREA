@@ -115,6 +115,34 @@ The AREA is:
   - 201 -> OK
   - 403 -> Needs an authentication to a service concerned by actions or reactions
 
+
+`/user/[user_id]/areas`: *GET Method*
+*`user_id` can be replaced by `me` to reffer to the access token*
+- **Response**
+  - 200 -> [list of areas { id, title, description, action, reaction, status }]
+
+`/area/[area_id]`: *GET Method*
+- **Response**
+  - 200 ->
+    - `id`: id of the area
+    - `title`: title of the area
+    - `description`: area's description
+    - `action`:
+      - `name`: action's name (service/action)
+      - `parameters`: action parameters
+    - `condition`: reaction triggering condition
+    - `reaction`:
+      - `name`: reaction's name (service/action)
+      - `parameters`: reaction parameters
+
+`/area/[area_id]`: *DELETE Method*
+*Deletes an area*
+- **Response**
+  - 200 -> OK
+
+
+
+
 In order to do create an area correctly without doing a bad request: you can request some informations about available services actions reaction and their params
 
 `/services/` *GET Method*
@@ -201,3 +229,4 @@ admins can't affect other admin accounts.<br />
 - **Response**:
   - 200 -> OK
     - `message`: Account deleted successfully
+
