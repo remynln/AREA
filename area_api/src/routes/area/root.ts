@@ -10,7 +10,7 @@ areaRouter.use("/:areaId", (req, res, next) => {
     db.user.getFromMail(res.locals.userInfo.email).then((user) => {
         let area = AreaInstances.get(req.params.areaId)
         if (!area) {
-            res.status(404).send(`Area with id ${req.params.areaId} not found`)
+            res.status(404).json({message: `Area with id ${req.params.areaId} not found`})
             return
         }
         if (user.mail != area.accountMail && !user.admin) {
