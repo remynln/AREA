@@ -23,21 +23,13 @@ class addedToPlaylist extends Action {
     trackNumber: number
     async getPlaylistLen() {
         let id = this.params.playlistId as string
-        let res = await axios.get(`https://api.deezer.com/playlist/${id}`,{
-            headers: {
-                "Authorization": "Bearer" + this.token
-            }
-        })
+        let res = await axios.get(`https://api.deezer.com/playlist/${id}?access_token=${this.token}`)
         return res.data.nb_tracks
     }
 
     async getNewPlaylistTracks() {
         let id = this.params.playlistId as string
-        let res = await axios.get(`https://api.deezer.com/playlist/${id}/tracks?index=${this.trackNumber}`,{
-            headers: {
-                "Authorization": "Bearer" + this.token
-            }
-        })
+        let res = await axios.get(`https://api.deezer.com/playlist/${id}/tracks?access_token=${this.token}&index=${this.trackNumber}`)
         let mapped: DeezerTrack[] = res.data.data.map((item: any) => {
             return {
                 id: item.id,
@@ -58,8 +50,8 @@ class addedToPlaylist extends Action {
     }
 
     async loop() {
-        console.log("loop")
         let newTrackNumber = await this.getPlaylistLen()
+        console.log("loop", this.trackNumber, newTrackNumber)
         if (this.trackNumber < newTrackNumber) {
             let newTracks = await this.getNewPlaylistTracks()
             for (let i of newTracks) {
