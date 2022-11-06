@@ -4,10 +4,10 @@ import { DatabaseError } from '~/core/errors'
 import { Types } from 'mongoose'
 
 
-export default async function refreshToken(tokenId: Types.ObjectId, newAccessToken: string) {
+export default async function deleyeToken(tokenId: Types.ObjectId) {
     const token = await Token.findById(tokenId)
     if (!token) {
         throw new DatabaseError(`refreshToken: Token does not exists`, 500)
     }
-    await token.updateOne({ service_token: newAccessToken })
+    await token.deleteOne()
 }

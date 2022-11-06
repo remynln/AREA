@@ -5,7 +5,7 @@ import { Types } from 'mongoose'
 import { Tokens } from '~/core/types'
 
 
-export default async function getFromUser(id: Types.ObjectId) {
+export default async function getFromUser(id: Types.ObjectId): Promise<Map<string, Tokens>> {
     const tokens = await Token.find({ user_id: id })
     return new Map(
         tokens.map((item) => {

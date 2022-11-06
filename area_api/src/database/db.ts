@@ -14,6 +14,10 @@ import refreshToken from "./tokens/refresh";
 import getFromUser from "./tokens/getFromUser";
 import getFromMail from "./user/getFromMail";
 import forEach from "./area/forEach";
+import getArea from "./area/get";
+import getAreaFromUser from "./area/getFromUser";
+import setStatus from "./area/setStatus";
+import deleyeToken from "./tokens/delete";
 
 const db = {
     register:Register,
@@ -24,7 +28,10 @@ const db = {
     loginService,
     area: {
         set: setArea,
-        forEach: forEach
+        setStatus: setStatus,
+        forEach: forEach,
+        get: getArea,
+        getFromUser: getAreaFromUser
     },
     user: {
         getId: getUserId,
@@ -35,6 +42,7 @@ const db = {
         getFromMail: getFromMail
     },
     token: {
+        delete: deleyeToken,
         refresh: refreshToken,
         getFromUser: getFromUser
     }
