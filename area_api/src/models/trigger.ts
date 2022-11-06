@@ -8,7 +8,8 @@ const TriggerSchema = new Schema({
     action_params: {type: String},
     condition: {type: String},
     reaction: {type: String},
-    reaction_params: {type: String}
+    reaction_params: {type: String},
+    status: { type: String }
 })
 
 const TriggerModel = model('Trigger', TriggerSchema)
