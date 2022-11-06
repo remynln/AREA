@@ -155,18 +155,21 @@ class ApiService {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         HttpHeaders.contentTypeHeader: 'application/json'
       };
-      final body_data = {
+      var body_data = {
         "title": title,
         "action": {
           "name": "${action.serviceName}/${action.name}",
           "params": action.parameters
         },
-        "condition": condition,
         "reaction": {
           "name": "${reaction.serviceName}/${reaction.name}",
           "params": reaction.parameters
         }
       };
+      if (condition != "null") {
+        body_data["condition"] = condition;
+      }
+      print(jsonEncode(body_data));
       var response =
           await http.post(uri, headers: headers, body: jsonEncode(body_data));
       if (response.statusCode != 200) {
