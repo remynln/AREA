@@ -41,7 +41,6 @@ export interface AreaConfig {
 
 const AreaInstances = {
     get(id: string) {
-        let objectId
         return areas.get(id)
     },
     async list(accountId: string) {

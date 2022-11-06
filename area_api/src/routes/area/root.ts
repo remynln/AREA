@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import mongoose from "mongoose";
+import AreaInstances from "~/core/instances";
 import db from "~/database/db";
 import subRouter from "./get"
 
@@ -7,32 +8,32 @@ let areaRouter = Router()
 
 areaRouter.use("/:areaId", (req, res, next) => {
     db.user.getFromMail(res.locals.userInfo.email).then((user) => {
-        db.area.get(req.params.areaId).then((area) => {
-            if (user._id.toHexString() == area.user_id?.cacheHexString) {
-                console.log(user._id, area.user_id?.cacheHexString)
-                res.status(403).send({
-                    message: "You don't have right to access this area"
-                })
-                return
+        let area = AreaInstances.get(req.params.areaId)
+        if (!area) {
+            res.status(404).send(`Area with id ${req.params.areaId} not found`)
+            return
+        }
+        if (user.mail != area.accountMail && !user.admin) {
+            res.status(403).send({
+                message: "You don't have right to access this area"
+            })
+            return
+        }
+        res.locals.areaInfo = {
+            id: req.params.areaId,
+            title: area.title,
+            description: area.description,
+            action: {
+                name: area.actionConf.serviceName + '/' + area.actionConf.name,
+                parameters: area.action.params
+            },
+            condition: area.condition,
+            reaction: {
+                name: area.reactionConf.serviceName + '/' + area.reactionConf.name,
+                parameters: area.reactionParams
             }
-            res.locals.areaInfo = {
-                id: area._id.toHexString(),
-                title: area.title,
-                description: area.description,
-                action: {
-                    name: area.action,
-                    parameters: area.action_params
-                },
-                condition: area.condition,
-                reaction: {
-                    name: area.reaction,
-                    parameters: area.reaction_params
-                }
-            }
-            next()
-        }).catch((err) => {
-            next(err)
-        })
+        }
+        next()
     }).catch((err) => {
         next(err)
     })
