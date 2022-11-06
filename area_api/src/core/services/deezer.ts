@@ -3,13 +3,16 @@ import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import addedToPlaylist from '~/areas/deezer/action/addedToPlaylist'
+import addToPlaylist from '~/areas/deezer/reactions/addToPlaylist'
 var DeezerStrategy = require("passport-deezer").Strategy
 
 const deezer: Service = {
     actions: new Map([
         ["addedToPlaylist", addedToPlaylist]
     ]),
-    reactions: new Map([]),
+    reactions: new Map([
+        ["addToPlaylist", addToPlaylist]
+    ]),
     authParams: {
         accessType: 'offline',
         approvalPrompt: 'force'
@@ -20,7 +23,7 @@ const deezer: Service = {
             clientSecret: process.env.DEEZER_CLIENT_SECRET,
             callbackURL: "http://localhost:8080/service/deezer/callback",
             passReqToCallback: true,
-            scope: ["manage_library", "offline_access", "listening_history"]
+            scope: ["basic_access", "delete_library", "manage_library", "offline_access", "listening_history"]
         },
         (req: any, accessToken: string, refreshToken: string, profile: any, callback: any) => {
             let cbObj: OAuthCallbackObj = {

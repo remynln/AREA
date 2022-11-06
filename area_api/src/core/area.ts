@@ -79,7 +79,15 @@ export class Area {
             return
         var formatted: any = {}
         for (let key in this.reactionParams) {
-            formatted[key] = formatContent(this.reactionParams[key], actionProperties)
+            if (typeof this.reactionParams[key] == "string") {
+                let content = formatContent(this.reactionParams[key], actionProperties)
+                    formatted[key] = this.reactionConf.paramTypes[key] == "number"
+                        ? Number(content)
+                        : content
+            }
+            else {
+                formatted[key] = this.reactionParams[key]
+            }
         }
         this.reaction.params = formatted
         this.reaction.launch().catch((err) => {
