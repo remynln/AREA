@@ -119,7 +119,7 @@ The AREA is:
 `/user/[user_id]/areas`: *GET Method*
 *`user_id` can be replaced by `me` to reffer to the access token*
 - **Response**
-  - 200 -> [list of areas { id, title, description, action, reaction, status }]
+  - 200 -> `[list of areas { id, title, description, action, reaction, status }]`
 
 `/area/[area_id]`: *GET Method*
 - **Response**
@@ -137,6 +137,17 @@ The AREA is:
 
 `/area/[area_id]`: *DELETE Method*
 *Deletes an area*
+- **Response**
+  - 200 -> OK
+
+`/area/[area_id]/disable`: *PUT Method*
+*Disable an enabled area*
+- **Response**
+  - 200 -> OK
+*by default, a created area is enabled*
+
+`/area/[area_id]/enable`: *PUT Method*
+*Enable a disabled area*
 - **Response**
   - 200 -> OK
 
