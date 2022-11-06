@@ -10,8 +10,10 @@ import mongoose from 'mongoose';
 import serviceConnect from './routes/service/connect'
 import serviceGet from './routes/service/get'
 import services from './routes/service/services'
+import serviceDisconnect from './routes/service/disconnect'
 import users from "./routes/users"
 import user from "./routes/user/root"
+import areaRoot from "./routes/area/root"
 import errorMiddleware from './middlewares/errorHandler';
 import checkAdmin from './middlewares/checkAdmin';
 import AreaInstances from './core/instances';
@@ -41,12 +43,14 @@ app.use(session({
 // login route
 app.use('/auth', login)
 app.use('/area', checkToken, area)
+app.use('/area', checkToken, areaRoot)
 
 
 // service route
 app.use('/service', serviceConnect)
 app.use('/services', checkToken, services)
 app.use('/service', checkToken, serviceGet)
+app.use('/service', checkToken, serviceDisconnect)
 
 app.use('/users', checkToken, checkAdmin, users)
 app.use('/user', checkToken, user)

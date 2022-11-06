@@ -1,23 +1,15 @@
-import { AreaRet, Reaction } from "~/core/types";
+import { AreaRet, Reaction, ReactionConfig } from "~/core/types";
 import { createMimeMessage, MailLocation } from "mimetext";
 import axios, { AxiosError } from "axios";
 import { getMailFromToken } from "../utils";
 
-const sendMail: Reaction = {
-    serviceName: 'google',
-    description: "Send a mail from the gmail's mailbox",
-    name: "sendMail",
-    paramTypes: {
-        'recipient': 'string',
-        'object': 'string',
-        'body': 'string'
-    },
-    async launch(params, token, refresh) {
+class sendMail extends Reaction {
+    override async launch() {
         console.log("sending mail...")
         const msg = createMimeMessage()
-        let mail: string = await refresh(async () => {
+        let mail: string = await this.refresh(async () => {
             try {
-                let newMail = await getMailFromToken(token);
+                let newMail = await getMailFromToken(this.token);
                 return newMail
             } catch (e: any) {
                 if (!e.response)
@@ -30,16 +22,16 @@ const sendMail: Reaction = {
             }
         })
         msg.setSender({name: 'Marco', addr: mail})
-        msg.setRecipient(params.recipient)
-        msg.setSubject(params.object)
-        msg.setMessage('text/plain', params.body)
-        refresh(async () => {
+        msg.setRecipient(this.params.recipient)
+        msg.setSubject(this.params.object)
+        msg.setMessage('text/plain', this.params.body)
+        this.refresh(async () => {
             try {
                 await axios.post("https://gmail.googleapis.com/upload/gmail/v1/users/me/messages/send",
                     msg.asRaw(), {
                     headers: {
                         'Content-Type': 'message/rfc822',
-                        'Authorization': 'Bearer ' + token
+                        'Authorization': 'Bearer ' + this.token
                     }
                 })
             } catch (err: any) {
@@ -51,5 +43,16 @@ const sendMail: Reaction = {
         })
     }
 }
+let config: ReactionConfig = {
+    serviceName: 'google',
+    description: "Send a mail from the gmail's mailbox",
+    name: "sendMail",
+    paramTypes: {
+        'recipient': 'string',
+        'object': 'string',
+        'body': 'string'
+    },
+    create: sendMail
+}
 
-export default sendMail
+export default config
