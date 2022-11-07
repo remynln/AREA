@@ -2,6 +2,8 @@ import { OAuthCallbackObj, Service } from "../types";
 import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
+import axios from "axios";
+import process from "process";
 var SpotifyStrategy = require("passport-spotify").Strategy
 
 const spotify: Service = {
@@ -42,13 +44,24 @@ const spotify: Service = {
                 return
             }
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
-            db.setToken(accessToken, refreshToken, mail, 'deezer').then(() => {
+            db.setToken(accessToken, refreshToken, mail, 'spotify').then(() => {
                 callback(null, cbObj)
             })
         }
     ),
     refreshToken: async (refreshToken) => {
-        return ''
+        let res = await axios.post("https://accounts.spotify.com/api/token", {
+            "grant_type": 'refresh_token',
+            "refresh_token": refreshToken
+        }, {
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded',
+                "Authorization": 'Basic ' + btoa(process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET)
+            }
+        })
+        if (!res.data.access_token)
+            return null
+        return res.data.access_token
     }
 }
 
