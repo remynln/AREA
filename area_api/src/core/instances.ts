@@ -41,7 +41,6 @@ export interface AreaConfig {
 
 const AreaInstances = {
     get(id: string) {
-        let objectId
         return areas.get(id)
     },
     async list(accountId: string) {
@@ -104,7 +103,6 @@ const AreaInstances = {
                 }
                 if (area.status == "locked")
                     areaInstance.status = "locked"
-                console.log("yes yes yes")
             } catch (err) {
                 console.log("area initiation error", err)
             }
@@ -113,7 +111,6 @@ const AreaInstances = {
     },
     async enable(areaId: string) {
         let area = areas.get(areaId)
-        console.log("okkk", areas)
         if (!area)
             throw new AreaError(`area with code ${areaId} does not exists`, 404)
         await area.start()
@@ -153,7 +150,6 @@ const AreaInstances = {
             let serviceTok = tok.get(serviceName)
         if (!serviceTok)
             return
-        console.log("alllll")
         if (serviceTok.dbId)
             await db.token.delete(serviceTok.dbId)
         tok.delete(serviceName)

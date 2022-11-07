@@ -12,9 +12,8 @@ areasRouter.get('/', (req, res, next) => {
                 id: item[0],
                 title: item[1].title,
                 description: item[1].description,
-                action: item[1].action,
-                condition: item[1].condition,
-                reaction: item[1].reaction,
+                action: item[1].actionConf.serviceName + '/' + item[1].actionConf.name,
+                reaction: item[1].reactionConf.serviceName + '/' + item[1].reactionConf.name,
                 status: item[1].status
             }
         })
