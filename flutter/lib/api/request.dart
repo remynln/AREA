@@ -11,6 +11,7 @@ import 'package:area/api/answer/register_answer.dart';
 import 'package:area/api/answer/services_answer.dart';
 import 'package:area/api/answer/actions_answer.dart';
 import 'package:area/api/answer/reactions_answer.dart';
+import 'package:area/api/answer/area_answer.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -197,5 +198,32 @@ class ApiService {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  Future<List<AreaAnswer>?> getUserAreas(String token) async {
+    try {
+      var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.userAreasEndpoint());
+      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      var response = await http.get(uri, headers: headers);
+      if (response.statusCode != 200) {
+        log(response.statusCode.toString());
+      }
+      List<AreaAnswer> model = areaAnswerFromJson(response.body);
+      for (var index = 0; index < model.length; index++) {
+        uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+            ApiConstants.areaEndpoint(model[index].id));
+        response = await http.get(uri, headers: headers);
+        if (response.statusCode != 200) {
+          log(response.statusCode.toString());
+          throw response.body;
+        }
+        model[index].condition = jsonDecode(response.body)["condition"];
+      }
+      return model;
+    } catch (e) {
+      log(e.toString());
+    }
+    return null;
   }
 }
