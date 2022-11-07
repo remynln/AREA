@@ -105,7 +105,7 @@ const AreaInstances = {
                 if (area.status == "locked")
                     areaInstance.status = "locked"
             } catch (err) {
-                console.log("area initiation error", err)
+                callbackErrorFun(new ProcessError("", "area init", err))
             }
         })
         console.log("instanciated")
