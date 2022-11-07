@@ -14,8 +14,10 @@ class AreaAnswer {
     required this.title,
     required this.description,
     required this.action,
+    this.action_params = const {},
     this.condition = "",
     required this.reaction,
+    this.reaction_params = const {},
     required this.status,
   });
 
@@ -23,8 +25,10 @@ class AreaAnswer {
   String title;
   String description;
   String action;
+  Map<String, dynamic> action_params;
   String condition;
   String reaction;
+  Map<String, dynamic> reaction_params;
   String status;
 
   factory AreaAnswer.fromJson(Map<String, dynamic> json) => AreaAnswer(
