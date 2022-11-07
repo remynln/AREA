@@ -75,6 +75,7 @@ router.get('/:serviceName/callback', (req, res, next) => {
     }
     let splitted = req.query.state?.toString().split(' ')
     let userInfo = jwt.decode(splitted![1]) as JwtFormat
+    console.log(userInfo)
     AreaInstances.connectToService(userInfo.email, req.params.serviceName).then(() => {
         res.redirect(splitted![0])
     }).catch((err) => {
