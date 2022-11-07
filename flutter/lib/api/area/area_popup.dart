@@ -19,7 +19,6 @@ Color getColorByStatus(String status) {
 
 void deleteArea(String token, String area_id, setStateParent) async {
   await ApiService().deleteArea(token, area_id);
-  setStateParent((){});
 }
 
 void openArea(String token, context, setStateParent, AreaAnswer answer) {
@@ -95,6 +94,7 @@ void openArea(String token, context, setStateParent, AreaAnswer answer) {
                           onPressed: () {
                             deleteArea(token, answer.id, setStateParent);
                             Navigator.of(context).pop();
+                            setStateParent((){});
                             },
                           style: ButtonStyle(
                               side: MaterialStatePropertyAll<BorderSide>(
