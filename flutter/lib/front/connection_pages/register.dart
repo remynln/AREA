@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'package:area/api/answer/register_answer.dart';
-import 'package:area/api/connection.dart';
+import 'package:area/api/request.dart';
 
 import 'package:area/front/ip.dart';
 import 'package:area/front/connection_pages/login.dart';
