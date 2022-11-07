@@ -2,16 +2,12 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+import 'package:area/api/request.dart';
 import 'package:area/api/service/services.dart';
 import 'package:area/api/answer/services_answer.dart';
-import 'package:flutter/foundation.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-
-import 'package:area/api/connection.dart';
-import 'package:uni_links/uni_links.dart';
 
 class ServiceDisplay extends StatefulWidget {
   final String token;
