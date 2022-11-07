@@ -49,7 +49,7 @@
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-google-oidc": "^0.1.0",
-    "passport-outlook": "^3.0.0",
+    "passport-microsoft": "^1.0.0",
     "readline-sync": "^1.4.10",
     "uninstall": "^0.0.0"
   }

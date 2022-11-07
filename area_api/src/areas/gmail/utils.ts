@@ -8,5 +8,6 @@ export async function getMailFromToken(token: string) {
             'Authorization': 'Bearer ' + token
         }
     })
+    console.log("mail getted", res.data.emailAddress)
     return res.data.emailAddress
 }

@@ -33,11 +33,6 @@ router.get('/:serviceName', (req, res) => {
         return
     }
     let authParams = service.authParams;
-<<<<<<< HEAD
-    authParams.state = req.query.callback as string
-    authParams.callbackURL = `/service/${req.params.serviceName}/callback`
-    passport.authenticate(service.strategy, authParams)(req, res)
-=======
     if (!req.query.callback || !req.query.jwt) {
         res.status(400).json({
             message: "Missing query parameters"
@@ -50,7 +45,6 @@ router.get('/:serviceName', (req, res) => {
     authParams.state = req.query.callback as string + " " + req.query.jwt as string
     authParams.callbackURL = "/service/" + req.params.serviceName + "/callback"
     passport.authenticate(req.params.serviceName, authParams)(req, res)
->>>>>>> backend-area-db
 }, (req, res) => {
 })
 
@@ -64,13 +58,8 @@ router.get('/:serviceName/callback', (req, res, next) => {
     }
     let authParams = service.authParams;
     authParams.failureRedirect = "http://localhost:8080/"
-<<<<<<< HEAD
-    authParams.callbackURL = `/service/${req.params.serviceName}/callback`
-    passport.authenticate(service.strategy, authParams, (err, user, info) => {
-=======
     authParams.callbackURL = "/service/" + req.params.serviceName + "/callback"
     passport.authenticate(req.params.serviceName, authParams, (err, user, info) => {
->>>>>>> backend-area-db
         console.log("user: ", user)
         res.locals.user = user;
         next()

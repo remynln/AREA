@@ -1,11 +1,11 @@
 import { AreaRet, Reaction } from "~/core/types";
 import axios, { AxiosError } from "axios";
 import { createMimeMessage } from "mimetext";
-import { getMailFromToken, getUserFromToken } from "~/areas/outlook/utils";
+import { getMailFromToken, getUserFromToken } from "~/areas/microsoft/utils";
 import { use } from "passport";
 
 const sendMail: Reaction = {
-    serviceName: 'outlook',
+    serviceName: 'microsoft',
     description: "Send a mail from the outlook's mailbox",
     name: "sendMail",
     paramTypes: {

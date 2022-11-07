@@ -101,6 +101,15 @@ async function initSub() {
 }
 
 async function watchForMail(token: string) {
+    await axios.post("https://www.googleapis.com/gmail/v1/users/me/stop", {
+        topicName: pubsub.topic(TOPIC_NAME).name,
+        labelIds: ["INBOX"],
+    }, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        }
+    })
     const res = await axios.post("https://www.googleapis.com/gmail/v1/users/me/watch", {
         topicName: pubsub.topic(TOPIC_NAME).name,
         labelIds: ["INBOX"],
@@ -195,7 +204,9 @@ const newMail: NewMail = {
             return
         }
         let data = JSON.parse(mess.data)
+        console.log(this.subs.size)
         for (let [key, value] of this.subs) {
+            console.log("email :", value.email)
             if (data.emailAddress != value.email)
                 continue;
             value.historyId = await getLastMails(value.token, value.historyId, (mail) => {
@@ -223,17 +234,21 @@ const newMail: NewMail = {
         console.log("getting account info")
         var sub = this.subs.get(accountMail)
         if (!sub) {
+            console.log("no sub")
             var historyId: string = ''
             var email: string = ''
             try {
                 historyId = await watchForMail(serviceToken)
                 email = await getMailFromToken(serviceToken)
             } catch (err: any) {
+                console.log("err occured")
                 if (!err.response)
                     throw err
                 if ((err as AxiosError).response?.status == 401)
                     return AreaRet.AccessTokenExpired
+                throw err
             }
+            console.log("email allé", email)
             sub = {
                 historyId: historyId,
                 token: serviceToken,

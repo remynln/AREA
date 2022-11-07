@@ -1,17 +1,17 @@
 import { Area, Service } from "../types";
-const OutlookStrategy = require("passport-outlook")
+const MicrosoftStrategy = require("passport-microsoft").Strategy
 import { readFileSync } from "fs";
 import { exit } from "process";
 import axios from "axios";
-// import newMail from "~/areas/outlook/actions/newMail";
-import sendMail from "~/areas/outlook/reactions/sendMail";
+// import newMail from "~/areas/microsoft/actions/newMail";
+import sendMail from "~/areas/microsoft/reactions/sendMail";
 import { Request } from "express";
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import jwt from "jsonwebtoken"
 import qs from "qs"
 
-const outlook: Service = {
+const Microsoft: Service = {
     refreshToken: async (it: string) => {
         let res
         res = await axios.post("https://login.microsoftonline.com/common/oauth2/v2.0/token", qs.stringify({
@@ -34,7 +34,7 @@ const outlook: Service = {
     ]),
     authParams: {
     },
-    strategy: new OutlookStrategy({
+    strategy: new MicrosoftStrategy({
         clientID: process.env.MICROSOFT_CLIENT_ID,
         clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
         passReqToCallback: true,
@@ -61,7 +61,7 @@ const outlook: Service = {
             }
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
             if (!(req as Request).baseUrl.includes("/auth/")) {
-                db.setToken(accessToken, refresh_token, mail, 'outlook').then(() => {
+                db.setToken(accessToken, refresh_token, mail, 'microsoft').then(() => {
                     callback(null, cbObj, null)
                 })
             } else {
@@ -70,4 +70,4 @@ const outlook: Service = {
       })
 }
 
-export default outlook
+export default Microsoft

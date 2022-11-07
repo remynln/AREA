@@ -38,11 +38,7 @@ router.get('/:serviceName', (req, res) => {
     }
     let authParams = service.authParams;
     authParams.failureRedirect = req.query.callback as string
-<<<<<<< HEAD
-    authParams.callbackURL = `/auth/service/${req.params.serviceName}/callback`
-=======
     authParams.callbackURL = "/auth/service/" + req.params.serviceName + "/callback"
->>>>>>> backend-area-db
     authParams.state = req.query.callback as string
     passport.authenticate(service.strategy, authParams)(req, res)
 }, (req, res) => {
@@ -59,13 +55,8 @@ router.get('/:serviceName/callback', (req, res, next) => {
     }
     let authParams = service.authParams;
     authParams.failureRedirect = "http://localhost:8080/"
-<<<<<<< HEAD
-    authParams.callbackURL = `/auth/service/${req.params.serviceName}/callback`
-    passport.authenticate(service.strategy, authParams, (err, user, info) => {
-=======
     authParams.callbackURL = "/auth/service/" + req.params.serviceName + "/callback"
     passport.authenticate(req.params.serviceName, authParams, (err, user, info) => {
->>>>>>> backend-area-db
         console.log("user: ", user)
         res.locals.user = user;
         next()

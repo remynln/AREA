@@ -52,8 +52,6 @@ auth.post('/login', checkBody(["email", "password"]), (req, res, next) => {
         res.status(400).json({ message: "Missing email or password"})
         return
     }
-<<<<<<< HEAD
-=======
     if (req.body.email == "root") {
         if (req.body.password == process.env.ROOT_PASSWORD) {
             res.status(200).json({
@@ -67,7 +65,6 @@ auth.post('/login', checkBody(["email", "password"]), (req, res, next) => {
             res.status(400).json({message: "Invalid password"})
         }
     }
->>>>>>> backend-area-db
     db.login(req.body.password, req.body.email).then((token) => {
         if (!token) {
             res.status(400).json({message: "Invalid password"})

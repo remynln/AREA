@@ -43,12 +43,14 @@ area.post("/create", checkBody(["action", "reaction", "title"]),
     )
     let decoded = jwt.decode(req.headers.authorization?.split(' ')[1] || '')
     area.setTokens((decoded as JwtFormat).email).then(() => {
-        area.start().catch((err) => {
-            next(err)
-        }).then(() => {
+        area.start().then(() => {
+            console.log("area created")
             res.status(201).json({
                 message: 'OK'
             })
+        }).catch((err) => {
+            console.log("trop bizarre")
+            next(err)
         })
     }).catch((err) => {
         next(err)

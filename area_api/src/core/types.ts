@@ -144,17 +144,23 @@ export class Area {
     }
 
     public async start() {
-        const res = await this.action.ref.start(this.action.params, this.action.token || '',
-        this.accountMail || '', (properties) => {
-            if (this.condition && !checkCondition(this.condition, properties))
+        var res
+        try {
+            res = await this.action.ref.start(this.action.params, this.action.token || '',
+            this.accountMail || '', (properties) => {
+                if (this.condition && !checkCondition(this.condition, properties))
                 return;
-            var formatted = this.formatParams(properties)
-            this.launchReaction(formatted)
-        }, (err) => {
-            console.log("Actio trigger" +
+                var formatted = this.formatParams(properties)
+                this.launchReaction(formatted)
+            }, (err) => {
+                console.log("Actio trigger" +
                 this.action.ref.serviceName + "/" + this.action.ref.name +
                 "failed")
-        })
+            })
+        } catch (err: any) {
+            console.log(err.response)
+            throw err
+        }
         if (res == AreaRet.AccessTokenExpired) {
             console.log("action token expired")
             this.refreshToken(this.action).then((res) => {
