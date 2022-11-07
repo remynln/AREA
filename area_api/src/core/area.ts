@@ -75,11 +75,19 @@ export class Area {
     }
 
     launchReaction(actionProperties: any) {
-        if (!checkCondition(this.condition, actionProperties))
+        if (this.condition && !checkCondition(this.condition, actionProperties))
             return
         var formatted: any = {}
         for (let key in this.reactionParams) {
-            formatted[key] = formatContent(this.reactionParams[key], actionProperties)
+            if (typeof this.reactionParams[key] == "string") {
+                let content = formatContent(this.reactionParams[key], actionProperties)
+                    formatted[key] = this.reactionConf.paramTypes[key] == "number"
+                        ? Number(content)
+                        : content
+            }
+            else {
+                formatted[key] = this.reactionParams[key]
+            }
         }
         this.reaction.params = formatted
         this.reaction.launch().catch((err) => {
@@ -97,6 +105,7 @@ export class Area {
         reaction: {conf: ReactionConfig, params: string | undefined},
         error: (err: ProcessError) => void
     ) {
+        this.error = error
         this.accountMail = accMail
         this.title = title
         this.description = description
