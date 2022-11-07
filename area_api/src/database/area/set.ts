@@ -22,8 +22,9 @@ export default async function setArea(area: Area) {
         condition: area.condition,
         description: area.description,
         reaction: area.reactionConf.serviceName + "/" + area.reactionConf.name,
-        reaction_params: JSON.stringify(area.reaction.params),
-        title: area.title
+        reaction_params: JSON.stringify(area.reactionParams),
+        title: area.title,
+        status: "enabled"
     })
     let saved = await newTrigger.save()
     return saved._id

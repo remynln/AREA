@@ -6,6 +6,13 @@ import { AreaError, ProcessError } from "./errors";
 import { checkCondition, formatContent } from "./formatting";
 import Global from "./global"
 
+export interface OAuthCallbackObj {
+    data: string,
+    username: string,
+    refreshToken: string,
+    accessToken: string
+}
+
 type Param = {
     name: string;
     type: string | Param[];
