@@ -3,29 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:area/api/request.dart';
 import 'package:area/api/answer/area_answer.dart';
 
+import 'package:area/api/area/area_popup.dart';
+
 class AreaDisplay extends StatefulWidget {
   final String token;
   final bool isDashboardDisplay;
 
-  const AreaDisplay({Key? key, required this.token, required this.isDashboardDisplay}) : super(key: key);
+  const AreaDisplay(
+      {Key? key, required this.token, required this.isDashboardDisplay})
+      : super(key: key);
 
   @override
   State<AreaDisplay> createState() => _AreaDisplayState();
 }
 
 class _AreaDisplayState extends State<AreaDisplay> {
-  Color getColorByStatus(String status) {
-    if (status == "starting" || status == "started") {
-      return (Color.fromRGBO(62, 149, 49, 100));
-    } else if (status == "stopping" || status == "stopped") {
-      return (Color.fromRGBO(191, 27, 44, 100));
-    } else if (status == "locked") {
-      return (Colors.white);
-    }
-    return (Colors.orangeAccent);
-  }
-
-  Color getBorderColorByStatus(String status) {
+    Color getBorderColorByStatus(String status) {
     if (status == "starting" || status == "started") {
       return (Color.fromRGBO(191, 27, 44, 100));
     } else {
@@ -33,13 +26,21 @@ class _AreaDisplayState extends State<AreaDisplay> {
     }
   }
 
-  getTextByStatus(String status) {
+  Text getTextByStatus(String status) {
     if (status == "starting" || status == "started") {
       return (const Text("disable",
           style: TextStyle(color: Color.fromRGBO(191, 27, 44, 100))));
     } else {
       return (const Text("enable",
           style: TextStyle(color: Color.fromRGBO(62, 149, 49, 100))));
+    }
+  }
+
+  void changeAreaStatus(String status, String area_id) async {
+    if (status == "starting" || status == "started") {
+      await ApiService().disableArea(widget.token, area_id);
+    } else {
+      await ApiService().enableArea(widget.token, area_id);
     }
   }
 
@@ -58,6 +59,8 @@ class _AreaDisplayState extends State<AreaDisplay> {
             children: <Widget>[
               SizedBox(height: 10),
               Text(answer.title,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
                       fontFamily: "Roboto",
@@ -65,14 +68,27 @@ class _AreaDisplayState extends State<AreaDisplay> {
                       fontSize: 20)),
               SizedBox(height: 10),
               Text(answer.description,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white, fontFamily: "Roboto", fontSize: 15)),
+              SizedBox(height: 10),
+              OutlinedButton(
+                onPressed: () {
+                  openArea(widget.token, context, setState, answer);
+                },
+                style: ButtonStyle(
+                  side: MaterialStateProperty.all(BorderSide(color: getColorByStatus(answer.status))),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(45.0))),
+                ),
+                child: const Icon(Icons.remove_red_eye, color: Colors.white),
+              ),
               Spacer(),
               answer.status != "locked" && answer.status != "errored"
                   ? TextButton(
-                      onPressed: () {
-                        print("here");
-                      },
+                      onPressed: (() =>
+                          changeAreaStatus(answer.status, answer.id)),
                       style: ButtonStyle(
                           side: MaterialStatePropertyAll<BorderSide>(BorderSide(
                               color: getBorderColorByStatus(answer.status),
@@ -119,7 +135,7 @@ class _AreaDisplayState extends State<AreaDisplay> {
         if (snapshot.connectionState == ConnectionState.done) {
           if (widget.isDashboardDisplay) {
             List<Widget> list = createWidgetList(snapshot.data);
-            return list == [] ? Container() : list[0];
+            return list.isEmpty ? Container() : list[0];
           } else {
             return SingleChildScrollView(
                 scrollDirection: Axis.vertical,
