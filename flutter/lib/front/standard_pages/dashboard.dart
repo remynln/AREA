@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:area/api/connection.dart';
-import 'package:area/api/endpoints.dart';
 import 'package:area/front/standard_pages/pages.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:area/api/service/service_display.dart';
+import 'package:area/api/area/area_display.dart';
 
 class DashboardWidget extends StatefulWidget {
   final String token;
@@ -103,16 +102,22 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             fontFamily: "Poppins")))),
           ],
         ),
-        GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          PagesWidget(token: widget.token, index: 2)));
-            },
-            child: SvgPicture.asset("assets/dashboard/add.svg",
-                alignment: Alignment.topLeft)),
+        SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(children: <Widget>[
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                PagesWidget(token: widget.token, index: 2)));
+                  },
+                  child: SvgPicture.asset("assets/dashboard/add.svg",
+                      alignment: Alignment.topLeft)),
+              SizedBox(width: 5),
+              AreaDisplay(token: widget.token, isDashboardDisplay: true),
+            ])),
         SizedBox(height: 20),
         Row(children: <Widget>[
           Padding(
