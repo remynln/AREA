@@ -25,7 +25,7 @@ class sendMail extends Reaction {
         msg.setRecipient(this.params.recipient)
         msg.setSubject(this.params.object)
         msg.setMessage('text/plain', this.params.body)
-        this.refresh(async () => {
+        await this.refresh(async () => {
             try {
                 await axios.post("https://gmail.googleapis.com/upload/gmail/v1/users/me/messages/send",
                     msg.asRaw(), {
