@@ -1,4 +1,4 @@
-import { Area, Service } from "../types";
+import { Service } from "../types";
 const GoogleStrategy = require("passport-google-oauth20")
 import { PubSub } from '@google-cloud/pubsub';
 import { readFileSync } from "fs";
@@ -17,17 +17,23 @@ import qs from "qs"
 const google: Service = {
     refreshToken: async (it: string) => {
         let res
-        res = await axios.post("https://oauth2.googleapis.com/token", qs.stringify({
-            client_id: process.env.GOOGLE_CLIENT_ID,
-            client_secret: process.env.GOOGLE_CLIENT_SECRET,
-            grant_type: "refresh_token",
-            refresh_token: it
-        }), {
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded'
-            }
-        })
-        return res.data.access_token;
+        try {
+            res = await axios.post("https://oauth2.googleapis.com/token", qs.stringify({
+                client_id: process.env.GOOGLE_CLIENT_ID,
+                client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                grant_type: "refresh_token",
+                refresh_token: it
+            }), {
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                }
+            })
+            return res.data.access_token;
+        } catch (err: any) {
+            if (err.response && err.response.status == 400)
+                return null
+            throw err
+        }
     },
     actions: new Map([
         ["newMail", newMail]
@@ -46,8 +52,6 @@ const google: Service = {
         scope: ['profile', 'email',
             'https://mail.google.com/']
         }, function(req: any, accessToken: any, refresh_token: any, profile: any, callback: any) {
-            console.log((req as Request).baseUrl)
-            console.log(profile)
             let accountToken = req.query.state;
             let cbObj = {
                 data: profile._json.email,
@@ -55,18 +59,15 @@ const google: Service = {
                 refreshToken: refresh_token,
                 accessToken: accessToken
             }
-            if (!accountToken) {
-                callback(null, cbObj, null)
+            if (!accountToken || !accountToken.includes(' ')) {
+                callback(null, cbObj)
                 return
             }
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
-            if (!(req as Request).baseUrl.includes("/auth/")) {
-                db.setToken(accessToken, refresh_token, mail, 'google').then(() => {
-                    callback(null, cbObj, null)
-                })
-            } else {
-                callback(null, cbObj, null)
-            }
+            db.setToken(accessToken, refresh_token, mail, 'google').then(() => {
+                callback(null, cbObj)
+            })
+            
       })
 }
 

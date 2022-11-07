@@ -38,7 +38,7 @@ export const Login = (props) => {
     };
 
     const Login = () => {
-        axios.post("http://localhost:8080/auth/login", {
+        axios.post("/auth/login", {
             email: user,
             password: password
         })
@@ -49,7 +49,6 @@ export const Login = (props) => {
             }
         })
         .catch(error => {
-            console.log(error)
             setError(error.response.data.message);
         })
     }
@@ -57,7 +56,7 @@ export const Login = (props) => {
     return (
         <div className="LoginPage">
             <img src={Logo} className="LoginLogo" alt="Login_Logo"/>
-            <a className="GoogleSignIn" href="http://localhost:8080/auth/service/google?callback=http://localhost:3000/login">
+            <a className="GoogleSignIn" href={process.env.REACT_APP_SERVER_IP + "/auth/service/google?callback=" + process.env.REACT_APP_FRONT_IP + "/login"}>
                 <img className="GoogleSignInLogo" src={GoogleLogo} alt="Google_Logo"/>
                 <p>Sign in with Google</p>
             </a>

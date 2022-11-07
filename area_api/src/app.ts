@@ -10,11 +10,13 @@ import mongoose from 'mongoose';
 import serviceConnect from './routes/service/connect'
 import serviceGet from './routes/service/get'
 import services from './routes/service/services'
+import serviceDisconnect from './routes/service/disconnect'
 import users from "./routes/users"
 import user from "./routes/user/root"
-import { checkCondition, checkConditionSyntax, checkSimpleCondition } from './core/formatting';
+import areaRoot from "./routes/area/root"
 import errorMiddleware from './middlewares/errorHandler';
 import checkAdmin from './middlewares/checkAdmin';
+import AreaInstances from './core/instances';
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
@@ -30,10 +32,10 @@ mongoose.connect(url).then(() => {
 app.use(express.json())
 
 //maybe useless
-app.use(cors())
+app.use(cors());
 
 app.use(session({
-    secret: 'keyboard cat',
+    secret: process.env.SESSION_SECRET || '',
     resave: false,
     saveUninitialized: false
 }));
@@ -41,12 +43,14 @@ app.use(session({
 // login route
 app.use('/auth', login)
 app.use('/area', checkToken, area)
+app.use('/area', checkToken, areaRoot)
 
 
 // service route
 app.use('/service', serviceConnect)
 app.use('/services', checkToken, services)
 app.use('/service', checkToken, serviceGet)
+app.use('/service', checkToken, serviceDisconnect)
 
 app.use('/users', checkToken, checkAdmin, users)
 app.use('/user', checkToken, user)
@@ -62,6 +66,10 @@ app.use(errorMiddleware)
 /**
  * On demande à Express d'ecouter les requêtes sur le port défini dans la config
  */
-app.listen(config.API_PORT, () => {
-    console.log(`Launched on port ${config.API_PORT}`)
+
+AreaInstances.load().then(() => {
+    app.listen(config.API_PORT, () => {
+        console.log(`Launched on port ${config.API_PORT}`)
+    })
 })
+
