@@ -27,6 +27,7 @@ class CreateWidget extends StatefulWidget {
 class _CreateWidgetState extends State<CreateWidget> {
   bool _titleSubmitment = false;
   TextEditingController _titleController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
 
   Service _actionService = Service("", "", "", []);
   ActionsAnswer _actionTrigger = ActionsAnswer();
@@ -674,8 +675,13 @@ class _CreateWidgetState extends State<CreateWidget> {
   }
 
   void handleCreate() async {
-    String result = await ApiService().createArea(_titleController.text,
-        widget.token, _actionTrigger, _condition, _reactionTrigger);
+    String result = await ApiService().createArea(
+        _titleController.text,
+        _descriptionController.text,
+        widget.token,
+        _actionTrigger,
+        _condition,
+        _reactionTrigger);
     Fluttertoast.showToast(
         msg: result,
         timeInSecForIosWeb: 3,
@@ -724,13 +730,13 @@ class _CreateWidgetState extends State<CreateWidget> {
             child: Column(children: <Widget>[
               const Padding(
                   padding: EdgeInsets.only(top: 10),
-                  child: Text("Workflow's Title",
+                  child: Text("Workflow",
                       style: TextStyle(
                           fontSize: 23,
                           color: Colors.white,
                           fontFamily: "RobotoMono",
                           fontWeight: FontWeight.bold))),
-              const SizedBox(height: 40),
+              const SizedBox(height: 30),
               Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30),
                   child: TextField(
@@ -745,6 +751,24 @@ class _CreateWidgetState extends State<CreateWidget> {
                           color: Color.fromRGBO(148, 163, 184, 1),
                           fontStyle: FontStyle.italic),
                       hintText: "enter workflow title here",
+                      fillColor: const Color.fromRGBO(68, 68, 68, 1),
+                    ),
+                  )),
+              SizedBox(height: 15),
+              Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: TextField(
+                    controller: _descriptionController,
+                    style: const TextStyle(color: Colors.white),
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14.0)),
+                      filled: true,
+                      hintStyle: const TextStyle(
+                          color: Color.fromRGBO(148, 163, 184, 1),
+                          fontStyle: FontStyle.italic),
+                      hintText: "enter workflow description here",
                       fillColor: const Color.fromRGBO(68, 68, 68, 1),
                     ),
                   )),
