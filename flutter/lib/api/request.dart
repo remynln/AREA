@@ -147,8 +147,8 @@ class ApiService {
     return null;
   }
 
-  Future<String> createArea(String title, String token, ActionsAnswer action,
-      String condition, ReactionsAnswer reaction) async {
+  Future<String> createArea(String title, String description, String token,
+      ActionsAnswer action, String condition, ReactionsAnswer reaction) async {
     try {
       final uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
           ApiConstants.createEndpoint);
@@ -158,6 +158,7 @@ class ApiService {
       };
       var body_data = {
         "title": title,
+        "description": description,
         "action": {
           "name": "${action.serviceName}/${action.name}",
           "params": action.parameters
@@ -218,12 +219,62 @@ class ApiService {
           log(response.statusCode.toString());
           throw response.body;
         }
-        model[index].condition = jsonDecode(response.body)["condition"];
+        Map<String, dynamic> decoded = jsonDecode(response.body);
+        model[index].condition = decoded["condition"];
+        if (decoded["action"].containsKey("parameters")) {
+          model[index].action_params = decoded["action"]["parameters"];
+        }
+        if (decoded["reaction"].containsKey("parameters")) {
+          model[index].reaction_params = decoded["reaction"]["parameters"];
+        }
       }
       return model;
     } catch (e) {
       log(e.toString());
     }
     return null;
+  }
+
+  Future<void> enableArea(String token, area_id) async {
+    try {
+      var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.enableAreaEndpoint(area_id));
+      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      var response = await http.put(uri, headers: headers);
+      if (response.statusCode != 200) {
+        log(response.statusCode.toString());
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<void> disableArea(String token, area_id) async {
+    try {
+      var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.disableAreaEndpoint(area_id));
+      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      var response = await http.put(uri, headers: headers);
+      if (response.statusCode != 200) {
+        log(response.statusCode.toString());
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<void> deleteArea(String token, area_id) async {
+    try {
+      var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.areaEndpoint(area_id));
+      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      var response = await http.delete(uri, headers: headers);
+      if (response.statusCode != 200) {
+        log(response.statusCode.toString());
+        print(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }
