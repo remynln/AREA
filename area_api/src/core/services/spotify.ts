@@ -4,10 +4,15 @@ import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import axios from "axios";
 import process from "process";
+import addedToFavorite from "~/areas/spotify/actions/addedToFavorite"
 var SpotifyStrategy = require("passport-spotify").Strategy
+import qs from "qs"
+import { request } from "http";
 
 const spotify: Service = {
-    actions: new Map([]),
+    actions: new Map([
+        ["addedToLibrary", addedToFavorite]
+    ]),
     reactions: new Map([]),
     authParams: {
         accessType: 'offline',
@@ -50,14 +55,18 @@ const spotify: Service = {
         }
     ),
     refreshToken: async (refreshToken) => {
-        let res = await axios.post("https://accounts.spotify.com/api/token", {
-            "grant_type": 'refresh_token',
-            "refresh_token": refreshToken
-        }, {
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded',
-                "Authorization": 'Basic ' + btoa(process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET)
-            }
+        console.log("ref", refreshToken)
+        let res = await axios.post("https://accounts.spotify.com/api/token", new URLSearchParams({
+            grant_type: 'refresh_token',
+            refresh_token: refreshToken,
+            client_id: process.env.SPOTIFY_CLIENT_ID || '',
+            client_secret: process.env.SPOTIFY_CLIENT_SECRET || ''
+        }), {
+            //headers: {
+            //    'content-type': 'application/x-www-form-urlencoded',
+            //    //'Authorization': "Bearer " + refreshToken,
+            //    "Authorization": 'Basic ' + Buffer.from(process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET).toString("base64")
+            //}
         })
         if (!res.data.access_token)
             return null
