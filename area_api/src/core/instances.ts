@@ -65,7 +65,8 @@ const AreaInstances = {
             area.reaction,
             callbackErrorFun
         )
-        await db.area.set(instance)
+        let id = await db.area.set(instance)
+        areas.set(id.toHexString(), instance)
         await instance.start()
     },
     async load() {
