@@ -1,5 +1,5 @@
 .github/workflows/*
-
+.env
 # dependencies
 /node_modules
 /.pnp
