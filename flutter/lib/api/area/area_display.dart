@@ -18,7 +18,7 @@ class AreaDisplay extends StatefulWidget {
 }
 
 class _AreaDisplayState extends State<AreaDisplay> {
-    Color getBorderColorByStatus(String status) {
+  Color getBorderColorByStatus(String status) {
     if (status == "starting" || status == "started") {
       return (Color.fromRGBO(191, 27, 44, 100));
     } else {
@@ -39,8 +39,10 @@ class _AreaDisplayState extends State<AreaDisplay> {
   void changeAreaStatus(String status, String area_id) async {
     if (status == "starting" || status == "started") {
       await ApiService().disableArea(widget.token, area_id);
+      setState(() {});
     } else {
       await ApiService().enableArea(widget.token, area_id);
+      setState(() {});
     }
   }
 
@@ -66,7 +68,6 @@ class _AreaDisplayState extends State<AreaDisplay> {
                       fontFamily: "Roboto",
                       fontWeight: FontWeight.bold,
                       fontSize: 20)),
-              SizedBox(height: 10),
               Text(answer.description,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
@@ -78,7 +79,8 @@ class _AreaDisplayState extends State<AreaDisplay> {
                   openArea(widget.token, context, setState, answer);
                 },
                 style: ButtonStyle(
-                  side: MaterialStateProperty.all(BorderSide(color: getColorByStatus(answer.status))),
+                  side: MaterialStateProperty.all(
+                      BorderSide(color: getColorByStatus(answer.status))),
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(45.0))),
                 ),
@@ -114,15 +116,15 @@ class _AreaDisplayState extends State<AreaDisplay> {
       return ([]);
     }
     for (var index = 0; index < areasAnswer!.length; index++) {
-      if (index + 1 < areasAnswer!.length) {
-        areasWidget.add(Row(children: <Widget>[
-          getContainerByArea(areasAnswer[index]),
-          const SizedBox(width: 20),
-          getContainerByArea(areasAnswer[++index])
-        ]));
-      } else {
-        areasWidget.add(getContainerByArea(areasAnswer[index]));
-      }
+      areasWidget.add(Row(children: <Widget>[
+        widget.isDashboardDisplay ? Container() : const SizedBox(width: 30),
+        getContainerByArea(areasAnswer[index]),
+        const SizedBox(width: 20),
+        index + 1 < areasAnswer!.length && !widget.isDashboardDisplay
+            ? getContainerByArea(areasAnswer[++index])
+            : Container()
+      ]));
+      areasWidget.add(SizedBox(height: 20));
     }
     return (areasWidget);
   }
