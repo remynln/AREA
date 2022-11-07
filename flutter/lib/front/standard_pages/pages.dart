@@ -36,7 +36,7 @@ class _PagesWidgetState extends State<PagesWidget> {
     dashboard = DashboardWidget(token: token);
     notification = const NotificationWidget();
     create = CreateWidget(token: token);
-    workflows = const WorkflowsWidget();
+    workflows = WorkflowsWidget(token: token);
     settings = const SettingsWidget();
     _pagesWidget = [dashboard, notification, create, workflows, settings];
   }
