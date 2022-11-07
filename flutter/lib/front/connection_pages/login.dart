@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 
 import 'package:area/api/answer/login_answer.dart';
 import 'package:area/api/answer/google_answer.dart';
-import 'package:area/api/connection.dart';
+import 'package:area/api/request.dart';
 
 import 'package:area/front/ip.dart';
 import 'package:area/front/connection_pages/register.dart';
