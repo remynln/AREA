@@ -49,7 +49,7 @@ void openArea(String token, context, setStateParent, AreaAnswer answer) {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text("Title: ${answer.title}",
@@ -77,6 +77,7 @@ void openArea(String token, context, setStateParent, AreaAnswer answer) {
                   Text("Action: ${answer.action}",
                       style: TextStyle(color: Colors.white)),
                   Text("Action parameters: ${answer.action_params}",
+                      textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white)),
                   SizedBox(height: 10),
                   Divider(color: Colors.white),
@@ -84,6 +85,7 @@ void openArea(String token, context, setStateParent, AreaAnswer answer) {
                   Text("Reaction: ${answer.reaction}",
                       style: TextStyle(color: Colors.white)),
                   Text("Reaction parameters: ${answer.reaction_params}",
+                      textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white)),
                   SizedBox(height: 10),
                   Divider(color: Colors.white),
