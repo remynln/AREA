@@ -11,6 +11,8 @@ import 'package:area/front/ip.dart';
 import 'package:area/front/connection_pages/login.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../standard_pages/pages.dart';
+
 class RegisterWidget extends StatefulWidget {
   const RegisterWidget({Key? key}) : super(key: key);
 
@@ -57,8 +59,14 @@ class _RegisterWidgetState extends State<RegisterWidget> {
           backgroundColor: Color.fromRGBO(191, 27, 44, 1),
           textColor: Colors.white,
           fontSize: 14);
-    } else
-      print(registerAnswer?.token);
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  PagesWidget(
+                      token: registerAnswer!.token.toString(), index: 0)));
+    }
   }
 
   bool getCredentialStatus() {
