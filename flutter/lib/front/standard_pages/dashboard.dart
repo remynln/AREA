@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:area/front/standard_pages/pages.dart';
+import 'package:area/front/standard_pages/user_popup.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -66,7 +67,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               padding: EdgeInsetsDirectional.only(end: 10),
               child: IconButton(
                   onPressed: () {
-                    print("USERRR");
+                    openUser(widget.token, context, setState);
                   },
                   splashRadius: 22,
                   iconSize: 50,

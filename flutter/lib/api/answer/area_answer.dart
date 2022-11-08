@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final areaAnswer = areaAnswerFromJson(jsonString);
-
 import 'dart:convert';
 
 List<AreaAnswer> areaAnswerFromJson(String str) => List<AreaAnswer>.from(json.decode(str).map((x) => AreaAnswer.fromJson(x)));
