@@ -227,6 +227,7 @@ class ApiService {
       var response = await http.get(uri, headers: headers);
       if (response.statusCode != 200) {
         log(response.statusCode.toString());
+        return [];
       }
       List<AreaAnswer> model = areaAnswerFromJson(response.body);
       for (var index = 0; index < model.length; index++) {
@@ -250,7 +251,7 @@ class ApiService {
     } catch (e) {
       log(e.toString());
     }
-    return null;
+    return [];
   }
 
   Future<void> enableArea(String token, area_id) async {
@@ -296,10 +297,10 @@ class ApiService {
     }
   }
 
-  Future<List<UserAnswer>?> getUsers(String token,
+  Future<List<UserAnswer>> getUsers(String token,
       {int limit = 100, int page = 0}) async {
     try {
-      var uri = Uri.http(
+      final uri = Uri.http(
           "${ApiConstants.ip}:${ApiConstants.port}",
           ApiConstants.usersEndpoint,
           {"limit": limit.toString(), "page": page.toString()});
@@ -309,10 +310,17 @@ class ApiService {
         log(response.statusCode.toString());
         print(response.body);
       }
-      print(response.body);
-
-      // NEED TO RETURN BUT FOR THAT NEED TO CHECK AS ADMIN
-      return [];
+      List<UserAnswer> answers = [];
+      List<dynamic> users = jsonDecode(response.body);
+      for (Map<String, dynamic> element in users) {
+        UserAnswer? current = await getUserInformation(token, user_id: element["id"]);
+        current?.id = element["id"];
+        if (element.containsKey("admin") && element["admin"] == true) {
+          current?.isAdmin = true;
+        }
+        answers.add(current!);
+      }
+      return answers;
     } catch (e) {
       log(e.toString());
     }
