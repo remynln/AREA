@@ -1,9 +1,6 @@
 import axios from "axios";
 import { Reaction, ReactionConfig } from "~/core/types";
 
-
-
-
 class addToPlaylist extends Reaction {
     override async launch(): Promise<void> {
         let songId: number = this.params.songId

@@ -65,7 +65,8 @@ const AreaInstances = {
             area.reaction,
             callbackErrorFun
         )
-        await db.area.set(instance)
+        let id = await db.area.set(instance)
+        areas.set(id.toHexString(), instance)
         await instance.start()
     },
     async load() {
@@ -104,7 +105,7 @@ const AreaInstances = {
                 if (area.status == "locked")
                     areaInstance.status = "locked"
             } catch (err) {
-                console.log("area initiation error", err)
+                callbackErrorFun(new ProcessError("", "area init", err))
             }
         })
         console.log("instanciated")
