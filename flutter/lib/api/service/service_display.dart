@@ -12,9 +12,10 @@ import 'package:area/api/answer/services_answer.dart';
 class ServiceDisplay extends StatefulWidget {
   final String token;
   final bool isBasicService;
+  final StateSetter setStateParent;
 
   const ServiceDisplay(
-      {Key? key, required this.isBasicService, required this.token})
+      {Key? key, required this.isBasicService, required this.token, required this.setStateParent})
       : super(key: key);
 
   @override
@@ -22,10 +23,16 @@ class ServiceDisplay extends StatefulWidget {
 }
 
 class _ServiceDisplayState extends State<ServiceDisplay> {
-  void callApiFunction(String service_name) async {
+  void callApiFunction(String service_name, bool isConnected) async {
     try {
-      await ApiService()
-          .connectToService(widget.token, service_name, "sergify://");
+      if (isConnected) {
+        await ApiService()
+            .disconnectToService(widget.token, service_name);
+        widget.setStateParent((){});
+      } else {
+        await ApiService()
+            .connectToService(widget.token, service_name, "sergify://");
+      }
     } catch (e) {
       print(e.toString());
     }
@@ -50,14 +57,14 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
       return (Column(children: <Widget>[
         GestureDetector(
             onTap: () {
-              callApiFunction(service_list[index].name);
+              callApiFunction(service_list[index].name, connectedServices.contains(service_list[index].name));
             },
             child: Image.asset(firstServiceImage,
                 filterQuality: FilterQuality.high)),
         SizedBox(height: 10),
         GestureDetector(
             onTap: () {
-              callApiFunction(service_list[index + 1].name);
+              callApiFunction(service_list[index + 1].name, connectedServices.contains(service_list[index + 1].name));
             },
             child: Image.asset(secondServiceImage,
                 filterQuality: FilterQuality.high)),
@@ -66,7 +73,7 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
       return (Column(children: <Widget>[
         GestureDetector(
             onTap: () {
-              callApiFunction(service_list[index].name);
+              callApiFunction(service_list[index].name, connectedServices.contains(service_list[index].name));
             },
             child: Image.asset(firstServiceImage,
                 filterQuality: FilterQuality.high)),
