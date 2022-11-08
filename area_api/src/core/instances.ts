@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { Types } from "mongoose";
 import db from "~/database/db";
 import { Area } from "./area";
-import { AreaError, ProcessError } from "./errors";
+import { AreaError, DatabaseError, ProcessError } from "./errors";
 import global from "./global";
 import { ActionConfig, ReactionConfig, Tokens } from "./types";
 
@@ -81,7 +81,6 @@ const AreaInstances = {
                 if (!action || !reaction) {
                     throw Error("Action or reaction does not exists")
                 }
-                console.log("area.action_params", area.action_params)
                 let areaInstance = new Area(
                     accMail,
                     tokens.get(accMail)!,
@@ -126,6 +125,15 @@ const AreaInstances = {
             throw new AreaError(`area with code ${areaId} does not exists`, 404)
         await area.stop()
         await db.area.setStatus(areaId, "disabled")
+    },
+    async delete(areaId: string) {
+        let area = areas.get(areaId)
+        if (!area)
+            throw new DatabaseError(`area with id '${area} not found`, 404)
+        if (area.status != "stopped" && area.status != "locked" && area.status != "errored")
+            area.stop()
+        areas.delete(areaId)
+        await db.area.delete(areaId)
     },
     async disconnectFromService(email: string, serviceName: string) {
         let service = global.services.get(serviceName)
