@@ -22,15 +22,18 @@ class DashboardWidget extends StatefulWidget {
 class _DashboardWidgetState extends State<DashboardWidget> {
   bool _isBasicService = true;
   String user = "User";
+  bool isAdmin = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     try {
-      user = widget.token.split('.')[1];
-      user += user.length % 4 == 0 ? '' : (user.length % 4 == 3 ? '=' : '==');
-      user = jsonDecode(utf8.fuse(base64).decode(user))["username"];
+      String token_info;
+      token_info = widget.token.split('.')[1];
+      token_info += token_info.length % 4 == 0 ? '' : (token_info.length % 4 == 3 ? '=' : '==');
+      user = jsonDecode(utf8.fuse(base64).decode(token_info))["username"];
+      isAdmin = jsonDecode(utf8.fuse(base64).decode(token_info))["admin"];
     } catch (e) {
       print(e.toString());
     }
