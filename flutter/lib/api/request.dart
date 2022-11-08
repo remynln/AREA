@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:area/api/endpoints.dart';
@@ -193,10 +194,26 @@ class ApiService {
           "${ApiConstants.ip}:${ApiConstants.port}",
           ApiConstants.serviceEndpoint(service_name),
           {'callback': callback, 'jwt': token});
-      if (await canLaunchUrl(uri))
+      if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
-      else
+      } else {
         throw "Uri($uri) could not be launched";
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<void> disconnectToService(String token, String service_name) async {
+    try {
+      final uri = Uri.http(
+          "${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.serviceEndpoint(service_name));
+      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      var response = await http.delete(uri, headers: headers);
+      if (response.statusCode != 200) {
+        log(response.statusCode.toString());
+      }
     } catch (e) {
       log(e.toString());
     }
