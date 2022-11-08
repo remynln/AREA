@@ -25,7 +25,7 @@ type Property = {
 }
 
 export enum AreaRet {
-    AccessTokenExpired,
+    AccessTokenExpired = -1,
     Ok
 }
 
@@ -131,7 +131,7 @@ export class Tokens {
 
     constructor(token: string, refreshToken: string) {
         this.access = token
-        this.refresh = token
+        this.refresh = refreshToken
     }
     async save(email: string, service: string) {
         this.dbId = await db.setToken(this.access, this.refresh, email, service)

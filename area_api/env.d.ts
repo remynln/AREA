@@ -5,6 +5,8 @@ declare global {
         GOOGLE_CLIENT_SECRET: string;
         DEEZER_CLIENT_ID: string;
         DEEZER_CLIENT_SECRET: string;
+        SPOTIFY_CLIENT_ID: string;
+        SPOTIFY_CLIENT_SECRET: string;
         JWT_KEY: string;
         GOOGLE_APPLICATION_CREDENTIALS: string;
         DB_USER: string;

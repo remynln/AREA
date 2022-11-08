@@ -3,15 +3,21 @@ import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import addedToPlaylist from '~/areas/deezer/action/addedToPlaylist'
+import addedToFavorite from '~/areas/deezer/action/addedToFavorite'
 import addToPlaylist from '~/areas/deezer/reactions/addToPlaylist'
+import addToFavorite from '~/areas/deezer/reactions/addToFavorite'
+import createPlaylist from '~/areas/deezer/reactions/createPlaylist'
 var DeezerStrategy = require("passport-deezer").Strategy
 
 const deezer: Service = {
     actions: new Map([
-        ["addedToPlaylist", addedToPlaylist]
+        ["addedToPlaylist", addedToPlaylist],
+        ["addedToFavorite", addedToFavorite]
     ]),
     reactions: new Map([
-        ["addToPlaylist", addToPlaylist]
+        ["addToPlaylist", addToPlaylist],
+        ["addToFavorite", addToFavorite],
+        ["createPlaylist", createPlaylist]
     ]),
     authParams: {
         accessType: 'offline',
