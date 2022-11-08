@@ -12,6 +12,7 @@ import 'package:area/api/answer/services_answer.dart';
 import 'package:area/api/answer/actions_answer.dart';
 import 'package:area/api/answer/reactions_answer.dart';
 import 'package:area/api/answer/area_answer.dart';
+import 'package:area/api/answer/user_answer.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -267,6 +268,83 @@ class ApiService {
     try {
       var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
           ApiConstants.areaEndpoint(area_id));
+      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      var response = await http.delete(uri, headers: headers);
+      if (response.statusCode != 200) {
+        log(response.statusCode.toString());
+        print(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<List<UserAnswer>?> getUsers(String token,
+      {int limit = 100, int page = 0}) async {
+    try {
+      var uri = Uri.http(
+          "${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.usersEndpoint,
+          {"limit": limit.toString(), "page": page.toString()});
+      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      var response = await http.get(uri, headers: headers);
+      if (response.statusCode != 200) {
+        log(response.statusCode.toString());
+        print(response.body);
+      }
+      print(response.body);
+
+      // NEED TO RETURN BUT FOR THAT NEED TO CHECK AS ADMIN
+      return [];
+    } catch (e) {
+      log(e.toString());
+    }
+    return [];
+  }
+
+  Future<UserAnswer?> getUserInformation(String token,
+      {String user_id = "me"}) async {
+    try {
+      var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.userEndpoint(user_id));
+      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      var response = await http.get(uri, headers: headers);
+      if (response.statusCode != 200) {
+        log(response.statusCode.toString());
+        print(response.body);
+      }
+      UserAnswer user = userAnswerFromJson(response.body);
+      user.id = user_id;
+      return user;
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<void> updateUserInformation(String token, String new_username,
+      {String user_id = "me", bool isAdmin = false, bool updateAdmin = false}) async {
+    try {
+      var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.userEndpoint(user_id));
+      Map<String, dynamic> body = {"username": new_username};
+      if (isAdmin) {
+        body["admin"] = updateAdmin;
+      }
+      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
+      var response = await http.put(uri, headers: headers, body: body);
+      if (response.statusCode != 200) {
+        log(response.statusCode.toString());
+        print(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<void> deleteUser(String token, {String user_id = "me"}) async {
+    try {
+      var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
+          ApiConstants.userEndpoint(user_id));
       final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
       var response = await http.delete(uri, headers: headers);
       if (response.statusCode != 200) {
