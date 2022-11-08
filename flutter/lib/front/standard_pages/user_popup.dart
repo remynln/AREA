@@ -1,4 +1,5 @@
 import 'package:area/api/answer/user_answer.dart';
+import 'package:area/front/connection_pages/login.dart';
 import 'package:flutter/material.dart';
 
 import 'package:area/api/request.dart';
@@ -9,8 +10,69 @@ Future<void> updateUserInformation(
   setStateParent(() {});
 }
 
+Future<void> deleteUser(String token, {String user_id = "me"}) async {
+  await ApiService().deleteUser(token, user_id: user_id);
+}
+
+void deleteUserVerification(context, String token) {
+  showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Color.fromRGBO(60, 60, 60, 1),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(
+                30.0,
+              ),
+            ),
+          ),
+          contentPadding: const EdgeInsets.only(
+            top: 10.0,
+          ),
+          title: Text(
+            "Are you sure ?",
+            style: const TextStyle(fontSize: 24.0, color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+          content: SizedBox(
+              height: 70,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        deleteUser(token);
+                        Navigator.pushAndRemoveUntil<void>(
+                            context,
+                            MaterialPageRoute<void>(
+                                builder: (BuildContext context) => const LoginWidget()),
+                            ModalRoute.withName('/'));
+                      },
+                      style: const ButtonStyle(
+                          side: MaterialStatePropertyAll<BorderSide>(BorderSide(
+                              color: Color.fromRGBO(62, 149, 49, 100), width: 1.5))),
+                      child: const Text("YES",
+                          style: TextStyle(color: Color.fromRGBO(62, 149, 49, 100)))),
+                  SizedBox(width: 10),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: const ButtonStyle(
+                          side: MaterialStatePropertyAll<BorderSide>(BorderSide(
+                              color: Color.fromRGBO(191, 27, 44, 100), width: 1.5))),
+                      child: const Text("NO",
+                          style: TextStyle(color: Color.fromRGBO(191, 27, 44, 100)))),
+                  SizedBox(height: 10)
+                ],
+              )
+        ));
+      });
+}
+
 List<Widget> getUserInformationWidgets(
-    String token, setStateParent, UserAnswer? answer) {
+    String token, setStateParent, UserAnswer? answer, context) {
   TextEditingController controller = TextEditingController();
 
   return (<Widget>[
@@ -64,7 +126,32 @@ List<Widget> getUserInformationWidgets(
             side: MaterialStatePropertyAll<BorderSide>(BorderSide(
                 color: Color.fromRGBO(62, 149, 49, 100), width: 1.5))),
         child: const Text("UPDATE USERNAME",
-            style: TextStyle(color: Color.fromRGBO(62, 149, 49, 100))))
+            style: TextStyle(color: Color.fromRGBO(62, 149, 49, 100)))),
+    const SizedBox(height: 10),
+    const Divider(color: Colors.white),
+    const SizedBox(height: 10),
+    TextButton(
+        onPressed: () {
+          Navigator.pushAndRemoveUntil<void>(
+              context,
+              MaterialPageRoute<void>(
+                  builder: (BuildContext context) => const LoginWidget()),
+              ModalRoute.withName('/'));
+        },
+        style: const ButtonStyle(
+            side: MaterialStatePropertyAll<BorderSide>(BorderSide(
+                color: Color.fromRGBO(191, 27, 44, 100), width: 1.5))),
+        child: const Text("LOGOUT",
+            style: TextStyle(color: Color.fromRGBO(191, 27, 44, 100)))),
+    TextButton(
+        onPressed: () {
+          deleteUserVerification(context, token);
+        },
+        style: const ButtonStyle(
+            side: MaterialStatePropertyAll<BorderSide>(BorderSide(
+                color: Color.fromRGBO(191, 27, 44, 100), width: 1.5))),
+        child: const Text("DELETE ACCOUNT",
+            style: TextStyle(color: Color.fromRGBO(191, 27, 44, 100))))
   ]);
 }
 
@@ -90,7 +177,7 @@ void openUser(String token, context, setStateParent) {
             textAlign: TextAlign.center,
           ),
           content: SizedBox(
-              height: 300,
+              height: 440,
               child: FutureBuilder(
                 future: ApiService().getUserInformation(token),
                 builder: (context, snapshot) {
@@ -101,8 +188,8 @@ void openUser(String token, context, setStateParent) {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
-                            children: getUserInformationWidgets(
-                                token, setStateParent, snapshot.data)));
+                            children: getUserInformationWidgets(token,
+                                setStateParent, snapshot.data, context)));
                   } else {
                     return const Center(
                         child: CircularProgressIndicator(color: Colors.white));
