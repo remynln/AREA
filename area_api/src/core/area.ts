@@ -40,14 +40,15 @@ export class Area {
             throw Error()
         }
         if (ret != AreaRet.AccessTokenExpired)
-            return ret
+        return ret
         if (!aoreaConf.serviceName)
-            return ret
+        return ret
         let service = Global.services.get(aoreaConf.serviceName);
         if (!service || !tokens)
-            return ret;
+        return ret;
         var token = null
         try {
+            console.log("yaay", tokens.refresh)
             token = await service.refreshToken(tokens.refresh)
         } catch (err: any) {
             this.error(new ProcessError(aoreaConf.serviceName || "None", "refreshToken", err))
@@ -155,9 +156,10 @@ export class Area {
     }
 
     async forceStop() {
-        while(this.status == "starting" || this.status == "stopping") {}
-        if (this.status == "started") {
-            await this.stop()
-        }
+        this.status = "stopping"
+        await this.action.stop().catch((err) => {
+            this.status = "errored"
+        })
+        this.status = "stopped"
     }
 }

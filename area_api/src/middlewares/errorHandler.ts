@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { Request, Response } from "express";
 import { AreaError, DatabaseError, ParsingError } from "~/core/errors";
 
