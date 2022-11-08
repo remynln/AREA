@@ -10,6 +10,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:area/api/service/service_display.dart';
 import 'package:area/api/area/area_display.dart';
 
+import '../admin/admin_popup.dart';
+
 class DashboardWidget extends StatefulWidget {
   final String token;
 
@@ -68,7 +70,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           Spacer(),
           isAdmin ? IconButton(
               onPressed: () {
-                print("ADMIN");
+                openAdmin(widget.token, context);
               },
               splashRadius: 22,
               iconSize: 50,

@@ -1,4 +1,5 @@
 class ApiConstants {
+  static String root = "root";
   static String ip = "10.0.2.2.nip.io";
   static String port = "8080";
   static String registerEndpoint = '/auth/register';
