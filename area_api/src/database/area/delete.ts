@@ -7,7 +7,7 @@ import { Tokens } from '~/core/types';
 
 
 export default async function deleteArea(areaId: string) {
-    let trigger = Trigger.findByIdAndDelete(areaId)
+    let trigger = await Trigger.findByIdAndDelete(areaId)
     if (!trigger)
         throw new DatabaseError(`token with trigger '${areaId}', not found`, 404)
 }
