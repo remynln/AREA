@@ -45,6 +45,7 @@ router.get('/:serviceName', (req, res) => {
         return
     }
     authParams.state = req.query.callback as string + " " + req.query.jwt as string
+    console.log("state", authParams.state)
     authParams.callbackURL = "/service/" + req.params.serviceName + "/callback"
     passport.authenticate(req.params.serviceName, authParams)(req, res)
 }, (req, res) => {
@@ -62,6 +63,8 @@ router.get('/:serviceName/callback', (req, res, next) => {
     authParams.failureRedirect = "http://localhost:8080/"
     authParams.callbackURL = "/service/" + req.params.serviceName + "/callback"
     passport.authenticate(req.params.serviceName, authParams, (err, user, info) => {
+        if (err)
+            console.log(err)
         console.log("user: ", user)
         res.locals.user = user;
         next()
@@ -75,7 +78,7 @@ router.get('/:serviceName/callback', (req, res, next) => {
     }
     let splitted = req.query.state?.toString().split(' ')
     let userInfo = jwt.decode(splitted![1]) as JwtFormat
-    console.log(userInfo)
+    console.log("userInfo", req.query.state)
     AreaInstances.connectToService(userInfo.email, req.params.serviceName).then(() => {
         res.redirect(splitted![0])
     }).catch((err) => {
