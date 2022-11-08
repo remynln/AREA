@@ -66,16 +66,23 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             fontFamily: "RobotoMono")))
               ]),
           Spacer(),
-          Padding(
-              padding: EdgeInsetsDirectional.only(end: 10),
-              child: IconButton(
+          isAdmin ? IconButton(
+              onPressed: () {
+                print("ADMIN");
+              },
+              splashRadius: 22,
+              iconSize: 50,
+              icon: const Icon(Icons.admin_panel_settings,
+                  color: Colors.white)) : Container(),
+          IconButton(
                   onPressed: () {
                     openUser(widget.token, context, setState);
                   },
                   splashRadius: 22,
                   iconSize: 50,
                   icon: const Icon(Icons.account_circle_rounded,
-                      color: Colors.white))),
+                      color: Colors.white)),
+          SizedBox(width: 5)
         ]),
         const SizedBox(height: 40),
         Row(
@@ -153,7 +160,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                       fontWeight: FontWeight.bold,
                       fontSize: 20)))
         ]),
-        ServiceDisplay(isBasicService: _isBasicService, token: widget.token),
+        ServiceDisplay(isBasicService: _isBasicService, token: widget.token, setStateParent: setState),
       ])),
     );
   }
