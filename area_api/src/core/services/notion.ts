@@ -28,7 +28,6 @@ const notion: Service = {
             }
             console.log(cbObj)
             let accountToken = req.query.state;
-            console.log("accTok", req.query)
             if (!accountToken || !accountToken.includes(' ')) {
                 callback(null, cbObj)
                 return

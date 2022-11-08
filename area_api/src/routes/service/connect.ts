@@ -45,7 +45,6 @@ router.get('/:serviceName', (req, res) => {
         return
     }
     authParams.state = req.query.callback as string + " " + req.query.jwt as string
-    console.log("state", authParams.state)
     authParams.callbackURL = "/service/" + req.params.serviceName + "/callback"
     passport.authenticate(req.params.serviceName, authParams)(req, res)
 }, (req, res) => {
