@@ -15,7 +15,6 @@ class addedToFavorite extends Action {
                         "Authorization": "Bearer " + this.token
                     }
                 })
-                console.log("total: ", res.data.tracks.total)
                 return res.data.tracks.total
             } catch (err: any) {
                 console.log(err.response)
@@ -93,7 +92,7 @@ class addedToFavorite extends Action {
 
 let config: ActionConfig = {
     serviceName: "spotify",
-    name: "addedToLibrary",
+    name: "addedToPlaylist",
     description: "triggers when a track is added to a playlist",
     paramTypes: {
         "playlistId": "string"
