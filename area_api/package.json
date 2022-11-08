@@ -50,6 +50,7 @@
     "node-gmail-api": "^1.0.1",
     "passport": "^0.6.0",
     "passport-deezer": "^0.2.0",
+    "passport-github2": "^0.1.12",
     "passport-google-oauth20": "^2.0.0",
     "passport-google-oidc": "^0.1.0",
     "passport-microsoft": "^1.0.0",
