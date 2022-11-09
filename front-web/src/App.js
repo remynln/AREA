@@ -1,7 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Dashboard } from './Pages/Dashboard'
-import { Notifications } from './Pages/Notifications'
 import { Settings } from './Pages/Settings'
 import { Workflows } from './Pages/Workflows'
 import { Login } from './Pages/Login'
@@ -22,11 +21,11 @@ function App() {
       loadUser()
       loadServices()
     }
-  }, [localStorage.getItem("jwt")]);
+  }, [localStorage.getItem("jwt"), user]);
 
   function serviceExists(serviceName) {
-    return services.some(function(el) {
-      return el[serviceName] === "connected" || el[serviceName] === "disconnected";
+    return services.some(function(element) {
+      return element.name === serviceName
     });
   }
 
@@ -36,15 +35,23 @@ function App() {
 
       await res.data.connected.map(service => {
         if (serviceExists(service) === false)
-          services.push({[service]: "connected"})
-        else
-          setServices({[service]: "connected"})
+          setServices(current => [...current, {name: service, state: "connected"}])
+        else {
+          setServices(services.map(element => {
+            if (element.name === service)
+              return ({name: service, state: "connected"})
+          }))
+        }
       })
       await res.data.not_connected.map(service => {
         if (serviceExists(service) === false)
-          services.push({[service]: "disconnected"})
-        else
-          setServices({[service]: "disconnected"})
+          setServices(current => [...current, {name: service, state: "disconnected"}])
+        else {
+          setServices(services.map(element => {
+            if (element.name === service)
+              return ({name: service, state: "disconnected"})
+          }))
+        }
       })
     } catch (error) {
       console.log(error)
@@ -68,7 +75,6 @@ function App() {
           <Route element={<PrivateRoutes user={user} />}>
             <Route path="/dashboard" element={<Dashboard user={user} services={services}/>} />
             <Route path="/workflows" element={<Workflows />} />
-            <Route path="/notifications" element={<Notifications />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<Navigate to="/dashboard" />} />
             <Route path="/" element={<Navigate to="/dashboard" />} />

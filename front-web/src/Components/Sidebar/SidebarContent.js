@@ -16,11 +16,6 @@ export const SidebarContent = [
         link: "/workflows"
     },
     {
-        title: "Notifications",
-        icon: <NotificationsIcon />,
-        link: "/notifications"
-    },
-    {
         title: "Settings",
         icon: <SettingsIcon />,
         link: "/settings"

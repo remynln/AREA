@@ -11,8 +11,8 @@ function Dashboard_Workflows(props) {
 
     return (
         <div className="DashboardWorkflows" style={props.inCreation ? Hide : undefined}>
-            <div classname="WorkflowContentTitle">
-                <p className="WorkflowTitle">Workflows</p>
+            <div className="DashboardWorkflowContentTitle">
+                <p className="DashboardWorkflowTitle">Workflows</p>
                 <Link to={"/workflows"} className="WorkflowRedirection"><p>View all</p></Link>
             </div>
             <WorkflowCreate setInCreation={props.setInCreation}/>

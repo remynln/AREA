@@ -1,7 +1,9 @@
 import ClearIcon from '@mui/icons-material/Clear';
+import { WorkflowContent } from './WorkflowContent';
 import './Workflows.css'
 
 export const WorkflowPanel = (props) => {
+
     let Hide = {
         display: "none"
     };
@@ -14,6 +16,7 @@ export const WorkflowPanel = (props) => {
                     <ClearIcon />
                 </div>
             </div>
+            <WorkflowContent services={props.services} inCreation={props.inCreation}/>
         </div>
     )
 }
