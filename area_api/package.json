@@ -48,6 +48,7 @@
     "passport-deezer": "^0.2.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-google-oidc": "^0.1.0",
+    "passport-notion": "^1.0.2",
     "passport-spotify": "^2.0.0",
     "uninstall": "^0.0.0"
   }

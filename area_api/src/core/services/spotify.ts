@@ -5,15 +5,20 @@ import JwtFormat from "~/routes/auth/jwtFormat";
 import axios from "axios";
 import process from "process";
 import addedToFavorite from "~/areas/spotify/actions/addedToFavorite"
+import addedToPlaylist from "~/areas/spotify/actions/addedToPlaylist"
+import addToLibrary from "~/areas/spotify/reactions/addToLibrary"
 var SpotifyStrategy = require("passport-spotify").Strategy
 import qs from "qs"
 import { request } from "http";
 
 const spotify: Service = {
     actions: new Map([
-        ["addedToLibrary", addedToFavorite]
+        ["addedToLibrary", addedToFavorite],
+        ["addedToPlaylist", addedToPlaylist]
     ]),
-    reactions: new Map([]),
+    reactions: new Map([
+        ["addToLibrary", addToLibrary]
+    ]),
     authParams: {
         accessType: 'offline',
         approvalPrompt: 'force'

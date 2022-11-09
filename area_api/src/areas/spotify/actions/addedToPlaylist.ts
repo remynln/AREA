@@ -7,14 +7,15 @@ class addedToFavorite extends Action {
     task: ScheduledTask | undefined
     trackNumber: number
     async getPlaylistLen() {
+        let playlistId = this.params.playlistId as string
         return await this.refresh(async () => {
             try {
-                let res = await axios.get(`https://api.spotify.com/v1/me/tracks?limit=1`, {
+                let res = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}?fields=tracks.total`, {
                     headers: {
                         "Authorization": "Bearer " + this.token
                     }
                 })
-                return res.data.total
+                return res.data.tracks.total
             } catch (err: any) {
                 console.log(err.response)
                 if (err.response && err.response.status == 401)
@@ -27,9 +28,10 @@ class addedToFavorite extends Action {
     }
 
     async getNewPlaylistTracks() {
+        let playlistId = this.params.playlistId as string
         let res: AxiosResponse = await this.refresh(async () => {
             try {
-                let res = await axios.get(`https://api.spotify.com/v1/me/tracks?limit=1`, {
+                let res = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=1&offset=${this.trackNumber}`, {
                     headers: {
                         "Authorization": "Bearer " + this.token
                     }
@@ -41,8 +43,7 @@ class addedToFavorite extends Action {
                 throw err
             }
         })
-        console.log(res.data.items[0].track.artists[0])
-        console.log(res.data.items[0].track.album)
+        console.log(res.data.items[0].track)
         let mapped: SpotifyTrack[] = res.data.items.map(({ track }: any) => {
             let duration = track.duration / 1000
             return {
@@ -91,9 +92,10 @@ class addedToFavorite extends Action {
 
 let config: ActionConfig = {
     serviceName: "spotify",
-    name: "addedToLibrary",
+    name: "addedToPlaylist",
     description: "triggers when a track is added to a playlist",
     paramTypes: {
+        "playlistId": "string"
     },
     propertiesType: {
         "id": "string",

@@ -7,6 +7,8 @@ declare global {
         DEEZER_CLIENT_SECRET: string;
         SPOTIFY_CLIENT_ID: string;
         SPOTIFY_CLIENT_SECRET: string;
+        NOTION_CLIENT_ID: string;
+        NOTION_CLIENT_SECRET: string;
         JWT_KEY: string;
         GOOGLE_APPLICATION_CREDENTIALS: string;
         DB_USER: string;
