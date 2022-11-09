@@ -4,6 +4,7 @@ import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import newComment from "~/areas/notion/actions/newComment"
 import addTodo from "~/areas/notion/reactions/addTodo"
+import addComment from "~/areas/notion/reactions/addComment"
 import { Strategy } from "~/strategies/notion/lib/passport-notion/index"
 import { Request } from "express";
 const notion: Service = {
@@ -11,7 +12,8 @@ const notion: Service = {
         ["newComment", newComment]
     ]),
     reactions: new Map([
-        ["addTodo", addTodo]
+        ["addTodo", addTodo],
+        ["addComment", addComment]
     ]),
     authParams: {
         accessType: 'offline',
