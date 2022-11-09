@@ -3,7 +3,7 @@ import { ScheduledTask } from "node-cron";
 import { AreaError } from "~/core/errors";
 import { Action, ActionConfig } from "~/core/types";
 import cron from "node-cron"
-
+import { getPageId } from "../utils";
 
 interface Comment {
     "body": string,
@@ -25,29 +25,6 @@ class newComment extends Action {
             }
         })
         return res.data.results
-    }
-
-    async getId(): Promise<string> {
-        let pageUrl = this.params.pageId as string;
-        let res = await axios.post("https://api.notion.com/v1/search", {
-            query: pageUrl,
-            filter: {
-                property: "object",
-                value: "page"
-            }
-        }, {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + this.token,
-                "Notion-Version": "2022-06-28"
-            }
-        })
-        for (let i of (res.data.results as any[])) {
-            if ((i.url as string).includes(pageUrl)) {
-                return i.id
-            }
-        }
-        throw new AreaError(`Link '${pageUrl} does not exists'`, 404)
     }
 
     async getUser(userId: string) {
@@ -77,7 +54,7 @@ class newComment extends Action {
 
     override async start(): Promise<void> {
         console.log("gggg")
-        this.pageId = await this.getId()
+        this.pageId = await getPageId(this.token, this.params.pageId as string)
         this.comments = (await this.getComments()).map((res) => res.id)
         this.task = cron.schedule("*/10 * * * * *", () => {
             this.loop().catch((err) => {

@@ -44,13 +44,13 @@ function getReaction(reactionName: string) {
 function checkParams(paramTypes: {[x: string]: string}, givedParams: any,
     properties: any = undefined) {
     for (let i of Object.entries(paramTypes)) {
-        if (!givedParams) {
+        if (givedParams == undefined) {
             if ((i[1] as string).endsWith('?'))
                 continue
             throw new AreaError(`Required param '${i[0]}' not found`, 400)
         }
         let current = givedParams[i[0]]
-        if (!current) {
+        if (current == undefined) {
             if ((i[1] as string).endsWith('?'))
                 continue
             throw new AreaError(`Required param '${i[0]}' not found`, 400)
