@@ -43,6 +43,8 @@ dependencies:
   fluttertoast: ^8.1.1
   flutter_svg: ^1.1.6
   simple_form_builder: ^0.0.22
+  page_transition: ^2.0.4
+  image_fade: ^0.6.1
 
 dev_dependencies:
   flutter_test:

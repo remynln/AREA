@@ -6,7 +6,7 @@ import 'package:area/front/standard_pages/user_popup.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:page_transition/page_transition.dart';
 import 'package:area/api/service/service_display.dart';
 import 'package:area/api/area/area_display.dart';
 
@@ -105,6 +105,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                           MaterialPageRoute(
                               builder: (context) =>
                                   PagesWidget(token: widget.token, index: 3)));
+                      type: PageTransitionType.scale;
+                      alignment: Alignment.bottomCenter;
+
                     },
                     child: const Text("View All",
                         style: TextStyle(
