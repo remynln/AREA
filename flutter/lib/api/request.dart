@@ -219,10 +219,12 @@ class ApiService {
     }
   }
 
-  Future<List<AreaAnswer>?> getUserAreas(String token) async {
+  Future<List<AreaAnswer>?> getUserAreas(String token, {String user_id = "me"}) async {
     try {
       var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
-          ApiConstants.userAreasEndpoint());
+          ApiConstants.userAreasEndpoint(user_id: user_id));
+      log(uri.toString());
+      log(token);
       final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
       var response = await http.get(uri, headers: headers);
       if (response.statusCode != 200) {
@@ -239,7 +241,9 @@ class ApiService {
           throw response.body;
         }
         Map<String, dynamic> decoded = jsonDecode(response.body);
-        model[index].condition = decoded["condition"];
+        if (decoded.containsKey("condition")) {
+          model[index].condition = decoded["condition"];
+        }
         if (decoded["action"].containsKey("parameters")) {
           model[index].action_params = decoded["action"]["parameters"];
         }
