@@ -2,10 +2,13 @@ import { OAuthCallbackObj, Service } from "../types";
 import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
+import newComment from "~/areas/notion/actions/newComment"
 import { Strategy } from "~/strategies/notion/lib/passport-notion/index"
 import { Request } from "express";
 const notion: Service = {
-    actions: new Map([]),
+    actions: new Map([
+        ["newComment", newComment]
+    ]),
     reactions: new Map([]),
     authParams: {
         accessType: 'offline',
