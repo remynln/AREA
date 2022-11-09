@@ -4,13 +4,15 @@ import deezer from "./services/deezer"
 import google from "./services/google"
 import notion from "./services/notion"
 import spotify from "./services/spotify"
+import trello from "./services/trello"
 import { Action, Reaction } from "./types"
 
 const services = new Map([
     ["google", google],
     ["deezer", deezer],
     ["spotify", spotify],
-    ["notion", notion]
+    ["notion", notion],
+    ["trello", trello]
 ])
 
 function getAction(actionName: string) {

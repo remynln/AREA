@@ -64,7 +64,9 @@ class newComment extends Action {
     }
 
     override async stop(): Promise<void> {
-        
+        if (this.task == undefined)
+            return
+        this.task.stop()
     }
 }
 

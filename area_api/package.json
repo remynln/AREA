@@ -49,7 +49,9 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-google-oidc": "^0.1.0",
     "passport-notion": "^1.0.2",
+    "passport-oauth1": "^1.2.0",
     "passport-spotify": "^2.0.0",
+    "passport-trello": "^1.0.0",
     "uninstall": "^0.0.0"
   }
 }

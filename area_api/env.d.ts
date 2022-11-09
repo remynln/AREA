@@ -9,6 +9,8 @@ declare global {
         SPOTIFY_CLIENT_SECRET: string;
         NOTION_CLIENT_ID: string;
         NOTION_CLIENT_SECRET: string;
+        TRELLO_CLIENT_ID: string;
+        TRELLO_CLIENT_SECRET: string;
         JWT_KEY: string;
         GOOGLE_APPLICATION_CREDENTIALS: string;
         DB_USER: string;
