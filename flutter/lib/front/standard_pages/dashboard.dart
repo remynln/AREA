@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:area/front/standard_pages/pages.dart';
+import 'package:area/front/standard_pages/settings_popup.dart';
 import 'package:area/front/standard_pages/user_popup.dart';
 import 'package:flutter/material.dart';
 
@@ -68,21 +69,16 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             fontFamily: "RobotoMono")))
               ]),
           Spacer(),
-          isAdmin ? IconButton(
-              onPressed: () {
-                openAdmin(widget.token, context);
-              },
-              splashRadius: 22,
-              iconSize: 50,
-              icon: const Icon(Icons.admin_panel_settings,
-                  color: Colors.white)) : Container(),
           IconButton(
                   onPressed: () {
-                    openUser(widget.token, context, setState);
+                    openSettings(widget.token, isAdmin, context, setState);
                   },
                   splashRadius: 22,
-                  iconSize: 50,
-                  icon: const Icon(Icons.account_circle_rounded,
+              style: ButtonStyle(
+                side: MaterialStatePropertyAll(BorderSide(width: 0.2))
+              ),
+                  icon: const Icon(Icons.settings_outlined,
+                      size: 30,
                       color: Colors.white)),
           SizedBox(width: 5)
         ]),
@@ -106,7 +102,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  PagesWidget(token: widget.token, index: 3)));
+                                  PagesWidget(token: widget.token, index: 2)));
                     },
                     child: const Text("View All",
                         style: TextStyle(
@@ -124,7 +120,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                PagesWidget(token: widget.token, index: 2)));
+                                PagesWidget(token: widget.token, index: 1)));
                   },
                   child: SvgPicture.asset("assets/dashboard/add.svg",
                       alignment: Alignment.topLeft)),

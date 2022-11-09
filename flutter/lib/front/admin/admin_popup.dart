@@ -88,6 +88,8 @@ void openAdmin(String token, context) {
                                   padding: EdgeInsets.only(left: 25),
                                   child: TextField(
                                     controller: search,
+                                    textInputAction: TextInputAction.go,
+                                    onSubmitted: ((String value) => setState(() {})),
                                     style: const TextStyle(color: Colors.white),
                                     textAlign: TextAlign.center,
                                     decoration: InputDecoration(

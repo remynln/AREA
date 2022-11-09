@@ -1,3 +1,4 @@
+import 'package:area/front/admin/areas_admin_popup.dart';
 import 'package:flutter/material.dart';
 
 import 'package:area/api/answer/user_answer.dart';
@@ -29,7 +30,8 @@ void openUserAsAdmin(String token, context, setStateParent, UserAnswer answer) {
               textAlign: TextAlign.center,
             ),
             content: SizedBox(
-                height: 440,
+                height: 530,
+                width: 300,
                 child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: Column(
@@ -38,6 +40,21 @@ void openUserAsAdmin(String token, context, setStateParent, UserAnswer answer) {
                         mainAxisSize: MainAxisSize.min,
                         children: getUserInformationBasicWidgets(answer) +
                             <Widget>[
+                              TextButton(
+                                  onPressed: () {
+                                    openAreasUserAsAdmin(token, context, setStateParent, answer.id);
+                                  },
+                                  style: const ButtonStyle(
+                                      side:
+                                          MaterialStatePropertyAll<BorderSide>(
+                                              BorderSide(
+                                                  color: Colors.white,
+                                                  width: 1.5))),
+                                  child: const Text("VIEW AREAS",
+                                      style: TextStyle(color: Colors.white))),
+                              const SizedBox(height: 10),
+                              const Divider(color: Colors.white),
+                              const SizedBox(height: 10),
                               Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 20),
                                   child: TextField(
