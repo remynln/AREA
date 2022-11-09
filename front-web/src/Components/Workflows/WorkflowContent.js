@@ -44,7 +44,6 @@ export const WorkflowContent = (props) => {
             setReactionParameters([])
         }
         loadActionServices()
-        loadReactionServices()
     }, [props.services, props.inCreation])
 
     const loadActionServices = async () => {
@@ -60,10 +59,11 @@ export const WorkflowContent = (props) => {
 
     const loadReactionServices = async () => {
         {
-            ServicesContent.map((val, key) => {
+            ServicesContent.map(async (val, key) => {
                 if (props.services.find(element => element.name === val.name && element.state === "connected") !== undefined) {
-                    if (actionServices.find(element => element.name === val.name) === undefined)
-                        setReactionServices(current => [...current, { name: val.name, logo: val.logo }])
+                    if (reactionServices.find(element => element.name === val.name) === undefined) {
+                        await setReactionServices(current => [...current, { name: val.name, logo: val.logo }])
+                    }
                 }
             })
         }
@@ -126,6 +126,7 @@ export const WorkflowContent = (props) => {
                 })
                 someOperator = 0
             }
+            loadReactionServices()
         } catch (error) {
             console.log(error)
         }

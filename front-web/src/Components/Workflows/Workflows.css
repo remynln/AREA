@@ -60,7 +60,7 @@
 .WorkflowContent {
     margin-left: auto;
     margin-right: auto;
-    height: 82.5%;
+    height: 84%;
     width: 95%;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -253,6 +253,27 @@
     width: 20vw;
     height: 12vh;
     overflow: hidden;
+}
+
+.CreateWorkflow {
+    width: 100%;
+}
+
+.CreateWorkflowButton {
+    height: 4vh;
+    width: 5.5vw;
+    background-color: #BF1B2C;
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: Roboto;
+    font-weight: bold;
+    position: absolute;
+    right: 5vw;
+    cursor: pointer;
 }
 
 @media only screen and (max-height: 900px) {

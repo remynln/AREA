@@ -17,6 +17,11 @@ export const WorkflowPanel = (props) => {
                 </div>
             </div>
             <WorkflowContent services={props.services} inCreation={props.inCreation}/>
+            <div className='CreateWorkflow'>
+                <div className="CreateWorkflowButton">
+                    <p>CREATE</p>
+                </div>
+            </div>
         </div>
     )
 }
