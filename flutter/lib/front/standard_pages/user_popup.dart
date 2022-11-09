@@ -154,19 +154,6 @@ List<Widget> getUserInformationUserWidgets(
     const SizedBox(height: 10),
     TextButton(
         onPressed: () {
-          Navigator.pushAndRemoveUntil<void>(
-              context,
-              MaterialPageRoute<void>(
-                  builder: (BuildContext context) => const LoginWidget()),
-              ModalRoute.withName('/'));
-        },
-        style: const ButtonStyle(
-            side: MaterialStatePropertyAll<BorderSide>(BorderSide(
-                color: Color.fromRGBO(191, 27, 44, 100), width: 1.5))),
-        child: const Text("LOGOUT",
-            style: TextStyle(color: Color.fromRGBO(191, 27, 44, 100)))),
-    TextButton(
-        onPressed: () {
           deleteUserVerification(context, token);
         },
         style: const ButtonStyle(
@@ -200,7 +187,7 @@ void openUser(String token, context, setStateParent) {
               textAlign: TextAlign.center,
             ),
             content: SizedBox(
-                height: 440,
+                height: 400,
                 child: FutureBuilder(
                   future: ApiService().getUserInformation(token),
                   builder: (context, snapshot) {
