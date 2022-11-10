@@ -1,6 +1,7 @@
 import { AreaError } from "./errors"
 import { formatContent } from "./formatting"
 import deezer from "./services/deezer"
+import genius from "./services/genius"
 import google from "./services/google"
 import notion from "./services/notion"
 import spotify from "./services/spotify"
@@ -12,7 +13,8 @@ const services = new Map([
     ["deezer", deezer],
     ["spotify", spotify],
     ["notion", notion],
-    ["trello", trello]
+    ["trello", trello],
+    ["genius", genius]
 ])
 
 function getAction(actionName: string) {

@@ -11,6 +11,8 @@ declare global {
         NOTION_CLIENT_SECRET: string;
         TRELLO_CLIENT_ID: string;
         TRELLO_CLIENT_SECRET: string;
+        GENIUS_CLIENT_ID: string;
+        GENIUS_CLIENT_SECRET: string;
         JWT_KEY: string;
         GOOGLE_APPLICATION_CREDENTIALS: string;
         DB_USER: string;
