@@ -4,13 +4,15 @@ import deezer from "./services/deezer"
 import google from "./services/google"
 import spotify from "./services/spotify"
 import github from "./services/github"
+import twitch from "./services/twitch"
 import { Action, Reaction } from "./types"
 
 const services = new Map([
     ["google", google],
     ["deezer", deezer],
     ["spotify", spotify],
-    ["github", github]
+    ["github", github],
+    ["twitch", twitch]
 ])
 
 function getAction(actionName: string) {

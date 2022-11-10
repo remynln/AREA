@@ -9,6 +9,8 @@ declare global {
         SPOTIFY_CLIENT_SECRET: string;
         GITHUB_CLIENT_ID: string;
         GITHUB_CLIENT_SECRET: string;
+        TWITCH_CLIENT_ID: string;
+        TWITCH_CLIENT_SECRET: string;
         JWT_KEY: string;
         GOOGLE_APPLICATION_CREDENTIALS: string;
         DB_USER: string;

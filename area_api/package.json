@@ -51,6 +51,9 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-google-oidc": "^0.1.0",
     "passport-spotify": "^2.0.0",
+    "passport-twitch": "^1.0.3",
+    "passport-twitch-latest": "^1.0.0",
+    "passport-twitchtv": "^0.1.4",
     "uninstall": "^0.0.0"
   }
 }
