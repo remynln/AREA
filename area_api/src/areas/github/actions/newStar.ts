@@ -6,7 +6,9 @@ import { link } from "fs";
 
 interface Stargazer {
     login: string,
-    link: string
+    link: string,
+    creator: string,
+    repository_name: string
 }
 
 class newStar extends Action {
@@ -36,11 +38,12 @@ class newStar extends Action {
             })
             this.starNumber = newStargazers
         }
-        console.log(res.data)
         let mapped: Stargazer[] = res.data.map((item: any) => {
             return {
                 login: item.login,
-                link: item.html_url
+                link: item.html_url,
+                creator: this.params.creator,
+                repository_name: this.params.repository_name
             } as Stargazer
         })
         return mapped
@@ -87,6 +90,8 @@ let config: ActionConfig = {
     propertiesType: {
         "login": "string",
         "link": "string",
+        "creator": "string",
+        "repository_name": "string"
     },
     create: newStar,
 }
