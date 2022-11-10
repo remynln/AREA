@@ -3,14 +3,18 @@ import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import newList from "~/areas/trello/actions/newList"
+import newCard from "~/areas/trello/actions/newCard"
 import addCard from "~/areas/trello/reactions/addCard"
+import addList from "~/areas/trello/reactions/addList"
 import TrelloStrategy from "~/strategies/trello";
 
 const trello: Service = {
     actions: new Map([
-        ["newList", newList]
+        ["newList", newList],
+        ["newCard", newCard]
     ]),
     reactions: new Map([
+        ["addList", addList],
         ["addCard", addCard]
     ]),
     authParams: {
