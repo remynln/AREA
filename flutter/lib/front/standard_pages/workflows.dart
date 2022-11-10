@@ -17,9 +17,9 @@ class _WorkflowsWidgetState extends State<WorkflowsWidget> {
     return Scaffold(
         body: Center(
             child: ListView(children: <Widget>[
-                DelayedAnimation(
+                const DelayedAnimation(
                 delay: 800,
-      child : const Padding(
+      child : Padding(
           padding: EdgeInsetsDirectional.only(start: 20),
           child: Text("Workflows",
               style: TextStyle(

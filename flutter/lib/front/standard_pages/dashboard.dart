@@ -53,7 +53,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 DelayedAnimation(
-                  delay: 1000,
+                  delay: 800,
                 child : Padding(
                     padding: const EdgeInsetsDirectional.only(start: 20),
                     child: Text("Hello $user !",
@@ -64,7 +64,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             fontWeight: FontWeight.bold)))),
                 const SizedBox(height: 8),
                 const DelayedAnimation(
-                    delay: 1200,
+                    delay: 900,
                 child : Padding(
                     padding: EdgeInsetsDirectional.only(start: 20),
                     child: Text("Welcome back on Sergify.",
@@ -75,7 +75,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               ]),
           Spacer(),
           DelayedAnimation(
-              delay: 1400,
+              delay: 1000,
           child : IconButton(
                   onPressed: () {
                     openSettings(widget.token, isAdmin, context, setState);
@@ -93,7 +93,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         Row(
           children: <Widget>[
             const DelayedAnimation(
-              delay: 1800,
+              delay: 1100,
             child : Padding(
                 padding: EdgeInsetsDirectional.only(start: 20),
                 child: Text("Workflows",
@@ -104,7 +104,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         fontWeight: FontWeight.bold)))),
             Spacer(),
             DelayedAnimation(
-              delay: 2000,
+              delay: 1200,
             child : Padding(
                 padding: EdgeInsetsDirectional.only(end: 20),
                 child: TextButton(
@@ -126,7 +126,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
             scrollDirection: Axis.horizontal,
             child: Row(children: <Widget>[
                 DelayedAnimation(
-                delay: 2200,
+                delay: 1300,
               child : GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -139,15 +139,15 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                       alignment: Alignment.topLeft))),
               SizedBox(width: 5),
             DelayedAnimation(
-                delay: 2400,
+                delay: 1400,
               child : AreaDisplay(token: widget.token, isDashboardDisplay: true),
             )])),
         SizedBox(height: 20),
         Row(children: <Widget>[
           DelayedAnimation(
-              delay: 2600,
+              delay: 1500,
           child : Padding(
-              padding: EdgeInsetsDirectional.only(start: 15),
+              padding: EdgeInsetsDirectional.only(start: 10),
               child: TextButton(
                   onPressed: () => setState(() {
                         if (_isBasicService) {
@@ -155,30 +155,15 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         }
                         _isBasicService = true;
                       }),
-                  child: Text("Basic Services",
+                  child: Text("Services",
                       style: TextStyle(
                           color: _isBasicService ? Colors.white : Colors.grey,
                           fontFamily: "Roboto",
                           fontWeight: FontWeight.bold,
                           fontSize: 20))))),
-          DelayedAnimation(
-              delay: 2800,
-          child : TextButton(
-              onPressed: () => setState(() {
-                    if (_isBasicService == false) {
-                      return;
-                    }
-                    _isBasicService = false;
-                  }),
-              child: Text("Game Services",
-                  style: TextStyle(
-                      color: _isBasicService ? Colors.grey : Colors.white,
-                      fontFamily: "Roboto",
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20)))),
         ]),
         DelayedAnimation(
-            delay: 3000,
+            delay: 1700,
         child : ServiceDisplay(isBasicService: _isBasicService, token: widget.token, setStateParent: setState),
         )])),
     );
