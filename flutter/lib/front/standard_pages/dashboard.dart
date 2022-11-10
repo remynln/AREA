@@ -11,6 +11,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:area/api/service/service_display.dart';
 import 'package:area/api/area/area_display.dart';
 
+import '../admin/admin_popup.dart';
+
 class DashboardWidget extends StatefulWidget {
   final String token;
 
@@ -71,26 +73,17 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             fontFamily: "RobotoMono")))),
               ]),
           Spacer(),
-          DelayedAnimation(
-              delay: 1400,
-          child : isAdmin ? IconButton(
-              onPressed: () {
-                print("ADMIN");
-              },
-              splashRadius: 22,
-              iconSize: 50,
-              icon: const Icon(Icons.admin_panel_settings,
-                  color: Colors.white)) : Container()),
-          DelayedAnimation(
-              delay: 1600,
-          child :IconButton(
+          IconButton(
                   onPressed: () {
-                    openUser(widget.token, context, setState);
+                    openSettings(widget.token, isAdmin, context, setState);
                   },
                   splashRadius: 22,
-                  iconSize: 50,
-                  icon: const Icon(Icons.account_circle_rounded,
-                      color: Colors.white))),
+              style: ButtonStyle(
+                side: MaterialStatePropertyAll(BorderSide(width: 0.2))
+              ),
+                  icon: const Icon(Icons.settings_outlined,
+                      size: 30,
+                      color: Colors.white)),
           SizedBox(width: 5)
         ]),
         const SizedBox(height: 40),
@@ -117,10 +110,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  PagesWidget(token: widget.token, index: 3)));
-                      type: PageTransitionType.scale;
-                      alignment: Alignment.bottomCenter;
-
+                                  PagesWidget(token: widget.token, index: 2)));
                     },
                     child: const Text("View All",
                         style: TextStyle(
@@ -140,7 +130,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                PagesWidget(token: widget.token, index: 2)));
+                                PagesWidget(token: widget.token, index: 1)));
                   },
                   child: SvgPicture.asset("assets/dashboard/add.svg",
                       alignment: Alignment.topLeft))),
