@@ -3,13 +3,16 @@ import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import newList from "~/areas/trello/actions/newList"
+import addCard from "~/areas/trello/reactions/addCard"
 import TrelloStrategy from "~/strategies/trello";
 
 const trello: Service = {
     actions: new Map([
         ["newList", newList]
     ]),
-    reactions: new Map([]),
+    reactions: new Map([
+        ["addCard", addCard]
+    ]),
     authParams: {
         accessType: 'offline',
         approvalPrompt: 'force'
