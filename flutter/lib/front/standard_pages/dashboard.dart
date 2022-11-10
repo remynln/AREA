@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:area/front/standard_pages/pages.dart';
 import 'package:area/front/standard_pages/user_popup.dart';
 import 'package:flutter/material.dart';
+import 'package:area/supplemental/anim_delay.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:page_transition/page_transition.dart';
@@ -48,55 +49,67 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Padding(
+                DelayedAnimation(
+                  delay: 1000,
+                child : Padding(
                     padding: const EdgeInsetsDirectional.only(start: 20),
                     child: Text("Hello $user !",
                         style: TextStyle(
                             fontSize: 26,
                             color: Colors.white,
                             fontFamily: "RobotoMono",
-                            fontWeight: FontWeight.bold))),
+                            fontWeight: FontWeight.bold)))),
                 const SizedBox(height: 8),
-                const Padding(
+                const DelayedAnimation(
+                    delay: 1200,
+                child : Padding(
                     padding: EdgeInsetsDirectional.only(start: 20),
                     child: Text("Welcome back on Sergify.",
                         style: TextStyle(
                             fontSize: 16,
                             color: Color.fromRGBO(200, 200, 200, 100),
-                            fontFamily: "RobotoMono")))
+                            fontFamily: "RobotoMono")))),
               ]),
           Spacer(),
-          isAdmin ? IconButton(
+          DelayedAnimation(
+              delay: 1400,
+          child : isAdmin ? IconButton(
               onPressed: () {
                 print("ADMIN");
               },
               splashRadius: 22,
               iconSize: 50,
               icon: const Icon(Icons.admin_panel_settings,
-                  color: Colors.white)) : Container(),
-          IconButton(
+                  color: Colors.white)) : Container()),
+          DelayedAnimation(
+              delay: 1600,
+          child :IconButton(
                   onPressed: () {
                     openUser(widget.token, context, setState);
                   },
                   splashRadius: 22,
                   iconSize: 50,
                   icon: const Icon(Icons.account_circle_rounded,
-                      color: Colors.white)),
+                      color: Colors.white))),
           SizedBox(width: 5)
         ]),
         const SizedBox(height: 40),
         Row(
           children: <Widget>[
-            const Padding(
+            const DelayedAnimation(
+              delay: 1800,
+            child : Padding(
                 padding: EdgeInsetsDirectional.only(start: 20),
                 child: Text("Workflows",
                     style: TextStyle(
                         fontSize: 26,
                         color: Colors.white,
                         fontFamily: "RobotoMono",
-                        fontWeight: FontWeight.bold))),
+                        fontWeight: FontWeight.bold)))),
             Spacer(),
-            Padding(
+            DelayedAnimation(
+              delay: 2000,
+            child : Padding(
                 padding: EdgeInsetsDirectional.only(end: 20),
                 child: TextButton(
                     onPressed: () {
@@ -113,13 +126,15 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         style: TextStyle(
                             color: Color.fromRGBO(238, 13, 36, 100),
                             fontSize: 14,
-                            fontFamily: "Poppins")))),
+                            fontFamily: "Poppins"))))),
           ],
         ),
         SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(children: <Widget>[
-              GestureDetector(
+                DelayedAnimation(
+                delay: 2200,
+              child : GestureDetector(
                   onTap: () {
                     Navigator.push(
                         context,
@@ -128,13 +143,17 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                 PagesWidget(token: widget.token, index: 2)));
                   },
                   child: SvgPicture.asset("assets/dashboard/add.svg",
-                      alignment: Alignment.topLeft)),
+                      alignment: Alignment.topLeft))),
               SizedBox(width: 5),
-              AreaDisplay(token: widget.token, isDashboardDisplay: true),
-            ])),
+            DelayedAnimation(
+                delay: 2400,
+              child : AreaDisplay(token: widget.token, isDashboardDisplay: true),
+            )])),
         SizedBox(height: 20),
         Row(children: <Widget>[
-          Padding(
+          DelayedAnimation(
+              delay: 2600,
+          child : Padding(
               padding: EdgeInsetsDirectional.only(start: 15),
               child: TextButton(
                   onPressed: () => setState(() {
@@ -148,8 +167,10 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                           color: _isBasicService ? Colors.white : Colors.grey,
                           fontFamily: "Roboto",
                           fontWeight: FontWeight.bold,
-                          fontSize: 20)))),
-          TextButton(
+                          fontSize: 20))))),
+          DelayedAnimation(
+              delay: 2800,
+          child : TextButton(
               onPressed: () => setState(() {
                     if (_isBasicService == false) {
                       return;
@@ -161,10 +182,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                       color: _isBasicService ? Colors.grey : Colors.white,
                       fontFamily: "Roboto",
                       fontWeight: FontWeight.bold,
-                      fontSize: 20)))
+                      fontSize: 20)))),
         ]),
-        ServiceDisplay(isBasicService: _isBasicService, token: widget.token, setStateParent: setState),
-      ])),
+        DelayedAnimation(
+            delay: 3000,
+        child : ServiceDisplay(isBasicService: _isBasicService, token: widget.token, setStateParent: setState),
+        )])),
     );
   }
 }

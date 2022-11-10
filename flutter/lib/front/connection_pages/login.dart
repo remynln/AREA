@@ -18,10 +18,8 @@ import 'package:uni_links/uni_links.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:image_fade/image_fade.dart';
 import 'package:page_transition/page_transition.dart';
-
-double opacity = 0.0;
+import 'package:area/supplemental/anim_delay.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({Key? key}) : super(key: key);
@@ -51,17 +49,6 @@ class _LoginWidgetState extends State<LoginWidget> {
     _initUriHandler();
     _incomingLinkHandler();
     super.initState();
-    changeOpacity();
-  }
-
-  changeOpacity() {
-    Future.delayed(Duration(seconds: 1), () {
-      setState(() {
-        if (opacity == 0) {
-          opacity = opacity == 1.0 ? 0.0 : 1.0;
-        }
-      });
-    });
   }
 
   @override
@@ -175,6 +162,9 @@ class _LoginWidgetState extends State<LoginWidget> {
           MaterialPageRoute(
               builder: (context) =>
                   PagesWidget(token: loginAnswer!.token.toString(), index: 0)));
+      PageTransitionType type = PageTransitionType.rightToLeft;
+      duration:
+      3000;
     }
   }
 
@@ -205,9 +195,8 @@ class _LoginWidgetState extends State<LoginWidget> {
     return Scaffold(
         body: Center(
             child: ListView(children: <Widget>[
-      AnimatedOpacity(
-        opacity: opacity,
-        duration: Duration(seconds: 1),
+      DelayedAnimation(
+        delay: 1000,
         child: Container(
           height: 30,
           alignment: Alignment.topLeft,
@@ -224,9 +213,8 @@ class _LoginWidgetState extends State<LoginWidget> {
               child: const Text('IP')),
         ),
       ),
-      AnimatedOpacity(
-        opacity: opacity,
-        duration: Duration(seconds: 3),
+      DelayedAnimation(
+        delay: 1100,
         child: Image.asset(
           'assets/sergify.png',
           width: 200,
@@ -236,9 +224,8 @@ class _LoginWidgetState extends State<LoginWidget> {
         ),
       ),
       SizedBox(height: 30),
-      AnimatedOpacity(
-        opacity: opacity,
-        duration: Duration(seconds: 4),
+      DelayedAnimation(
+        delay: 1200,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: TextField(
@@ -262,9 +249,8 @@ class _LoginWidgetState extends State<LoginWidget> {
         ),
       ),
       SizedBox(height: 20),
-      AnimatedOpacity(
-        opacity: opacity,
-        duration: Duration(seconds: 5),
+      DelayedAnimation(
+        delay: 1300,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: TextField(
@@ -289,9 +275,8 @@ class _LoginWidgetState extends State<LoginWidget> {
         ),
       ),
       SizedBox(height: 20),
-      AnimatedOpacity(
-        opacity: opacity,
-        duration: Duration(seconds: 6),
+      DelayedAnimation(
+        delay: 1300,
         child: Container(
           height: 45,
           padding: const EdgeInsets.symmetric(horizontal: 60),
@@ -311,17 +296,15 @@ class _LoginWidgetState extends State<LoginWidget> {
         ),
       ),
       SizedBox(height: 30),
-      AnimatedOpacity(
-          opacity: opacity,
-          duration: Duration(seconds: 7),
+      DelayedAnimation(
+          delay: 1400,
           child: Container(
               alignment: Alignment.topCenter,
               child: const Text('Or continue with',
                   style: TextStyle(fontSize: 15, color: Colors.grey)))),
       SizedBox(height: 10),
-      AnimatedOpacity(
-        opacity: opacity,
-        duration: Duration(seconds: 8),
+      DelayedAnimation(
+        delay: 1500,
         child: Container(
           height: 45,
           padding: EdgeInsets.symmetric(horizontal: 80),
@@ -339,34 +322,34 @@ class _LoginWidgetState extends State<LoginWidget> {
         ),
       ),
       SizedBox(height: 30),
-      AnimatedOpacity(
-          opacity: opacity,
-          duration: Duration(seconds: 8),
+      DelayedAnimation(
+          delay: 1600,
           child: Container(
             child: Text("Don't have an account?",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.white)),
           )),
-            AnimatedOpacity(
-                opacity: opacity,
-                duration: Duration(seconds: 8),
-      child : Container(
-      child :TextButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const RegisterWidget()));
-          type:
-          PageTransitionType.scale;
-          alignment:
-          Alignment.bottomCenter;
-        },
-        style: TextButton.styleFrom(
-          foregroundColor: Color.fromRGBO(191, 27, 44, 1),
-        ),
-        child: const Text('Register here', style: TextStyle(fontSize: 16)),
-      ),
-      ),
+      DelayedAnimation(
+        delay: 1700,
+        child: Container(
+          child: TextButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const RegisterWidget()));
+              type:
+              PageTransitionType.scale;
+              alignment:
+              Alignment.bottomCenter;
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Color.fromRGBO(191, 27, 44, 1),
             ),
+            child: const Text('Register here', style: TextStyle(fontSize: 16)),
+          ),
+        ),
+      ),
     ])));
   }
 }
