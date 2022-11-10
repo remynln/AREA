@@ -113,7 +113,7 @@ class _CreateWidgetState extends State<CreateWidget> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+              scrollDirection: Axis.vertical,
               child: displayServices(
                   snapshot.data, context, setState, setStateWidget, isAction));
         } else {
@@ -323,7 +323,7 @@ class _CreateWidgetState extends State<CreateWidget> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+              scrollDirection: Axis.vertical,
               child: displayReactionTriggers(
                   snapshot.data, context, setState, setStateWidget));
         } else {
