@@ -219,16 +219,24 @@ class ApiService {
     }
   }
 
-  Future<List<AreaAnswer>?> getUserAreas(String token) async {
+  Future<List<AreaAnswer>?> getUserAreas(String token, {String user_id = "me"}) async {
     try {
       var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
-          ApiConstants.userAreasEndpoint());
+          ApiConstants.userAreasEndpoint(user_id: user_id));
+      log(uri.toString());
+      log(token);
       final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
       var response = await http.get(uri, headers: headers);
       if (response.statusCode != 200) {
         log(response.statusCode.toString());
+        return [];
       }
       List<AreaAnswer> model = areaAnswerFromJson(response.body);
+      String token_info = token.split('.')[1];
+      token_info += token_info.length % 4 == 0 ? '' : (token_info.length % 4 == 3 ? '=' : '==');
+      if (jsonDecode(utf8.fuse(base64).decode(token_info))["username"] == "root" && jsonDecode(utf8.fuse(base64).decode(token_info))["admin"] == true) {
+        return model;
+      }
       for (var index = 0; index < model.length; index++) {
         uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
             ApiConstants.areaEndpoint(model[index].id));
@@ -238,7 +246,9 @@ class ApiService {
           throw response.body;
         }
         Map<String, dynamic> decoded = jsonDecode(response.body);
-        model[index].condition = decoded["condition"];
+        if (decoded.containsKey("condition")) {
+          model[index].condition = decoded["condition"];
+        }
         if (decoded["action"].containsKey("parameters")) {
           model[index].action_params = decoded["action"]["parameters"];
         }
@@ -250,7 +260,7 @@ class ApiService {
     } catch (e) {
       log(e.toString());
     }
-    return null;
+    return [];
   }
 
   Future<void> enableArea(String token, area_id) async {
@@ -296,10 +306,10 @@ class ApiService {
     }
   }
 
-  Future<List<UserAnswer>?> getUsers(String token,
+  Future<List<UserAnswer>> getUsers(String token,
       {int limit = 100, int page = 0}) async {
     try {
-      var uri = Uri.http(
+      final uri = Uri.http(
           "${ApiConstants.ip}:${ApiConstants.port}",
           ApiConstants.usersEndpoint,
           {"limit": limit.toString(), "page": page.toString()});
@@ -309,10 +319,17 @@ class ApiService {
         log(response.statusCode.toString());
         print(response.body);
       }
-      print(response.body);
-
-      // NEED TO RETURN BUT FOR THAT NEED TO CHECK AS ADMIN
-      return [];
+      List<UserAnswer> answers = [];
+      List<dynamic> users = jsonDecode(response.body);
+      for (Map<String, dynamic> element in users) {
+        UserAnswer? current = await getUserInformation(token, user_id: element["id"]);
+        current?.id = element["id"];
+        if (element.containsKey("admin") && element["admin"] == true) {
+          current?.isAdmin = true;
+        }
+        answers.add(current!);
+      }
+      return answers;
     } catch (e) {
       log(e.toString());
     }

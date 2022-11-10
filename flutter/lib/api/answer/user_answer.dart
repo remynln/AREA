@@ -9,6 +9,7 @@ class UserAnswer {
     this.id = "me",
     required this.username,
     required this.email,
+    this.isAdmin = false,
     this.createdAt,
     this.updatedAt,
   });
@@ -16,6 +17,7 @@ class UserAnswer {
   String id;
   String username;
   String email;
+  bool isAdmin;
   dynamic createdAt;
   dynamic updatedAt;
 
