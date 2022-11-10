@@ -1,0 +1,33 @@
+_id: req_d70d1eead9d94f768cf73f27a3b0b5c0
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1667409534021
+created: 1666095205772
+url: localhost:8080/service/google
+name: /service/google
+description: ""
+method: GET
+body: {}
+parameters:
+  - id: pair_3d5584c95bcc4d1589208bae51ace4d0
+    name: callback
+    value: http://google.com
+    description: ""
+  - id: pair_cf9f9e42254a4085855bd7fcdd262991
+    name: jwt
+    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hcmNvLnJlZ3VpbGxvdEBnbWFpbDQuY29tIiwidXNlcm5hbWUiOiJtYXJjb19yZ3Q0IiwiaWF0IjoxNjY3NDA0MTE2fQ.kdOk6DRV9zvaKm-sNNIQ9k6jP4U8ukwUwYkPhFqyeFM
+    description: ""
+    disabled: false
+headers: []
+authentication:
+  type: bearer
+  prefix: Bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hcmNvLnJlZ3VpbGxvdEBnbWFpbC5jb20iLCJpYXQiOjE2NjU5OTQ5OTR9.5DQzkUHDICvYOeNZPUY9foqLegI0Oe-TJVRJoagzDoQ
+metaSortKey: -1666095205772
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

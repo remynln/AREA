@@ -1,0 +1,28 @@
+_id: req_f1d92f8781624ba0b4b2a7158052490f
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1667573473110
+created: 1667572763544
+url: localhost:8080/area/6363e2f5da6c9542f2dff06e
+name: /area/id
+description: ""
+method: GET
+body: {}
+parameters:
+  - id: pair_419997d808474bb69e8f0a7b851da86f
+    name: ""
+    value: ""
+    description: ""
+headers: []
+authentication:
+  type: bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hcmNvLnJlZ3VpbGxvdEBnbWFpbC5jb20iLCJpYXQiOjE2NjU5OTQ5OTR9.5DQzkUHDICvYOeNZPUY9foqLegI0Oe-TJVRJoagzDoQ
+  prefix: Bearer
+metaSortKey: -1665947961052
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

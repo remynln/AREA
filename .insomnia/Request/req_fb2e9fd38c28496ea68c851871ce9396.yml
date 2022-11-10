@@ -1,0 +1,24 @@
+_id: req_fb2e9fd38c28496ea68c851871ce9396
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1666625696537
+created: 1666625315720
+url: localhost:8080/service/google/reactions
+name: /service/google/reactions
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication:
+  type: bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hcmNvLnJlZ3VpbGxvdEBnbWFpbC5jb20iLCJpYXQiOjE2NjU5OTQ5OTR9.5DQzkUHDICvYOeNZPUY9foqLegI0Oe-TJVRJoagzDoQ
+  prefix: Bearer
+metaSortKey: -1666226946857.25
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

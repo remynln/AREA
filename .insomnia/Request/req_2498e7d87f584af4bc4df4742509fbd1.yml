@@ -1,0 +1,28 @@
+_id: req_2498e7d87f584af4bc4df4742509fbd1
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1665995040758
+created: 1665994795587
+url: localhost:8080/auth/unregister
+name: /auth/unregister
+description: ""
+method: DELETE
+body: {}
+parameters: []
+headers:
+  - id: pair_36f4706df2be4414881f496058131a5c
+    name: ""
+    value: ""
+    description: ""
+authentication:
+  type: bearer
+  prefix: Bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hcmNvLnJlZ3VpbGxvdEBnbWFpbC5jb20iLCJpYXQiOjE2NjU5OTQ5OTR9.5DQzkUHDICvYOeNZPUY9foqLegI0Oe-TJVRJoagzDoQ
+metaSortKey: -1665994795587
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

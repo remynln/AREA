@@ -1,0 +1,24 @@
+_id: req_bb6636f7df4441b58b5e4ab4137b0d81
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1667409915569
+created: 1667409563170
+url: localhost:8080/user/634547f8499550b942b4048d
+name: /user/userId
+description: ""
+method: DELETE
+body: {}
+parameters: []
+headers: []
+authentication:
+  type: bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvb3QiLCJ1c2VybmFtZSI6InJvb3QiLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNjY3NDA5NjE3fQ.uonz1aeMAKTxMlbVn3FfW3vpwJZ1A9r4thY5oROveKA
+  prefix: Bearer
+metaSortKey: -1667309810231.875
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

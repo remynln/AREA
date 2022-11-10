@@ -1,0 +1,24 @@
+_id: req_f194a3686ad447518fffa7745297746b
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1667833775100
+created: 1666625945717
+url: localhost:8080/service/deezer/action/addedToPlaylist
+name: /service/google/action/newMail
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication:
+  type: bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hcmNvLnJlZ3VpbGxvdEBnbWFpbC5jb20iLCJpYXQiOjE2NjU5OTQ5OTR9.5DQzkUHDICvYOeNZPUY9foqLegI0Oe-TJVRJoagzDoQ
+  prefix: Bearer
+metaSortKey: -1666292817399.875
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

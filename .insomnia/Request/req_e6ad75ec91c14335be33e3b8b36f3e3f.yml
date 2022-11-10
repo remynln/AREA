@@ -1,0 +1,33 @@
+_id: req_e6ad75ec91c14335be33e3b8b36f3e3f
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1667312487920
+created: 1667309485763
+url: localhost:8080/users
+name: /users
+description: ""
+method: GET
+body: {}
+parameters:
+  - id: pair_94d194361c604861a6cc3c0b6b8df310
+    name: limit
+    value: "3"
+    description: ""
+    disabled: false
+  - id: pair_532d6281043449e69e92f36b80fc018d
+    name: page
+    value: "1"
+    description: ""
+headers: []
+authentication:
+  type: bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvb3QiLCJ1c2VybmFtZSI6InJvb3QiLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNjY3MzA5NDc3fQ.9f4Bsx78Ucp3OzYqfcnimF-vKro3Ded4-fXT9xkssEA
+  prefix: Bearer
+metaSortKey: -1667309485763
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
