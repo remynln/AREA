@@ -48,7 +48,6 @@ class newStar extends Action {
 
     async loop() {
         let newStargazers = await this.getNumberStargazer()
-        console.log("nigga")
         if (this.starNumber < newStargazers) {
             let newStars = await this.getNewStargazers(newStargazers)
             for (let i of newStars) {
