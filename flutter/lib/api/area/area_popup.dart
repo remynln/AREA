@@ -21,6 +21,34 @@ void deleteArea(String token, String area_id, setStateParent) async {
   await ApiService().deleteArea(token, area_id);
 }
 
+Column getParameters(String parameter_title, Map<String, dynamic> parameters) {
+  List<Widget> list = [];
+
+  parameters.forEach((key, value) {
+    list.add(Text("$key : $value",
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Colors.white, fontSize: 11)));
+  });
+  return (Column(children: <Widget>[
+    SizedBox(height: 5),
+    Text(parameter_title,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            color: Colors.white, fontFamily: "RobotoMono", fontSize: 15)),
+    Container(
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(90, 90, 90, 1),
+          borderRadius: BorderRadius.all(
+            Radius.circular(
+              5.0,
+            ),
+          ),
+        ),
+        child: Column(children: list))
+  ]));
+}
+
 void openArea(String token, context, setStateParent, AreaAnswer answer) {
   showDialog(
       context: context,
@@ -54,15 +82,11 @@ void openArea(String token, context, setStateParent, AreaAnswer answer) {
                   Text("Title: ${answer.title}",
                       style: TextStyle(
                           color: Colors.white,
-                          fontFamily: "Roboto",
                           fontWeight: FontWeight.bold,
                           fontSize: 20)),
                   SizedBox(height: 5),
                   Text("Description: ${answer.description}",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "Roboto",
-                          fontSize: 15)),
+                      style: TextStyle(color: Colors.white, fontSize: 15)),
                   SizedBox(height: 10),
                   Divider(color: Colors.white),
                   SizedBox(height: 10),
@@ -75,17 +99,19 @@ void openArea(String token, context, setStateParent, AreaAnswer answer) {
                   SizedBox(height: 10),
                   Text("Action: ${answer.action}",
                       style: TextStyle(color: Colors.white)),
-                  Text("Action parameters: ${answer.action_params}",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white)),
+                  answer.action_params.isNotEmpty
+                      ? getParameters(
+                          "Action's parameters", answer.action_params)
+                      : Container(),
                   SizedBox(height: 10),
                   Divider(color: Colors.white),
                   SizedBox(height: 10),
                   Text("Reaction: ${answer.reaction}",
                       style: TextStyle(color: Colors.white)),
-                  Text("Reaction parameters: ${answer.reaction_params}",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white)),
+                  answer.reaction_params.isNotEmpty
+                      ? getParameters(
+                          "Reaction's parameters", answer.reaction_params)
+                      : Container(),
                   SizedBox(height: 10),
                   Divider(color: Colors.white),
                   SizedBox(height: 10),
@@ -94,8 +120,8 @@ void openArea(String token, context, setStateParent, AreaAnswer answer) {
                           onPressed: () {
                             deleteArea(token, answer.id, setStateParent);
                             Navigator.of(context).pop();
-                            setStateParent((){});
-                            },
+                            setStateParent(() {});
+                          },
                           style: ButtonStyle(
                               side: MaterialStatePropertyAll<BorderSide>(
                                   BorderSide(
