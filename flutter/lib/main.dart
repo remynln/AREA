@@ -19,6 +19,6 @@ void main() => runApp(MaterialApp(
       backgroundColor: Colors.black,
       nextScreen: const LoginWidget(),
       splashTransition: SplashTransition.fadeTransition,
-      pageTransitionType: PageTransitionType.bottomToTop,
-      duration: 3000,
+      pageTransitionType: PageTransitionType.fade,
+      duration: 3200,
     )));
