@@ -12,9 +12,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:area/supplemental/anim_delay.dart';
 
-import 'package:simple_form_builder/formbuilder.dart';
-import 'package:simple_form_builder/global/checklistModel.dart';
-
 import '../../api/answer/reactions_answer.dart';
 
 class CreateWidget extends StatefulWidget {
@@ -33,7 +30,7 @@ class _CreateWidgetState extends State<CreateWidget> {
 
   String _currentField = "";
 
-  Service _actionService = Service("", "", "", []);
+  Service _actionService = Service("", "", "");
   ActionsAnswer _actionTrigger = ActionsAnswer();
   Map<String, TextEditingController> _actionDetail = {};
 
@@ -42,7 +39,7 @@ class _CreateWidgetState extends State<CreateWidget> {
   String _comparatorDropDown = "";
   TextEditingController _condition = TextEditingController();
 
-  Service _reactionService = Service("", "", "", []);
+  Service _reactionService = Service("", "", "");
   ReactionsAnswer _reactionTrigger = ReactionsAnswer();
   Map<String, TextEditingController> _reactionDetail = {};
 
@@ -57,46 +54,41 @@ class _CreateWidgetState extends State<CreateWidget> {
   Widget displayServices(ServicesAnswer? servicesAnswer, context, setState,
       setStateWidget, bool isAction) {
     List<Widget> list = [];
-    List<Service> allServices = Services.BasicServices + Services.GamesServices;
 
     if (servicesAnswer == null) {
       return Container();
     }
-    for (var index = 0; index < allServices.length; index++) {
-      if (servicesAnswer.connected.contains(allServices[index].name) == false) {
+    for (var index = 0; index < Services().allServices().length; index++) {
+      if (servicesAnswer.connected.contains(Services().allServices()[index].name) == false) {
         continue;
       }
-      list.add(DelayedAnimation(
-          delay: 1000,
-          child: GestureDetector(
+      list.add(GestureDetector(
               onTap: () {
                 if (isAction) {
-                  _actionService.name = allServices[index].name;
+                  _actionService.name = Services().allServices()[index].name;
                 } else {
-                  _reactionService.name = allServices[index].name;
+                  _reactionService.name = Services().allServices()[index].name;
                 }
                 setState(() {});
               },
-              child: allServices[index].name ==
+              child: Services().allServices()[index].name ==
                       (isAction ? _actionService.name : _reactionService.name)
-                  ? Image.asset(allServices[index].not_connected_image)
-                  : Image.asset(allServices[index].connected_image,
-                      filterQuality: FilterQuality.high))));
+                  ? Image.asset(Services().allServices()[index].not_connected_image)
+                  : Image.asset(Services().allServices()[index].connected_image,
+                      filterQuality: FilterQuality.high)));
       list.add(const SizedBox(height: 20));
     }
-    list.add(DelayedAnimation(
-        delay: 2000,
-        child: Container(
+    list.add(Container(
           height: 60,
           padding: const EdgeInsets.all(8.0),
           child: ElevatedButton(
             onPressed: () {
               if (isAction && _actionService.name.isNotEmpty) {
-                _actionService = allServices.firstWhere(
+                _actionService = Services().allServices().firstWhere(
                     (element) => _actionService.name == element.name);
                 setStateWidget(() {});
               } else if (!isAction && _reactionService.name.isNotEmpty) {
-                _reactionService = allServices.firstWhere(
+                _reactionService = Services().allServices().firstWhere(
                     (element) => _reactionService.name == element.name);
                 setStateWidget(() {});
               } else {
@@ -111,7 +103,7 @@ class _CreateWidgetState extends State<CreateWidget> {
               "CONFIRM",
             ),
           ),
-        )));
+        ));
     return (Column(children: list));
   }
 
@@ -158,9 +150,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                     ),
                   ),
                 ),
-                title: DelayedAnimation(
-                    delay: 1000,
-                    child: Text(
+                title: Text(
                       (isAction ? "Action's Service" : "Reaction's Service"),
                       style: const TextStyle(
                           fontSize: 23,
@@ -168,7 +158,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                           fontFamily: "RobotoMono",
                           fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
-                    )),
+                    ),
                 content: SizedBox(
                     height: 500,
                     width: 600,
@@ -230,9 +220,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                       const Color.fromRGBO(62, 149, 49, 1)))));
       list.add(const SizedBox(height: 20));
     }
-    list.add(DelayedAnimation(
-        delay: 1200,
-        child: Container(
+    list.add(Container(
           height: 60,
           padding: const EdgeInsets.all(8.0),
           child: ElevatedButton(
@@ -252,7 +240,7 @@ class _CreateWidgetState extends State<CreateWidget> {
               "CONFIRM",
             ),
           ),
-        )));
+        ));
     return (Column(children: list));
   }
 
@@ -372,9 +360,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                     ),
                   ),
                 ),
-                title: DelayedAnimation(
-                    delay: 1400,
-                    child: Text(
+                title: Text(
                       isAction ? "Action's Trigger" : "Reaction's Trigger",
                       style: const TextStyle(
                           fontSize: 23,
@@ -382,7 +368,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                           fontFamily: "RobotoMono",
                           fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
-                    )),
+                    ),
                 content: SizedBox(
                     height: 500,
                     width: 600,

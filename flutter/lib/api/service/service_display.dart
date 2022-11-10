@@ -101,17 +101,16 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
     }
   }
 
-  Widget createWidgetList(
-      List<Service> service_list, ServicesAnswer? servicesAnswer) {
+  Widget createWidgetList(ServicesAnswer? servicesAnswer) {
     List<Widget> list = [];
 
     if (servicesAnswer == null) {
       return Container();
     }
-    for (var index = 0; index < service_list.length; index++) {
+    for (var index = 0; index < Services().allServices().length; index++) {
       list.add(
-          handleDisplayColumn(service_list, index, servicesAnswer.connected));
-      if (index + 1 < service_list.length) {
+          handleDisplayColumn(Services().allServices(), index, servicesAnswer.connected));
+      if (index + 1 < Services().allServices().length) {
         list.add(const SizedBox(width: 10));
         index++;
       }
@@ -121,13 +120,6 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
 
   @override
   Widget build(BuildContext context) {
-    late List<Service> service_list;
-
-    if (widget.isBasicService) {
-      service_list = Services.BasicServices;
-    } else {
-      service_list = Services.GamesServices;
-    }
     return FutureBuilder(
       future: ApiService().getConnectedServices(widget.token),
       builder: (context, snapshot) {
@@ -136,7 +128,7 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
               padding: const EdgeInsetsDirectional.only(start: 20),
               child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: createWidgetList(service_list, snapshot.data)));
+                  child: createWidgetList(snapshot.data)));
         } else {
           return const Center(
               child: CircularProgressIndicator(color: Colors.white));
