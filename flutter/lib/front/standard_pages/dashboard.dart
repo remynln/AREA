@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:area/front/standard_pages/pages.dart';
+import 'package:area/front/standard_pages/settings_popup.dart';
 import 'package:area/front/standard_pages/user_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:area/supplemental/anim_delay.dart';
@@ -73,7 +74,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             fontFamily: "RobotoMono")))),
               ]),
           Spacer(),
-          IconButton(
+          DelayedAnimation(
+              delay: 1400,
+          child : IconButton(
                   onPressed: () {
                     openSettings(widget.token, isAdmin, context, setState);
                   },
@@ -83,7 +86,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               ),
                   icon: const Icon(Icons.settings_outlined,
                       size: 30,
-                      color: Colors.white)),
+                      color: Colors.white))),
           SizedBox(width: 5)
         ]),
         const SizedBox(height: 40),
