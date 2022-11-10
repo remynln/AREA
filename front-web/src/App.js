@@ -62,7 +62,7 @@ function App() {
     try {
       const user = await jwt(JSON.parse(localStorage.getItem("jwt")))
 
-      setUser({username: user.username})
+      setUser({username: user.username, email: user.email, admin: user.admin})
     } catch (error) {
       console.log(error)
     }
@@ -75,7 +75,7 @@ function App() {
           <Route element={<PrivateRoutes user={user} />}>
             <Route path="/dashboard" element={<Dashboard user={user} services={services}/>} />
             <Route path="/workflows" element={<Workflows />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/settings" element={<Settings user={user}/>} />
             <Route path="*" element={<Navigate to="/dashboard" />} />
             <Route path="/" element={<Navigate to="/dashboard" />} />
             <Route path="/home" element={<Navigate to="/dashboard" />} />
