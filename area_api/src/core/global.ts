@@ -2,13 +2,15 @@ import { AreaError } from "./errors"
 import { formatContent } from "./formatting"
 import deezer from "./services/deezer"
 import google from "./services/google"
+import notion from "./services/notion"
 import spotify from "./services/spotify"
 import { Action, Reaction } from "./types"
 
 const services = new Map([
     ["google", google],
     ["deezer", deezer],
-    ["spotify", spotify]
+    ["spotify", spotify],
+    ["notion", notion]
 ])
 
 function getAction(actionName: string) {

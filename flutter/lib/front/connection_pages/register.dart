@@ -10,6 +10,7 @@ import 'package:area/api/request.dart';
 import 'package:area/front/ip.dart';
 import 'package:area/front/connection_pages/login.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:area/supplemental/anim_delay.dart';
 
 import '../standard_pages/pages.dart';
 
@@ -63,9 +64,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  PagesWidget(
-                      token: registerAnswer!.token.toString(), index: 0)));
+              builder: (context) => PagesWidget(
+                  token: registerAnswer!.token.toString(), index: 0)));
     }
   }
 
@@ -88,127 +88,148 @@ class _RegisterWidgetState extends State<RegisterWidget> {
     return Scaffold(
         body: Center(
             child: ListView(children: <Widget>[
-      Container(
-        height: 30,
-        alignment: Alignment.topLeft,
-        child: ElevatedButton(
-            child: const Text('IP'),
-            onPressed: () {
-              openIP(context);
-            },
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    const Color.fromRGBO(191, 27, 44, 1)),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(9.0))))),
+      DelayedAnimation(
+        delay: 800,
+        child: Container(
+            height: 30,
+            alignment: Alignment.topLeft,
+            child: ElevatedButton(
+                child: const Text('IP'),
+                onPressed: () {
+                  openIP(context);
+                },
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        const Color.fromRGBO(191, 27, 44, 1)),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9.0)))))),
       ),
-      Image.asset(
-        'assets/sergify.png',
-        height: 200,
-        width: 500,
-        fit: BoxFit.fitWidth,
-        scale: 1,
+      DelayedAnimation(
+          delay: 900,
+          child: Image.asset(
+            'assets/sergify.png',
+            height: 200,
+            width: 500,
+            fit: BoxFit.fitWidth,
+            scale: 1,
+          )),
+      SizedBox(height: 30),
+      DelayedAnimation(
+        delay: 1000,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 25),
+          child: TextField(
+            controller: nameController,
+            onChanged: (_) {
+              registerController!.notifyListeners();
+            },
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+            decoration: InputDecoration(
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
+              filled: true,
+              hintStyle: TextStyle(
+                  color: Color.fromRGBO(148, 163, 184, 1),
+                  fontStyle: FontStyle.italic),
+              hintText: "Username",
+              fillColor: Color.fromRGBO(68, 68, 68, 1),
+            ),
+          ),
+        ),
+      ),
+      SizedBox(height: 20),
+      DelayedAnimation(
+        delay: 1100,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 25),
+          child: TextField(
+            controller: emailController,
+            onChanged: (_) {
+              registerController!.notifyListeners();
+            },
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+            decoration: InputDecoration(
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
+              filled: true,
+              hintStyle: TextStyle(
+                  color: Color.fromRGBO(148, 163, 184, 1),
+                  fontStyle: FontStyle.italic),
+              hintText: "Email",
+              fillColor: Color.fromRGBO(68, 68, 68, 1),
+            ),
+          ),
+        ),
+      ),
+      SizedBox(height: 20),
+      DelayedAnimation(
+        delay: 1200,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 25),
+          child: TextField(
+            controller: passwordController,
+            onChanged: (_) {
+              registerController!.notifyListeners();
+            },
+            obscureText: true,
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+            decoration: InputDecoration(
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
+              filled: true,
+              hintStyle: TextStyle(
+                  color: Color.fromRGBO(148, 163, 184, 1),
+                  fontStyle: FontStyle.italic),
+              hintText: "Password",
+              fillColor: Color.fromRGBO(68, 68, 68, 1),
+            ),
+          ),
+        ),
       ),
       SizedBox(height: 30),
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: TextField(
-          controller: nameController,
-          onChanged: (_) {
-            registerController!.notifyListeners();
-          },
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.center,
-          decoration: InputDecoration(
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
-            filled: true,
-            hintStyle: TextStyle(
-                color: Color.fromRGBO(148, 163, 184, 1),
-                fontStyle: FontStyle.italic),
-            hintText: "Username",
-            fillColor: Color.fromRGBO(68, 68, 68, 1),
-          ),
+      DelayedAnimation(
+        delay: 1300,
+        child: Container(
+          height: 45,
+          padding: const EdgeInsets.symmetric(horizontal: 60),
+          child: ElevatedButton(
+              statesController: registerController,
+              child: const Text('REGISTER'),
+              onPressed: () {
+                handleRegister();
+                print(nameController.text);
+                print(emailController.text);
+                print(passwordController.text);
+              },
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith(getColor),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9.0))))),
         ),
       ),
       SizedBox(height: 20),
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: TextField(
-          controller: emailController,
-          onChanged: (_) {
-            registerController!.notifyListeners();
+      const DelayedAnimation(
+          delay: 1400,
+          child: Text("Already have an account?",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, color: Colors.white))),
+      DelayedAnimation(
+        delay: 1500,
+        child: TextButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const LoginWidget()));
           },
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.center,
-          decoration: InputDecoration(
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
-            filled: true,
-            hintStyle: TextStyle(
-                color: Color.fromRGBO(148, 163, 184, 1),
-                fontStyle: FontStyle.italic),
-            hintText: "Email",
-            fillColor: Color.fromRGBO(68, 68, 68, 1),
+          style: TextButton.styleFrom(
+            foregroundColor: Color.fromRGBO(191, 27, 44, 1),
           ),
+          child: const Text('Login here', style: TextStyle(fontSize: 16)),
         ),
-      ),
-      SizedBox(height: 20),
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: TextField(
-          controller: passwordController,
-          onChanged: (_) {
-            registerController!.notifyListeners();
-          },
-          obscureText: true,
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.center,
-          decoration: InputDecoration(
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
-            filled: true,
-            hintStyle: TextStyle(
-                color: Color.fromRGBO(148, 163, 184, 1),
-                fontStyle: FontStyle.italic),
-            hintText: "Password",
-            fillColor: Color.fromRGBO(68, 68, 68, 1),
-          ),
-        ),
-      ),
-      SizedBox(height: 30),
-      Container(
-        height: 45,
-        padding: const EdgeInsets.symmetric(horizontal: 60),
-        child: ElevatedButton(
-            statesController: registerController,
-            child: const Text('REGISTER'),
-            onPressed: () {
-              handleRegister();
-              print(nameController.text);
-              print(emailController.text);
-              print(passwordController.text);
-            },
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith(getColor),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(9.0))))),
-      ),
-      SizedBox(height: 20),
-      Text("Already have an account?",
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16, color: Colors.white)),
-      TextButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const LoginWidget()));
-        },
-        style: TextButton.styleFrom(
-          foregroundColor: Color.fromRGBO(191, 27, 44, 1),
-        ),
-        child: const Text('Login here', style: TextStyle(fontSize: 16)),
       ),
     ])));
   }

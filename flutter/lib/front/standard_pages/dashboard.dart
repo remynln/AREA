@@ -5,9 +5,10 @@ import 'package:area/front/standard_pages/pages.dart';
 import 'package:area/front/standard_pages/settings_popup.dart';
 import 'package:area/front/standard_pages/user_popup.dart';
 import 'package:flutter/material.dart';
+import 'package:area/supplemental/anim_delay.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:page_transition/page_transition.dart';
 import 'package:area/api/service/service_display.dart';
 import 'package:area/api/area/area_display.dart';
 
@@ -51,25 +52,31 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Padding(
+                DelayedAnimation(
+                  delay: 800,
+                child : Padding(
                     padding: const EdgeInsetsDirectional.only(start: 20),
                     child: Text("Hello $user !",
                         style: TextStyle(
                             fontSize: 26,
                             color: Colors.white,
                             fontFamily: "RobotoMono",
-                            fontWeight: FontWeight.bold))),
+                            fontWeight: FontWeight.bold)))),
                 const SizedBox(height: 8),
-                const Padding(
+                const DelayedAnimation(
+                    delay: 900,
+                child : Padding(
                     padding: EdgeInsetsDirectional.only(start: 20),
                     child: Text("Welcome back on Sergify.",
                         style: TextStyle(
                             fontSize: 16,
                             color: Color.fromRGBO(200, 200, 200, 100),
-                            fontFamily: "RobotoMono")))
+                            fontFamily: "RobotoMono")))),
               ]),
           Spacer(),
-          IconButton(
+          DelayedAnimation(
+              delay: 1000,
+          child : IconButton(
                   onPressed: () {
                     openSettings(widget.token, isAdmin, context, setState);
                   },
@@ -79,22 +86,26 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               ),
                   icon: const Icon(Icons.settings_outlined,
                       size: 30,
-                      color: Colors.white)),
+                      color: Colors.white))),
           SizedBox(width: 5)
         ]),
         const SizedBox(height: 40),
         Row(
           children: <Widget>[
-            const Padding(
+            const DelayedAnimation(
+              delay: 1100,
+            child : Padding(
                 padding: EdgeInsetsDirectional.only(start: 20),
                 child: Text("Workflows",
                     style: TextStyle(
                         fontSize: 26,
                         color: Colors.white,
                         fontFamily: "RobotoMono",
-                        fontWeight: FontWeight.bold))),
+                        fontWeight: FontWeight.bold)))),
             Spacer(),
-            Padding(
+            DelayedAnimation(
+              delay: 1200,
+            child : Padding(
                 padding: EdgeInsetsDirectional.only(end: 20),
                 child: TextButton(
                     onPressed: () {
@@ -108,13 +119,15 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         style: TextStyle(
                             color: Color.fromRGBO(238, 13, 36, 100),
                             fontSize: 14,
-                            fontFamily: "Poppins")))),
+                            fontFamily: "Poppins"))))),
           ],
         ),
         SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(children: <Widget>[
-              GestureDetector(
+                DelayedAnimation(
+                delay: 1300,
+              child : GestureDetector(
                   onTap: () {
                     Navigator.push(
                         context,
@@ -123,14 +136,18 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                 PagesWidget(token: widget.token, index: 1)));
                   },
                   child: SvgPicture.asset("assets/dashboard/add.svg",
-                      alignment: Alignment.topLeft)),
+                      alignment: Alignment.topLeft))),
               SizedBox(width: 5),
-              AreaDisplay(token: widget.token, isDashboardDisplay: true),
-            ])),
+            DelayedAnimation(
+                delay: 1400,
+              child : AreaDisplay(token: widget.token, isDashboardDisplay: true),
+            )])),
         SizedBox(height: 20),
         Row(children: <Widget>[
-          Padding(
-              padding: EdgeInsetsDirectional.only(start: 15),
+          DelayedAnimation(
+              delay: 1500,
+          child : Padding(
+              padding: EdgeInsetsDirectional.only(start: 10),
               child: TextButton(
                   onPressed: () => setState(() {
                         if (_isBasicService) {
@@ -138,28 +155,17 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         }
                         _isBasicService = true;
                       }),
-                  child: Text("Basic Services",
+                  child: Text("Services",
                       style: TextStyle(
                           color: _isBasicService ? Colors.white : Colors.grey,
                           fontFamily: "Roboto",
                           fontWeight: FontWeight.bold,
-                          fontSize: 20)))),
-          TextButton(
-              onPressed: () => setState(() {
-                    if (_isBasicService == false) {
-                      return;
-                    }
-                    _isBasicService = false;
-                  }),
-              child: Text("Game Services",
-                  style: TextStyle(
-                      color: _isBasicService ? Colors.grey : Colors.white,
-                      fontFamily: "Roboto",
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20)))
+                          fontSize: 20))))),
         ]),
-        ServiceDisplay(isBasicService: _isBasicService, token: widget.token, setStateParent: setState),
-      ])),
+        DelayedAnimation(
+            delay: 1700,
+        child : ServiceDisplay(isBasicService: _isBasicService, token: widget.token, setStateParent: setState),
+        )])),
     );
   }
 }

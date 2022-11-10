@@ -10,6 +10,8 @@ import 'package:area/api/answer/services_answer.dart';
 import 'package:area/api/answer/actions_answer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'package:area/supplemental/anim_delay.dart';
+
 import 'package:simple_form_builder/formbuilder.dart';
 import 'package:simple_form_builder/global/checklistModel.dart';
 
@@ -64,48 +66,52 @@ class _CreateWidgetState extends State<CreateWidget> {
       if (servicesAnswer.connected.contains(allServices[index].name) == false) {
         continue;
       }
-      list.add(GestureDetector(
-          onTap: () {
-            if (isAction) {
-              _actionService.name = allServices[index].name;
-            } else {
-              _reactionService.name = allServices[index].name;
-            }
-            setState(() {});
-          },
-          child: allServices[index].name ==
-                  (isAction ? _actionService.name : _reactionService.name)
-              ? Image.asset(allServices[index].not_connected_image)
-              : Image.asset(allServices[index].connected_image,
-                  filterQuality: FilterQuality.high)));
+      list.add(DelayedAnimation(
+          delay: 1000,
+          child: GestureDetector(
+              onTap: () {
+                if (isAction) {
+                  _actionService.name = allServices[index].name;
+                } else {
+                  _reactionService.name = allServices[index].name;
+                }
+                setState(() {});
+              },
+              child: allServices[index].name ==
+                      (isAction ? _actionService.name : _reactionService.name)
+                  ? Image.asset(allServices[index].not_connected_image)
+                  : Image.asset(allServices[index].connected_image,
+                      filterQuality: FilterQuality.high))));
       list.add(const SizedBox(height: 20));
     }
-    list.add(Container(
-      height: 60,
-      padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(
-        onPressed: () {
-          if (isAction && _actionService.name.isNotEmpty) {
-            _actionService = allServices
-                .firstWhere((element) => _actionService.name == element.name);
-            setStateWidget(() {});
-          } else if (!isAction && _reactionService.name.isNotEmpty) {
-            _reactionService = allServices
-                .firstWhere((element) => _reactionService.name == element.name);
-            setStateWidget(() {});
-          } else {
-            return;
-          }
-          Navigator.of(context).pop();
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: switchColor(
-                isAction ? _actionService.name : _reactionService.name)),
-        child: const Text(
-          "CONFIRM",
-        ),
-      ),
-    ));
+    list.add(DelayedAnimation(
+        delay: 2000,
+        child: Container(
+          height: 60,
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              if (isAction && _actionService.name.isNotEmpty) {
+                _actionService = allServices.firstWhere(
+                    (element) => _actionService.name == element.name);
+                setStateWidget(() {});
+              } else if (!isAction && _reactionService.name.isNotEmpty) {
+                _reactionService = allServices.firstWhere(
+                    (element) => _reactionService.name == element.name);
+                setStateWidget(() {});
+              } else {
+                return;
+              }
+              Navigator.of(context).pop();
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: switchColor(
+                    isAction ? _actionService.name : _reactionService.name)),
+            child: const Text(
+              "CONFIRM",
+            ),
+          ),
+        )));
     return (Column(children: list));
   }
 
@@ -152,15 +158,17 @@ class _CreateWidgetState extends State<CreateWidget> {
                     ),
                   ),
                 ),
-                title: Text(
-                  (isAction ? "Action's Service" : "Reaction's Service"),
-                  style: const TextStyle(
-                      fontSize: 23,
-                      color: Colors.white,
-                      fontFamily: "RobotoMono",
-                      fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
+                title: DelayedAnimation(
+                    delay: 1000,
+                    child: Text(
+                      (isAction ? "Action's Service" : "Reaction's Service"),
+                      style: const TextStyle(
+                          fontSize: 23,
+                          color: Colors.white,
+                          fontFamily: "RobotoMono",
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    )),
                 content: SizedBox(
                     height: 500,
                     width: 600,
@@ -222,27 +230,29 @@ class _CreateWidgetState extends State<CreateWidget> {
                       const Color.fromRGBO(62, 149, 49, 1)))));
       list.add(const SizedBox(height: 20));
     }
-    list.add(Container(
-      height: 60,
-      padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(
-        onPressed: () {
-          if (_actionTrigger.name.isNotEmpty) {
-            _actionTrigger = actionsAnswer
-                .firstWhere((element) => _actionTrigger.name == element.name);
-            setStateWidget(() {});
-          } else {
-            return;
-          }
-          Navigator.of(context).pop();
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: switchColor(_actionTrigger.name)),
-        child: const Text(
-          "CONFIRM",
-        ),
-      ),
-    ));
+    list.add(DelayedAnimation(
+        delay: 1200,
+        child: Container(
+          height: 60,
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              if (_actionTrigger.name.isNotEmpty) {
+                _actionTrigger = actionsAnswer.firstWhere(
+                    (element) => _actionTrigger.name == element.name);
+                setStateWidget(() {});
+              } else {
+                return;
+              }
+              Navigator.of(context).pop();
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: switchColor(_actionTrigger.name)),
+            child: const Text(
+              "CONFIRM",
+            ),
+          ),
+        )));
     return (Column(children: list));
   }
 
@@ -362,15 +372,17 @@ class _CreateWidgetState extends State<CreateWidget> {
                     ),
                   ),
                 ),
-                title: Text(
-                  isAction ? "Action's Trigger" : "Reaction's Trigger",
-                  style: const TextStyle(
-                      fontSize: 23,
-                      color: Colors.white,
-                      fontFamily: "RobotoMono",
-                      fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
+                title: DelayedAnimation(
+                    delay: 1400,
+                    child: Text(
+                      isAction ? "Action's Trigger" : "Reaction's Trigger",
+                      style: const TextStyle(
+                          fontSize: 23,
+                          color: Colors.white,
+                          fontFamily: "RobotoMono",
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    )),
                 content: SizedBox(
                     height: 500,
                     width: 600,
