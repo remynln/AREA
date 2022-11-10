@@ -1,0 +1,29 @@
+_id: req_6d86624a95fb4913bfb01f0164c94d24
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1668017079493
+created: 1667916685840
+url: http://localhost:8080/service/github
+name: /service/github
+description: ""
+method: GET
+body: {}
+parameters:
+  - id: pair_e871ac0e66964e65b7e47882dde496c8
+    name: callback
+    value: http://google.com
+    description: ""
+  - id: pair_b232f905f6c24a639da62f0fde9a76e9
+    name: jwt
+    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IldhejB4IiwiZW1haWwiOiJyZW15Lm5vdWxpbkBlcGl0ZWNoLmV1IiwiYWRtaW4iOmZhbHNlLCJpYXQiOjE2NjgwMTY5ODh9.hyIJrxYrctNyv8Ck8zSHJmU_7Q2rBnFBIjtJc3WJJmQ
+    description: ""
+headers: []
+authentication: {}
+metaSortKey: -1666161076314.625
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

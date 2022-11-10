@@ -1,0 +1,19 @@
+_id: ut_3c014115efa047e6a00b15fb16e71540
+type: UnitTest
+parentId: uts_51255560b1ae4b318475b61121e3cf80
+modified: 1667480143720
+created: 1667414137955
+requestId: req_63732c6588dc4fd2a94bb5238dabd8dd
+name: Create Basic Action (need authentification to google)
+code: >-
+  const response = await insomnia.send();
+
+  const token = JSON.parse(response.data).token
+
+  const response1 = await insomnia.send('req_3687379344224cc1b9ca7995abc7a6a3', token);
+
+  console.log(response1)
+
+  expect(response.status).to.equal(200);
+
+  expect(response1.status).to.equal(201);
