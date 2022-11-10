@@ -21,15 +21,18 @@ const twitch: Service = {
             passReqToCallback: true,
             scope:  ['user_read', 'user:read:email', 'user:manage:whispers', 'channel:read:subscriptions', 'user:manage:blocked_users', 'user:edit:follows']
         },
-        (req: any, accessToken: string, refreshToken: string, profile: any, _:any, callback: any) => {
-            console.log("profile",profile)
-            console.log("access token",accessToken)
-            console.log("refresh token",refreshToken)
+        async (req: any, accessToken: string, refreshToken: string, profile: any, _:any, callback: any) => {
+            const res = await axios.get("https://api.twitch.tv/helix/users", {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Client-Id': process.env.TWITCH_CLIENT_ID
+                }
+            })
             let cbObj: OAuthCallbackObj = {
                 data: profile,
                 accessToken: accessToken,
                 refreshToken: refreshToken,
-                username: profile.displayName
+                username: res.data.login
             }
             console.log(cbObj)
             let accountToken = req.query.state;
