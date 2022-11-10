@@ -19,23 +19,27 @@ export const Login = (props) => {
     };
 
     useEffect(() => {
-        let token = params.get("token")
-    
+        checkParamsToken()
         if (props.user.username !== undefined && localStorage.getItem("jwt") !== null)
             navigate('/dashboard')
-        else if (props.user !== false) {
+        else if (props.user !== false && localStorage.getItem("jwt") === null) {
             props.setUser(false)
             props.setServices([])
-        }
-        if (token !== null) {
-            localStorage.setItem('jwt', JSON.stringify(token))
-            props.setUser({username: null})
         }
         if (username.length === 0 || password.length < 8)
             setLogin(false)
         else if (loginState !== true)
             setLogin(true)
     });
+
+    const checkParamsToken = async () => {
+        let token = await params.get("token")
+
+        if (token !== null) {
+            await localStorage.setItem('jwt', JSON.stringify(token))
+            await props.setUser({username: null})
+        }
+    };
 
     const navigateToRegister = () => {
         navigate('/register');
