@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Reaction, ReactionConfig } from "~/core/types";
+import { AreaRet, Reaction, ReactionConfig } from "~/core/types";
 import { Octokit } from 'octokit'
 
 class addStar extends Reaction {
@@ -7,9 +7,18 @@ class addStar extends Reaction {
         const octokit = new Octokit({
             auth: this.token
         })
-        octokit.request('PUT /user/starred/{owner}/{repo}', {
-            owner: this.params.creator,
-            repo: this.params.repository_name
+        await this.refresh(async () => {
+            try {
+                let res = await octokit.request('PUT /user/starred/{owner}/{repo}', {
+                    owner: this.params.creator,
+                    repo: this.params.repository_name
+                })
+                return res
+            } catch (err: any) {
+                if (err.status === 401)
+                    return AreaRet.AccessTokenExpired
+                throw err
+            }
         })
     }
 }
