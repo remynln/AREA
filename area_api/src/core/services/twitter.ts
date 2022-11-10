@@ -3,13 +3,19 @@ import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import { Strategy as TwitterStartegy } from "passport-twitter";
+import axios from "axios";
+import qs from "qs"
+import tweet from "~/areas/twitter/reactions/tweet";
 
 const twitter: Service = {
     actions: new Map([]),
-    reactions: new Map([]),
+    reactions: new Map([
+        ["tweet", tweet]
+    ]),
     authParams: {
         accessType: 'offline',
-        approvalPrompt: 'force'
+        approvalPrompt: 'force',
+        stateInQuery: true
     },
     strategy: new TwitterStartegy(
         {
@@ -19,12 +25,12 @@ const twitter: Service = {
             passReqToCallback: true,
             includeStatus: true
         },
-        (req, accessToken, refreshToken, profile, callback) => {
+        (req, accessToken, secretToken, profile, callback) => {
             console.log("tok", req.query.state)
             let cbObj: OAuthCallbackObj = {
                 data: profile.id.toString(),
-                accessToken: accessToken,
-                refreshToken: refreshToken,
+                accessToken: accessToken + " " + secretToken,
+                refreshToken: "aaa",
                 username: profile.displayName
             }
             console.log(cbObj)
@@ -34,12 +40,21 @@ const twitter: Service = {
                 return
             }
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
-            db.setToken(accessToken, refreshToken, mail, 'twitter').then(() => {
+            db.setToken(accessToken + " " + secretToken, "", mail, 'twitter').then(() => {
                 callback(null, cbObj)
             })
         }
     ),
     refreshToken: async (refreshToken) => {
+        await axios.post("https://api.twitter.com/2/oauth2/token", qs.stringify({
+            client_id: process.env.TWITTER_CLIENT_ID,
+            grant_type: "refresh_token",
+            refresh_token: refreshToken
+        }), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
         return ''
     }
 }
