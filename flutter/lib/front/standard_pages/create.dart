@@ -35,9 +35,9 @@ class _CreateWidgetState extends State<CreateWidget> {
   ActionsAnswer _actionTrigger = ActionsAnswer();
   Map<String, TextEditingController> _actionDetail = {};
 
-  List<String> _firstDropDown = [""];
-  List<String> _secondDropDown = [""];
-  List<String> _comparatorDropDown = [""];
+  String _firstDropDown = "";
+  String _secondDropDown = "";
+  String _comparatorDropDown = "";
   TextEditingController _condition = TextEditingController();
 
   Service _reactionService = Service("", "", "", []);
@@ -545,7 +545,7 @@ class _CreateWidgetState extends State<CreateWidget> {
     return list;
   }
 
-  List<Widget> getTypeComparators(String type, index) {
+  List<Widget> getTypeComparators(String type) {
     List<Widget> list = [];
     List<String> comparators = [];
 
@@ -554,14 +554,14 @@ class _CreateWidgetState extends State<CreateWidget> {
     } else {
       comparators = [">", "<", "<=", ">=", "=="];
     }
-    if (_comparatorDropDown[index].isEmpty) {
-      _comparatorDropDown[index] = comparators[0];
+    if (_comparatorDropDown.isEmpty) {
+      _comparatorDropDown = comparators[0];
     }
     list.add(Row(children: [
       Padding(
           padding: EdgeInsets.only(left: 20),
           child: DropdownButton<String>(
-              value: _comparatorDropDown[index],
+              value: _comparatorDropDown,
               items: comparators.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                     value: value, child: Text(value));
@@ -570,7 +570,7 @@ class _CreateWidgetState extends State<CreateWidget> {
               style: TextStyle(color: Colors.white, fontFamily: "RobotoMono"),
               underline: Container(height: 1.5, color: Colors.black),
               onChanged: (String? element) {
-                _comparatorDropDown[index] = element!;
+                _comparatorDropDown = element!;
                 setState(() {});
               })),
       Spacer(),
@@ -578,8 +578,8 @@ class _CreateWidgetState extends State<CreateWidget> {
           padding: EdgeInsets.only(right: 20),
           child: TextButton(
               onPressed: (() {
-                _condition.text =
-                    "[Action.${_firstDropDown[index]}] ${_comparatorDropDown[index]} [Action.${_secondDropDown[index]}]";
+                _condition.text +=
+                    "[Action.${_firstDropDown}] ${_comparatorDropDown} [Action.${_secondDropDown}]";
                 setState(() {});
               }),
               style: ButtonStyle(
@@ -593,46 +593,86 @@ class _CreateWidgetState extends State<CreateWidget> {
     return list;
   }
 
-  List<Widget> getConditionZone(properties, int index) {
+  List<Widget> getConditionZone(properties) {
     List<Widget> list = [];
     List<Widget> temporary_list = [];
 
-    if (_firstDropDown[index].isEmpty) {
-      _firstDropDown[index] = properties.keys.first;
+    if (_firstDropDown.isEmpty) {
+      _firstDropDown = properties.keys.first;
     }
     temporary_list.add(Padding(
         padding: EdgeInsets.only(left: 20),
         child: DropdownButton<String>(
-            value: _firstDropDown[index],
+            value: _firstDropDown,
             items: getDropDownInfo(properties, ""),
             dropdownColor: Color.fromRGBO(60, 60, 60, 1),
             style: TextStyle(color: Colors.white, fontFamily: "RobotoMono"),
             underline: Container(height: 1.5, color: Colors.black),
             onChanged: (String? element) {
-              _firstDropDown[index] = element!;
-              _secondDropDown[index] = "";
+              _firstDropDown = element!;
+              _secondDropDown = "";
               setState(() {});
             })));
-    if (_secondDropDown[index].isEmpty) {
-      _secondDropDown[index] = properties.keys.firstWhere((element) =>
-          (properties[element] == properties[_firstDropDown[index]] &&
-              element != _firstDropDown[index]));
+    if (_secondDropDown.isEmpty) {
+      _secondDropDown = properties.keys.firstWhere((element) =>
+          (properties[element] == properties[_firstDropDown] &&
+              element != _firstDropDown));
     }
     temporary_list.add(Spacer());
     temporary_list.add(Padding(
         padding: EdgeInsets.only(right: 20),
         child: DropdownButton<String>(
-            value: _secondDropDown[index],
-            items: getDropDownInfo(properties, _firstDropDown[index]),
+            value: _secondDropDown,
+            items: getDropDownInfo(properties, _firstDropDown),
             dropdownColor: Color.fromRGBO(60, 60, 60, 1),
             style: TextStyle(color: Colors.white, fontFamily: "RobotoMono"),
             underline: Container(height: 1.5, color: Colors.black),
             onChanged: (String? element) {
-              _secondDropDown[index] = element!;
+              _secondDropDown = element!;
               setState(() {});
             })));
     list.add(Row(children: temporary_list));
-    list += getTypeComparators(properties[_firstDropDown[index]], index);
+    list += getTypeComparators(properties[_firstDropDown]);
+    return list;
+  }
+
+  List<Widget> getOperatorZone() {
+    List<Widget> list = [];
+
+    list.add(Center(
+        child: Text("for another condition",
+            style: TextStyle(
+                fontSize: 16, color: Colors.white, fontFamily: "RobotoMono"))));
+    list.add(Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextButton(
+                onPressed: (() {
+                  _condition.text += " && ";
+                  setState(() {});
+                }),
+                style: ButtonStyle(
+                    backgroundColor:
+                    MaterialStatePropertyAll(Color.fromRGBO(60, 60, 60, 1)),
+                    side: MaterialStatePropertyAll<BorderSide>(
+                        BorderSide(color: Colors.black, width: 1.5))),
+                child:
+                Text("AND", style: TextStyle(color: Colors.white))),
+        SizedBox(width: 80),
+        TextButton(
+                onPressed: (() {
+                  _condition.text += " || ";
+                  setState(() {});
+                }),
+                style: ButtonStyle(
+                    backgroundColor:
+                    MaterialStatePropertyAll(Color.fromRGBO(60, 60, 60, 1)),
+                    side: MaterialStatePropertyAll<BorderSide>(
+                        BorderSide(color: Colors.black, width: 1.5))),
+                child:
+                Text("OR", style: TextStyle(color: Colors.white)))
+      ]
+    ));
     return list;
   }
 
@@ -667,7 +707,7 @@ class _CreateWidgetState extends State<CreateWidget> {
           controller: _condition,
           style: const TextStyle(color: Color.fromRGBO(148, 163, 184, 1)),
           textAlign: TextAlign.center,
-          enabled: false,
+          readOnly: true,
           decoration: InputDecoration(
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
@@ -679,7 +719,12 @@ class _CreateWidgetState extends State<CreateWidget> {
             fillColor: const Color.fromRGBO(68, 68, 68, 1),
           ),
         )));
-    list += getConditionZone(properties, 0);
+    list.add(SizedBox(height: 10));
+    if (_condition.text.isEmpty || _condition.text[_condition.text.length - 1] != ']') {
+      list += getConditionZone(properties);
+    } else {
+      list += getOperatorZone();
+    }
     return list;
   }
 
