@@ -209,7 +209,7 @@ export const WorkflowContent = (props) => {
                     })}
                 </div>
             </div>
-            <div className='WorkflowBlock' style={actionServiceActive === undefined?{display: "none"}:undefined}>
+            <div className='WorkflowBlockTrigger' style={actionServiceActive === undefined?{display: "none"}:undefined}>
                 <p className="WorkflowBlockTitle">Action Triggers</p>
                 <div className="ActionServices">
                     {actionTriggers.map((trigger, key) => {            
@@ -294,7 +294,7 @@ export const WorkflowContent = (props) => {
                     })}
                 </div>
             </div>
-            <div className='WorkflowBlock' style={reactionServiceActive === undefined?{display: "none"}:undefined}>
+            <div className='WorkflowBlockTrigger' style={reactionServiceActive === undefined?{display: "none"}:undefined}>
                 <p className="WorkflowBlockTitle">Reactions</p>
                 <div className="ActionServices">
                     {reactions.map((reaction, key) => {            
