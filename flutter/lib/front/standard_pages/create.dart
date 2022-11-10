@@ -30,12 +30,15 @@ class _CreateWidgetState extends State<CreateWidget> {
   TextEditingController _descriptionController = TextEditingController();
 
   String _currentField = "";
-  
+
   Service _actionService = Service("", "", "", []);
   ActionsAnswer _actionTrigger = ActionsAnswer();
   Map<String, TextEditingController> _actionDetail = {};
 
-  late String _condition;
+  List<String> _firstDropDown = [""];
+  List<String> _secondDropDown = [""];
+  List<String> _comparatorDropDown = [""];
+  TextEditingController _condition = TextEditingController();
 
   Service _reactionService = Service("", "", "", []);
   ReactionsAnswer _reactionTrigger = ReactionsAnswer();
@@ -524,7 +527,159 @@ class _CreateWidgetState extends State<CreateWidget> {
           child: Text("*: information must be complete",
               style: TextStyle(color: Color.fromRGBO(148, 163, 184, 1)))));
     }
-    list.add(const SizedBox(height: 20));
+    return list;
+  }
+
+  List<DropdownMenuItem<String>>? getDropDownInfo(
+      Map<String, dynamic> properties, String type) {
+    List<DropdownMenuItem<String>>? list = [];
+
+    properties.forEach((key, value) {
+      if ((type.isEmpty || value == properties[type]) && key != type) {
+        list.add(DropdownMenuItem<String>(
+          value: key,
+          child: Text(key),
+        ));
+      }
+    });
+    return list;
+  }
+
+  List<Widget> getTypeComparators(String type, index) {
+    List<Widget> list = [];
+    List<String> comparators = [];
+
+    if (type == "string") {
+      comparators = ["==", "===", "in"];
+    } else {
+      comparators = [">", "<", "<=", ">=", "=="];
+    }
+    if (_comparatorDropDown[index].isEmpty) {
+      _comparatorDropDown[index] = comparators[0];
+    }
+    list.add(Row(children: [
+      Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: DropdownButton<String>(
+              value: _comparatorDropDown[index],
+              items: comparators.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                    value: value, child: Text(value));
+              }).toList(),
+              dropdownColor: Color.fromRGBO(60, 60, 60, 1),
+              style: TextStyle(color: Colors.white, fontFamily: "RobotoMono"),
+              underline: Container(height: 1.5, color: Colors.black),
+              onChanged: (String? element) {
+                _comparatorDropDown[index] = element!;
+                setState(() {});
+              })),
+      Spacer(),
+      Padding(
+          padding: EdgeInsets.only(right: 20),
+          child: TextButton(
+              onPressed: (() {
+                _condition.text =
+                    "[Action.${_firstDropDown[index]}] ${_comparatorDropDown[index]} [Action.${_secondDropDown[index]}]";
+                setState(() {});
+              }),
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll(Color.fromRGBO(60, 60, 60, 1)),
+                  side: MaterialStatePropertyAll<BorderSide>(
+                      BorderSide(color: Colors.black, width: 1.5))),
+              child:
+                  Text("ADD CONDITION", style: TextStyle(color: Colors.white))))
+    ]));
+    return list;
+  }
+
+  List<Widget> getConditionZone(properties, int index) {
+    List<Widget> list = [];
+    List<Widget> temporary_list = [];
+
+    if (_firstDropDown[index].isEmpty) {
+      _firstDropDown[index] = properties.keys.first;
+    }
+    temporary_list.add(Padding(
+        padding: EdgeInsets.only(left: 20),
+        child: DropdownButton<String>(
+            value: _firstDropDown[index],
+            items: getDropDownInfo(properties, ""),
+            dropdownColor: Color.fromRGBO(60, 60, 60, 1),
+            style: TextStyle(color: Colors.white, fontFamily: "RobotoMono"),
+            underline: Container(height: 1.5, color: Colors.black),
+            onChanged: (String? element) {
+              _firstDropDown[index] = element!;
+              _secondDropDown[index] = "";
+              setState(() {});
+            })));
+    if (_secondDropDown[index].isEmpty) {
+      _secondDropDown[index] = properties.keys.firstWhere((element) =>
+          (properties[element] == properties[_firstDropDown[index]] &&
+              element != _firstDropDown[index]));
+    }
+    temporary_list.add(Spacer());
+    temporary_list.add(Padding(
+        padding: EdgeInsets.only(right: 20),
+        child: DropdownButton<String>(
+            value: _secondDropDown[index],
+            items: getDropDownInfo(properties, _firstDropDown[index]),
+            dropdownColor: Color.fromRGBO(60, 60, 60, 1),
+            style: TextStyle(color: Colors.white, fontFamily: "RobotoMono"),
+            underline: Container(height: 1.5, color: Colors.black),
+            onChanged: (String? element) {
+              _secondDropDown[index] = element!;
+              setState(() {});
+            })));
+    list.add(Row(children: temporary_list));
+    list += getTypeComparators(properties[_firstDropDown[index]], index);
+    return list;
+  }
+
+  List<Widget> getCondition() {
+    Map<String, dynamic> properties =
+        getMapFromDetail(_actionTrigger.properties);
+    List<Widget> list = [];
+
+    list.add(Row(children: [
+      Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text("Condition",
+              style: TextStyle(
+                  fontSize: 16, color: Colors.white, fontFamily: "RobotoMono"))),
+      Spacer(),
+      Padding(
+          padding: EdgeInsets.only(right: 20),
+          child: TextButton(
+              onPressed: (() {
+                _condition.text = "";
+                setState(() {});
+              }),
+              style: ButtonStyle(
+                  side: MaterialStatePropertyAll<BorderSide>(BorderSide(
+                      color: Color.fromRGBO(191, 27, 44, 1), width: 1))),
+              child: Text("clear", style: TextStyle(color: Colors.white, fontFamily: "RobotoMono"))))
+    ]));
+    list.add(SizedBox(height: 10));
+    list.add(Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: TextField(
+          controller: _condition,
+          style: const TextStyle(color: Color.fromRGBO(148, 163, 184, 1)),
+          textAlign: TextAlign.center,
+          enabled: false,
+          decoration: InputDecoration(
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(14.0)),
+            filled: true,
+            hintStyle: const TextStyle(
+                color: Color.fromRGBO(148, 163, 184, 1),
+                fontStyle: FontStyle.italic),
+            hintText: "empty",
+            fillColor: const Color.fromRGBO(68, 68, 68, 1),
+          ),
+        )));
+    list += getConditionZone(properties, 0);
     return list;
   }
 
@@ -532,6 +687,8 @@ class _CreateWidgetState extends State<CreateWidget> {
     List<Widget> actionDetailWidgets = [];
 
     actionDetailWidgets += getFormDetail(actionInfo, true);
+    actionDetailWidgets += getCondition();
+    actionDetailWidgets.add(const SizedBox(height: 20));
     actionDetailWidgets.add(Align(
         alignment: Alignment.center,
         child: ElevatedButton(
@@ -573,7 +730,7 @@ class _CreateWidgetState extends State<CreateWidget> {
 
   void addReactionDetailProperties(List<Widget> reactionDetailWidgets) {
     Map<String, dynamic> new_properties =
-    getMapFromDetail(_actionTrigger.properties);
+        getMapFromDetail(_actionTrigger.properties);
     List<Widget> buttonList = [];
 
     reactionDetailWidgets.add(const Center(
@@ -612,6 +769,7 @@ class _CreateWidgetState extends State<CreateWidget> {
 
     addReactionDetailProperties(reactionDetailWidgets);
     reactionDetailWidgets += getFormDetail(reactionInfo, false);
+    reactionDetailWidgets.add(const SizedBox(height: 20));
     reactionDetailWidgets.add(Align(
         alignment: Alignment.center,
         child: ElevatedButton(
@@ -652,13 +810,16 @@ class _CreateWidgetState extends State<CreateWidget> {
   }
 
   Widget createForm(bool isAction) {
-    Map<String, dynamic> info =
-        isAction ? getMapFromDetail(_actionTrigger.parameters) : getMapFromDetail(_reactionTrigger.parameters);
+    Map<String, dynamic> info = isAction
+        ? getMapFromDetail(_actionTrigger.parameters)
+        : getMapFromDetail(_reactionTrigger.parameters);
 
     return Form(
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: isAction ? getActionDetailWidgets(info) : getReactionDetailWidgets(info)));
+            children: isAction
+                ? getActionDetailWidgets(info)
+                : getReactionDetailWidgets(info)));
   }
 
   void handleCreate() async {
@@ -667,7 +828,7 @@ class _CreateWidgetState extends State<CreateWidget> {
         _descriptionController.text,
         widget.token,
         _actionTrigger,
-        _condition,
+        _condition.text,
         _reactionTrigger);
     Fluttertoast.showToast(
         msg: result,
