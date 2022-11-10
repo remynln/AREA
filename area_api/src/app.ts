@@ -17,6 +17,7 @@ import areaRoot from "./routes/area/root"
 import errorMiddleware from './middlewares/errorHandler';
 import checkAdmin from './middlewares/checkAdmin';
 import AreaInstances from './core/instances';
+import aboutRouter from './routes/about.json';
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
@@ -39,6 +40,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
+
+app.use('/about.json', aboutRouter)
 
 // login route
 app.use('/auth', login)
