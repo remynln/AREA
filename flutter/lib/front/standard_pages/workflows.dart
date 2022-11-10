@@ -18,7 +18,7 @@ class _WorkflowsWidgetState extends State<WorkflowsWidget> {
         body: Center(
             child: ListView(children: <Widget>[
                 const DelayedAnimation(
-                delay: 800,
+                delay: 0,
       child : Padding(
           padding: EdgeInsetsDirectional.only(start: 20),
           child: Text("Workflows",
@@ -29,7 +29,7 @@ class _WorkflowsWidgetState extends State<WorkflowsWidget> {
                   fontWeight: FontWeight.bold)))),
       SizedBox(height: 30),
             DelayedAnimation(
-                delay: 1000,
+                delay: 200,
       child : AreaDisplay(token: widget.token, isDashboardDisplay: false)
             )])));
   }

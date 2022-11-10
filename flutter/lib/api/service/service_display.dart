@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:area/supplemental/anim_delay.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,10 @@ class ServiceDisplay extends StatefulWidget {
   final StateSetter setStateParent;
 
   const ServiceDisplay(
-      {Key? key, required this.isBasicService, required this.token, required this.setStateParent})
+      {Key? key,
+      required this.isBasicService,
+      required this.token,
+      required this.setStateParent})
       : super(key: key);
 
   @override
@@ -26,9 +30,8 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
   void callApiFunction(String service_name, bool isConnected) async {
     try {
       if (isConnected) {
-        await ApiService()
-            .disconnectToService(widget.token, service_name);
-        widget.setStateParent((){});
+        await ApiService().disconnectToService(widget.token, service_name);
+        widget.setStateParent(() {});
       } else {
         await ApiService()
             .connectToService(widget.token, service_name, "sergify://");
@@ -55,28 +58,37 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
         secondServiceImage = service_list[index + 1].not_connected_image;
       }
       return (Column(children: <Widget>[
-        GestureDetector(
-            onTap: () {
-              callApiFunction(service_list[index].name, connectedServices.contains(service_list[index].name));
-            },
-            child: Image.asset(firstServiceImage,
-                filterQuality: FilterQuality.high)),
+        DelayedAnimation(
+            delay: 900,
+            child: GestureDetector(
+                onTap: () {
+                  callApiFunction(service_list[index].name,
+                      connectedServices.contains(service_list[index].name));
+                },
+                child: Image.asset(firstServiceImage,
+                    filterQuality: FilterQuality.high))),
         SizedBox(height: 10),
-        GestureDetector(
-            onTap: () {
-              callApiFunction(service_list[index + 1].name, connectedServices.contains(service_list[index + 1].name));
-            },
-            child: Image.asset(secondServiceImage,
-                filterQuality: FilterQuality.high)),
+        DelayedAnimation(
+            delay: 1000,
+            child: GestureDetector(
+                onTap: () {
+                  callApiFunction(service_list[index + 1].name,
+                      connectedServices.contains(service_list[index + 1].name));
+                },
+                child: Image.asset(secondServiceImage,
+                    filterQuality: FilterQuality.high))),
       ]));
     } else {
       return (Column(children: <Widget>[
-        GestureDetector(
-            onTap: () {
-              callApiFunction(service_list[index].name, connectedServices.contains(service_list[index].name));
-            },
-            child: Image.asset(firstServiceImage,
-                filterQuality: FilterQuality.high)),
+        DelayedAnimation(
+            delay: 900,
+            child: GestureDetector(
+                onTap: () {
+                  callApiFunction(service_list[index].name,
+                      connectedServices.contains(service_list[index].name));
+                },
+                child: Image.asset(firstServiceImage,
+                    filterQuality: FilterQuality.high))),
         SizedBox(height: 10),
         Visibility(
           child: Image.asset(firstServiceImage),

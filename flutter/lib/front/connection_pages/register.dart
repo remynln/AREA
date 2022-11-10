@@ -89,7 +89,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
         body: Center(
             child: ListView(children: <Widget>[
       DelayedAnimation(
-        delay: 800,
+        delay: 0,
         child: Container(
             height: 30,
             alignment: Alignment.topLeft,
@@ -106,7 +106,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                             borderRadius: BorderRadius.circular(9.0)))))),
       ),
       DelayedAnimation(
-          delay: 900,
+          delay: 100,
           child: Image.asset(
             'assets/sergify.png',
             height: 200,
@@ -116,7 +116,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
           )),
       SizedBox(height: 30),
       DelayedAnimation(
-        delay: 1000,
+        delay: 200,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: TextField(
@@ -141,7 +141,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
       ),
       SizedBox(height: 20),
       DelayedAnimation(
-        delay: 1100,
+        delay: 300,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: TextField(
@@ -166,7 +166,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
       ),
       SizedBox(height: 20),
       DelayedAnimation(
-        delay: 1200,
+        delay: 400,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: TextField(
@@ -192,7 +192,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
       ),
       SizedBox(height: 30),
       DelayedAnimation(
-        delay: 1300,
+        delay: 500,
         child: Container(
           height: 45,
           padding: const EdgeInsets.symmetric(horizontal: 60),
@@ -214,12 +214,12 @@ class _RegisterWidgetState extends State<RegisterWidget> {
       ),
       SizedBox(height: 20),
       const DelayedAnimation(
-          delay: 1400,
+          delay: 600,
           child: Text("Already have an account?",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, color: Colors.white))),
       DelayedAnimation(
-        delay: 1500,
+        delay: 600,
         child: TextButton(
           onPressed: () {
             Navigator.push(context,

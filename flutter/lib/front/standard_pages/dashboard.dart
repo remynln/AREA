@@ -35,7 +35,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     try {
       String token_info;
       token_info = widget.token.split('.')[1];
-      token_info += token_info.length % 4 == 0 ? '' : (token_info.length % 4 == 3 ? '=' : '==');
+      token_info += token_info.length % 4 == 0
+          ? ''
+          : (token_info.length % 4 == 3 ? '=' : '==');
       user = jsonDecode(utf8.fuse(base64).decode(token_info))["username"];
       isAdmin = jsonDecode(utf8.fuse(base64).decode(token_info))["admin"];
     } catch (e) {
@@ -53,119 +55,121 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 DelayedAnimation(
-                  delay: 800,
-                child : Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 20),
-                    child: Text("Hello $user !",
-                        style: TextStyle(
-                            fontSize: 26,
-                            color: Colors.white,
-                            fontFamily: "RobotoMono",
-                            fontWeight: FontWeight.bold)))),
+                    delay: 0,
+                    child: Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 20),
+                        child: Text("Hello $user !",
+                            style: TextStyle(
+                                fontSize: 26,
+                                color: Colors.white,
+                                fontFamily: "RobotoMono",
+                                fontWeight: FontWeight.bold)))),
                 const SizedBox(height: 8),
                 const DelayedAnimation(
-                    delay: 900,
-                child : Padding(
-                    padding: EdgeInsetsDirectional.only(start: 20),
-                    child: Text("Welcome back on Sergify.",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Color.fromRGBO(200, 200, 200, 100),
-                            fontFamily: "RobotoMono")))),
+                    delay: 100,
+                    child: Padding(
+                        padding: EdgeInsetsDirectional.only(start: 20),
+                        child: Text("Welcome back on Sergify.",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Color.fromRGBO(200, 200, 200, 100),
+                                fontFamily: "RobotoMono")))),
               ]),
           Spacer(),
           DelayedAnimation(
-              delay: 1000,
-          child : IconButton(
+              delay: 200,
+              child: IconButton(
                   onPressed: () {
                     openSettings(widget.token, isAdmin, context, setState);
                   },
                   splashRadius: 22,
-              style: ButtonStyle(
-                side: MaterialStatePropertyAll(BorderSide(width: 0.2))
-              ),
+                  style: ButtonStyle(
+                      side: MaterialStatePropertyAll(BorderSide(width: 0.2))),
                   icon: const Icon(Icons.settings_outlined,
-                      size: 30,
-                      color: Colors.white))),
+                      size: 30, color: Colors.white))),
           SizedBox(width: 5)
         ]),
         const SizedBox(height: 40),
         Row(
           children: <Widget>[
             const DelayedAnimation(
-              delay: 1100,
-            child : Padding(
-                padding: EdgeInsetsDirectional.only(start: 20),
-                child: Text("Workflows",
-                    style: TextStyle(
-                        fontSize: 26,
-                        color: Colors.white,
-                        fontFamily: "RobotoMono",
-                        fontWeight: FontWeight.bold)))),
+                delay: 300,
+                child: Padding(
+                    padding: EdgeInsetsDirectional.only(start: 20),
+                    child: Text("Workflows",
+                        style: TextStyle(
+                            fontSize: 26,
+                            color: Colors.white,
+                            fontFamily: "RobotoMono",
+                            fontWeight: FontWeight.bold)))),
             Spacer(),
             DelayedAnimation(
-              delay: 1200,
-            child : Padding(
-                padding: EdgeInsetsDirectional.only(end: 20),
-                child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  PagesWidget(token: widget.token, index: 2)));
-                    },
-                    child: const Text("View All",
-                        style: TextStyle(
-                            color: Color.fromRGBO(238, 13, 36, 100),
-                            fontSize: 14,
-                            fontFamily: "Poppins"))))),
+                delay: 400,
+                child: Padding(
+                    padding: EdgeInsetsDirectional.only(end: 20),
+                    child: TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PagesWidget(
+                                      token: widget.token, index: 2)));
+                        },
+                        child: const Text("View All",
+                            style: TextStyle(
+                                color: Color.fromRGBO(238, 13, 36, 100),
+                                fontSize: 14,
+                                fontFamily: "Poppins"))))),
           ],
         ),
         SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(children: <Widget>[
-                DelayedAnimation(
-                delay: 1300,
-              child : GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                PagesWidget(token: widget.token, index: 1)));
-                  },
-                  child: SvgPicture.asset("assets/dashboard/add.svg",
-                      alignment: Alignment.topLeft))),
+              DelayedAnimation(
+                  delay: 500,
+                  child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PagesWidget(
+                                    token: widget.token, index: 1)));
+                      },
+                      child: SvgPicture.asset("assets/dashboard/add.svg",
+                          alignment: Alignment.topLeft))),
               SizedBox(width: 5),
-            DelayedAnimation(
-                delay: 1400,
-              child : AreaDisplay(token: widget.token, isDashboardDisplay: true),
-            )])),
+              DelayedAnimation(
+                delay: 600,
+                child:
+                    AreaDisplay(token: widget.token, isDashboardDisplay: true),
+              )
+            ])),
         SizedBox(height: 20),
         Row(children: <Widget>[
           DelayedAnimation(
-              delay: 1500,
-          child : Padding(
-              padding: EdgeInsetsDirectional.only(start: 10),
-              child: TextButton(
-                  onPressed: () => setState(() {
-                        if (_isBasicService) {
-                          return;
-                        }
-                        _isBasicService = true;
-                      }),
-                  child: Text("Services",
-                      style: TextStyle(
-                          color: _isBasicService ? Colors.white : Colors.grey,
-                          fontFamily: "Roboto",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20))))),
+              delay: 700,
+              child: Padding(
+                  padding: EdgeInsetsDirectional.only(start: 10),
+                  child: TextButton(
+                      onPressed: () => setState(() {
+                            if (_isBasicService) {
+                              return;
+                            }
+                            _isBasicService = true;
+                          }),
+                      child: Text("Services",
+                          style: TextStyle(
+                              color:
+                                  _isBasicService ? Colors.white : Colors.grey,
+                              fontFamily: "Roboto",
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20))))),
         ]),
-        DelayedAnimation(
-            delay: 1700,
-        child : ServiceDisplay(isBasicService: _isBasicService, token: widget.token, setStateParent: setState),
-        )])),
+        ServiceDisplay(
+            isBasicService: _isBasicService,
+            token: widget.token,
+            setStateParent: setState)
+      ])),
     );
   }
 }

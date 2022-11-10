@@ -76,7 +76,7 @@ void openIP(context) {
                     child: ElevatedButton(
                       onPressed: () {
                         if (new_ip.text.isNotEmpty) {
-                          ApiConstants.ip = new_ip.text + '.nip.io';
+                          ApiConstants.ip = new_ip.text;
                         }
                         if (new_port.text.isNotEmpty) {
                           ApiConstants.port = new_port.text;

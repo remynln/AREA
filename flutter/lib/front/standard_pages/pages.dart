@@ -38,10 +38,7 @@ class _PagesWidgetState extends State<PagesWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return
-      DelayedAnimation(
-        delay: 1000,
-        child : Scaffold(
+    return Scaffold(
         body: Center(child: _pagesWidget[_index]),
         bottomNavigationBar: Container(
           decoration: const BoxDecoration(boxShadow: <BoxShadow>[
@@ -76,6 +73,6 @@ class _PagesWidgetState extends State<PagesWidget> {
               });
             },
           ),
-        )));
+        ));
   }
 }
