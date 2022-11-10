@@ -6,6 +6,7 @@ import google from "./services/google"
 import notion from "./services/notion"
 import spotify from "./services/spotify"
 import trello from "./services/trello"
+import twitter from "./services/twitter"
 import { Action, Reaction } from "./types"
 
 const services = new Map([
@@ -14,7 +15,8 @@ const services = new Map([
     ["spotify", spotify],
     ["notion", notion],
     ["trello", trello],
-    ["genius", genius]
+    ["genius", genius],
+    ["twitter", twitter]
 ])
 
 function getAction(actionName: string) {
