@@ -200,7 +200,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         body: Center(
             child: ListView(children: <Widget>[
       DelayedAnimation(
-        delay: 1000,
+        delay: 800,
         child: Container(
           height: 30,
           alignment: Alignment.topLeft,
@@ -218,7 +218,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         ),
       ),
       DelayedAnimation(
-        delay: 1100,
+        delay: 900,
         child: Image.asset(
           'assets/sergify.png',
           width: 200,
@@ -229,7 +229,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       ),
       SizedBox(height: 30),
       DelayedAnimation(
-        delay: 1200,
+        delay: 1000,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: TextField(
@@ -254,7 +254,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       ),
       SizedBox(height: 20),
       DelayedAnimation(
-        delay: 1300,
+        delay: 1100,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: TextField(
@@ -280,7 +280,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       ),
       SizedBox(height: 20),
       DelayedAnimation(
-        delay: 1300,
+        delay: 1200,
         child: Container(
           height: 45,
           padding: const EdgeInsets.symmetric(horizontal: 60),
@@ -301,14 +301,14 @@ class _LoginWidgetState extends State<LoginWidget> {
       ),
       SizedBox(height: 30),
       DelayedAnimation(
-          delay: 1400,
+          delay: 1300,
           child: Container(
               alignment: Alignment.topCenter,
               child: const Text('Or continue with',
                   style: TextStyle(fontSize: 15, color: Colors.grey)))),
       SizedBox(height: 10),
       DelayedAnimation(
-        delay: 1500,
+        delay: 1300,
         child: Container(
           height: 45,
           padding: EdgeInsets.symmetric(horizontal: 80),
@@ -327,14 +327,14 @@ class _LoginWidgetState extends State<LoginWidget> {
       ),
       SizedBox(height: 30),
       DelayedAnimation(
-          delay: 1600,
+          delay: 1400,
           child: Container(
             child: Text("Don't have an account?",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.white)),
           )),
       DelayedAnimation(
-        delay: 1700,
+        delay: 1500,
         child: Container(
           child: TextButton(
             onPressed: () {
