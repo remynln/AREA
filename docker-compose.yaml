@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  back:
+    env_file:
+      - ./area_api/.env
+    build: ./area_api
+    ports:
+      - "8080:8080"
+    restart: always
+  client_mobile:
+    build: ./flutter
+    volumes:
+      - apk-volume:/app/client
+  web:
+    build: ./front-web
+    ports:
+      - "8081:3000"
+    depends_on:
+      - back
+      - client_mobile
+    restart: always
+    volumes:
+      - apk-volume:/app/client
+
+volumes:
+  apk-volume:

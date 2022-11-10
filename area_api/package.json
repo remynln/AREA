@@ -2,12 +2,12 @@
   "name": "area_api",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/index.js",
+  "main": "./dist/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch src -e js,ts,json --exec \"ts-node src/app.ts\"",
-    "build": "tsup src/index.ts --format cjs --clean",
-    "start": "node dist/index.js"
+    "build": "tsup src/app.ts --format cjs --clean",
+    "start": "node dist/app.js"
   },
   "keywords": [],
   "author": "",
