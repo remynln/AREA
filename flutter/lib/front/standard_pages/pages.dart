@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:area/front/standard_pages/dashboard.dart';
 import 'package:area/front/standard_pages/workflows.dart';
 import 'package:area/front/standard_pages/create.dart';
+import 'package:area/supplemental/anim_delay.dart';
 
 class PagesWidget extends StatefulWidget {
   final String token;
@@ -37,7 +38,10 @@ class _PagesWidgetState extends State<PagesWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return
+      DelayedAnimation(
+        delay: 1000,
+        child : Scaffold(
         body: Center(child: _pagesWidget[_index]),
         bottomNavigationBar: Container(
           decoration: const BoxDecoration(boxShadow: <BoxShadow>[
@@ -72,6 +76,6 @@ class _PagesWidgetState extends State<PagesWidget> {
               });
             },
           ),
-        ));
+        )));
   }
 }
