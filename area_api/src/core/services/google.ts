@@ -43,7 +43,7 @@ const google: Service = {
     ]),
     authParams: {
         accessType: 'offline',
-        approvalPrompt: 'force',
+        prompt: 'consent',
     },
     strategy: new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
