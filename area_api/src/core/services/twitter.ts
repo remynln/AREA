@@ -6,6 +6,7 @@ import { Strategy as TwitterStartegy } from "passport-twitter";
 import axios from "axios";
 import qs from "qs"
 import tweet from "~/areas/twitter/reactions/tweet";
+import likeTweet from "~/areas/twitter/reactions/likeTweet";
 import newTweet from "~/areas/twitter/actions/newTweet";
 
 const twitter: Service = {
@@ -13,7 +14,8 @@ const twitter: Service = {
         ["newTweet", newTweet]
     ]),
     reactions: new Map([
-        ["tweet", tweet]
+        ["tweet", tweet],
+        ["likeTweet", likeTweet]
     ]),
     authParams: {
         accessType: 'offline',
