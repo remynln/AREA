@@ -7,7 +7,13 @@ List<String> SERVICE_NAMES = [
   "trello",
   "twitch",
   "twitter",
-  "github"
+  "github",
+  "notion",
+  "discord",
+  "mixcloud",
+  "skyrock",
+  "genius",
+  "gitlab"
 ];
 
 class Services {
