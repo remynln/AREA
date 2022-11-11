@@ -10,6 +10,7 @@ import github from "./services/github"
 import twitch from "./services/twitch"
 import twitter from "./services/twitter"
 import { Action, Reaction } from "./types"
+import mixcloud from "./services/mixcloud"
 
 const services = new Map([
     ["google", google],
@@ -20,7 +21,8 @@ const services = new Map([
     ["github", github],
     ["twitch", twitch],
     ["genius", genius],
-    ["twitter", twitter]
+    ["twitter", twitter],
+    ["mixcloud", mixcloud]
 ])
 
 function getAction(actionName: string) {
