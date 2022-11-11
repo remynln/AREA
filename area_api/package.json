@@ -55,6 +55,7 @@
     "passport-notion": "^1.0.2",
     "passport-oauth1": "^1.2.0",
     "passport-pinterest": "^1.0.0",
+    "passport-shopify": "^0.1.2",
     "passport-spotify": "^2.0.0",
     "passport-trello": "^1.0.0",
     "passport-twitch": "^1.0.3",
