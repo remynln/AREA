@@ -85,6 +85,10 @@ export const WorkflowContent = (props) => {
                 }
                 return (element)
             }))
+            await setConditions("")
+            await setReactionServiceActive(undefined)
+            await setReactionActive(undefined)
+            await setActionTriggerActive(undefined)
             await loadServiceTriggers(service)
         }
     }
@@ -126,7 +130,8 @@ export const WorkflowContent = (props) => {
                 })
                 someOperator = 0
             }
-            loadReactionServices()
+            await setConditions("")
+            await loadReactionServices()
         } catch (error) {
             console.log(error)
         }
@@ -161,6 +166,7 @@ export const WorkflowContent = (props) => {
             if (service.name !== reactionServiceActive) {
                 const res = await axios.get("/service/" + service.name + "/reactions", { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
     
+                await setReactionActive(undefined)
                 await setReactionServiceActive(service.name)
                 await setReactions(res.data)
             }
