@@ -103,7 +103,10 @@ The AREA is:
  #### Endpoints
  
 `/area/create`: *POST Method*
-- **Request Body**:
+
+**Request Body**:
+  - `title`: the area title
+  - `description`: the area description
   - `action`:
     - `name`: `[service_name]/[action_name]` 
     - `params`: the params of the action (in JSON), depending on the actions
