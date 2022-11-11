@@ -6,16 +6,20 @@ String registerAnswerToJson(RegisterAnswer data) => json.encode(data.toJson());
 
 class RegisterAnswer {
   RegisterAnswer({
-    this.token = "",
+    this.token,
+    this.message
   });
 
-  String token;
+  String? token;
+  String? message;
 
   factory RegisterAnswer.fromJson(Map<String, dynamic> json) => RegisterAnswer(
     token: json["token"],
+    message: json["message"]
   );
 
   Map<String, dynamic> toJson() => {
     "token": token,
+    "message": message
   };
 }
