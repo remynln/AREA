@@ -2,10 +2,13 @@ import { OAuthCallbackObj, Service } from "../types";
 import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
+import newComment from "~/areas/mixcloud/actions/newComment"
 var MixcloudStrategy = require("passport-mixcloud").Strategy
 
 const mixcloud: Service = {
-    actions: new Map([]),
+    actions: new Map([
+        ["newComment", newComment]
+    ]),
     reactions: new Map([]),
     authParams: {
         accessType: 'offline',
