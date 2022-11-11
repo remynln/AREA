@@ -1,3 +1,5 @@
+const { OAuth } = require('oauth');
+
 // Load modules.
 var OAuthStrategy = require('passport-oauth1')
   , util = require('util')
@@ -50,7 +52,7 @@ function Strategy(options, verify) {
   
   OAuthStrategy.call(this, options, verify);
   this.name = 'skyrock';
-  this._userProfileURL = options.userProfileURL || 'https://api.twitter.com/1.1/account/verify_credentials.json';
+  this._userProfileURL = options.userProfileURL || 'https://api.skyrock.com/v2/user/get.json';
   this._skipExtendedUserProfile = (options.skipExtendedUserProfile !== undefined) ? options.skipExtendedUserProfile : false;
   this._includeEmail = (options.includeEmail !== undefined) ? options.includeEmail : false;
   this._includeStatus = (options.includeStatus !== undefined) ? options.includeStatus : true;
@@ -105,63 +107,7 @@ Strategy.prototype.authenticate = function(req, options) {
  * @access protected
  */
 Strategy.prototype.userProfile = function(token, tokenSecret, params, done) {
-  if (!this._skipExtendedUserProfile) {
-    var json;
-    
-    var url = uri.parse(this._userProfileURL);
-    url.query = url.query || {};
-    if (url.pathname.indexOf('/users/show.json') == (url.pathname.length - '/users/show.json'.length)) {
-      url.query.user_id = params.user_id;
-    }
-    if (this._includeEmail == true) {
-      url.query.include_email = true;
-    }
-    if (this._includeStatus == false) {
-      url.query.skip_status = true;
-    }
-    if (this._includeEntities == false) {
-      url.query.include_entities = false;
-    }
-    
-    this._oauth.get(uri.format(url), token, tokenSecret, function (err, body, res) {
-      if (err) {
-        if (err.data) {
-          try {
-            json = JSON.parse(err.data);
-          } catch (_) {}
-        }
-        
-        if (json && json.errors && json.errors.length) {
-          var e = json.errors[0];
-          return done(new APIError(e.message, e.code));
-        }
-        return done(new InternalOAuthError('Failed to fetch user profile', err));
-      }
-      
-      try {
-        json = JSON.parse(body);
-      } catch (ex) {
-        return done(new Error('Failed to parse user profile'));
-      }
-      
-      var profile = Profile.parse(json);
-      profile.provider = 'twitter';
-      profile._raw = body;
-      profile._json = json;
-      // NOTE: The "X-Access-Level" header is described here:
-      //       https://dev.twitter.com/oauth/overview/application-permission-model
-      //       https://dev.twitter.com/oauth/overview/application-permission-model-faq
-      profile._accessLevel = res.headers['x-access-level'];
-  
-      done(null, profile);
-    });
-  } else {
-    var profile = { provider: 'twitter' };
-    profile.id = params.user_id;
-    profile.username = params.screen_name;
-
-    done(null, profile);
-  }
+  done(null, {})
 };
 
 /**
