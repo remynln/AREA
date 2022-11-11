@@ -3,9 +3,9 @@ import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import axios from "axios";
-var TumblrStrategy = require("passport-tumblr").Strategy
+var DiscordStrategy = require("passport-discord").Strategy
 
-const tumblr: Service = {
+const discord: Service = {
     actions: new Map([
     ]),
     reactions: new Map([
@@ -14,14 +14,20 @@ const tumblr: Service = {
         accessType: 'offline',
         approvalPrompt: 'force'
     },
-    strategy: new TumblrStrategy({
-            consumerKey: process.env.TUMBLR_CLIENT_ID,
-            consumerSecret: process.env.TUMBLR_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/service/tumblr/callback",
+    strategy: new DiscordStrategy({
+            clientID: process.env.DISCORD_CLIENT_ID,
+            clientSecret: process.env.DISCORD_CLIENT_SECRET,
+            callbackURL: "http://localhost:8080/service/discord/callback",
             passReqToCallback: true,
-            scope:  []
+            scope:  [
+                "identify",
+                "email",
+                "guilds",
+                "connections",
+                "rpc"
+            ]
         },
-        (req: any, accessToken: string, refreshToken: string, profile: any, _:any, callback: any) => {
+        (req: any, accessToken: string, refreshToken: string, profile: any, callback: any) => {
             console.log("profile",profile)
             console.log("access token",accessToken)
             console.log("refresh token",refreshToken)
@@ -38,7 +44,7 @@ const tumblr: Service = {
                 return
             }
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
-            db.setToken(accessToken, refreshToken, mail, 'tumblr').then(() => {
+            db.setToken(accessToken, refreshToken, mail, 'discord').then(() => {
                 callback(null, cbObj)
             })
         }
@@ -47,12 +53,16 @@ const tumblr: Service = {
         let res
         try {
             console.log("ref", refreshToken)
-            res = await axios.post("https://www.tumblr.com/oauth/request_token", new URLSearchParams({
+            res = await axios.post("https://discord.com/oauth2/authorize", new URLSearchParams({
                 refresh_token: refreshToken,
                 grant_type: 'refresh_token',
-                client_id: process.env.TUMBLR_CLIENT_ID || '',
-                client_secret: process.env.TUMBLR_CLIENT_SECRET || ''
-            }))
+                client_id: process.env.DISCORD_CLIENT_ID || '',
+                client_secret: process.env.DISCORD_CLIENT_SECRET || ''
+            }), {
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                }
+            })
             console.log(res)
             if (!res.data.access_token)
                 return null
@@ -65,4 +75,4 @@ const tumblr: Service = {
     }
 }
 
-export default tumblr
+export default discord

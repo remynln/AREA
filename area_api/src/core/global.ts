@@ -8,7 +8,7 @@ import trello from "./services/trello"
 import github from "./services/github"
 import twitch from "./services/twitch"
 import pinterest from "./services/pinterest"
-import tumblr from "./services/tumblr"
+import discord from "./services/discord"
 import { Action, Reaction } from "./types"
 
 const services = new Map([
@@ -20,7 +20,7 @@ const services = new Map([
     ["github", github],
     ["twitch", twitch],
     ["pinterest", pinterest],
-    ["tumblr", tumblr]
+    ["discord", discord],
 ])
 
 function getAction(actionName: string) {
