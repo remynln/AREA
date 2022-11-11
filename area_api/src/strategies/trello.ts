@@ -54,7 +54,6 @@ class TrelloStrategy extends OAuthStrategy {
         if (options.scope && Array.isArray(options.scope)) {
             options.scope = options.scope.join(',')
         }
-        console.log(options)
         return options
     }
 }

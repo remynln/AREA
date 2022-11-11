@@ -38,7 +38,6 @@ class newComment extends Action {
     }
 
     async loop() {
-        console.log("loop")
         let newComments = (await this.getComments())
         for (let i of newComments) {
             if (this.comments.includes(i.id))
@@ -53,7 +52,6 @@ class newComment extends Action {
     }
 
     override async start(): Promise<void> {
-        console.log("gggg")
         this.pageId = await getPageId(this.token, this.params.pageId as string)
         this.comments = (await this.getComments()).map((res) => res.id)
         this.task = cron.schedule("*/10 * * * * *", () => {

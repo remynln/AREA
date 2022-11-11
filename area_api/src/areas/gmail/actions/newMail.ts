@@ -147,7 +147,6 @@ async function watchForMail(token: string) {
 }
 
 async function topicSubscribe(token: string, trigger: (historyId: number) => Promise<void>, accMail: string) {
-    console.log("starting action newMail...")
     const topic = pubsub.topic(TOPIC_NAME)
     let subName = "sub-" + accMail.replace("@", '-')
     const sub = topic.subscription(subName);
@@ -169,7 +168,6 @@ async function topicSubscribe(token: string, trigger: (historyId: number) => Pro
         trigger(historyId)
         historyId = JSON.parse(mess.data).historyId
     })
-    console.log("start success !")
     return res;
 }
 
@@ -199,13 +197,10 @@ class newMail extends Action {
     static _sub: undefined | Subscription
 
     async _newMessageCallback(mess: any) {
-        console.log("received !")
         if (!newMail.subs) {
-            console.log("subs undefined")
             return
         }
         let data = JSON.parse(mess.data)
-        console.log("haaa ha")
         for (let [key, value] of newMail.subs) {
             if (data.emailAddress != value.email)
                 continue;
@@ -220,7 +215,6 @@ class newMail extends Action {
     override async start() {
         if (!newMail.subs)
         newMail.subs = new Map([])
-        console.log("initializing sub")
         if (!newMail._sub) {
             newMail._sub = await initSub()
             newMail._sub.on('message', (mess) => {
@@ -232,7 +226,6 @@ class newMail extends Action {
                 this.error(err as Error)
             })
         }
-        console.log("getting account info")
         var sub = newMail.subs.get(this.accountMail)
         if (!sub) {
             var historyId: string = ''
@@ -260,7 +253,6 @@ class newMail extends Action {
             }
             newMail.subs.set(this.accountMail, sub)
         }
-        console.log("done")
         sub.triggers.push(this.trigger)
     }
     override async stop() {

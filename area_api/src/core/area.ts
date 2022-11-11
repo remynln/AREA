@@ -48,7 +48,6 @@ export class Area {
         return ret;
         var token = null
         try {
-            console.log("yaay", tokens.refresh)
             token = await service.refreshToken(tokens.refresh)
         } catch (err: any) {
             this.error(new ProcessError(aoreaConf.serviceName || "None", "refreshToken", err))

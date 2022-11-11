@@ -16,6 +16,8 @@ function App() {
 
   axios.defaults.baseURL = process.env.REACT_APP_SERVER_IP;
 
+  axios.defaults.baseURL = process.env.REACT_APP_SERVER_IP;
+
   useEffect(() => {
     if (user.username === null) {
       loadUser()

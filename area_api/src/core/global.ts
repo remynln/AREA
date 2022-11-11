@@ -1,12 +1,14 @@
 import { AreaError } from "./errors"
 import { formatContent } from "./formatting"
 import deezer from "./services/deezer"
+import genius from "./services/genius"
 import google from "./services/google"
 import notion from "./services/notion"
 import spotify from "./services/spotify"
 import trello from "./services/trello"
 import github from "./services/github"
 import twitch from "./services/twitch"
+import twitter from "./services/twitter"
 import { Action, Reaction } from "./types"
 
 const services = new Map([
@@ -16,7 +18,9 @@ const services = new Map([
     ["notion", notion],
     ["trello", trello],
     ["github", github],
-    ["twitch", twitch]
+    ["twitch", twitch],
+    ["genius", genius],
+    ["twitter", twitter]
 ])
 
 function getAction(actionName: string) {

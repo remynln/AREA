@@ -23,7 +23,7 @@ for (var i of Area.services) {
     passport.use(i[1].strategy)
 }
 
-router.get('/:serviceName', (req, res) => {
+router.get('/:serviceName', (req, res, next) => {
     if (!req.query.callback) {
         res.status(403).send("Missing callback_url")
     }
@@ -45,8 +45,9 @@ router.get('/:serviceName', (req, res) => {
         return
     }
     authParams.state = req.query.callback as string + " " + req.query.jwt as string
-    authParams.callbackURL = "/service/" + req.params.serviceName + "/callback"
-    passport.authenticate(req.params.serviceName, authParams)(req, res)
+    authParams.callbackURL = "/service/" + req.params.serviceName +
+        `/callback` + (authParams.stateInQuery ? `?state=${authParams.state}` : '')
+    passport.authenticate(req.params.serviceName, authParams)(req, res, next)
 }, (req, res) => {
 })
 
@@ -64,7 +65,6 @@ router.get('/:serviceName/callback', (req, res, next) => {
     passport.authenticate(req.params.serviceName, authParams, (err, user, info) => {
         if (err)
             console.log(err)
-        console.log("user: ", user)
         res.locals.user = user;
         next()
     })(req, res, next)
@@ -77,7 +77,6 @@ router.get('/:serviceName/callback', (req, res, next) => {
     }
     let splitted = req.query.state?.toString().split(' ')
     let userInfo = jwt.decode(splitted![1]) as JwtFormat
-    console.log("userInfo", req.query.state)
     AreaInstances.connectToService(userInfo.email, req.params.serviceName).then(() => {
         res.redirect(splitted![0])
     }).catch((err) => {

@@ -51,7 +51,6 @@ class addedToPlaylist extends Action {
 
     async loop() {
         let newTrackNumber = await this.getPlaylistLen()
-        console.log("loop", this.trackNumber, newTrackNumber)
         if (this.trackNumber < newTrackNumber) {
             let newTracks = await this.getNewPlaylistTracks()
             for (let i of newTracks) {
