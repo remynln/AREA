@@ -45,7 +45,7 @@ router.get('/:serviceName', (req, res, next) => {
         return
     }
     authParams.state = req.query.callback as string + " " + req.query.jwt as string
-    authParams.callbackURL = "/service/" + req.params.serviceName +
+    authParams.callbackURL = "http://sergify.fr/service/" + req.params.serviceName +
         `/callback` + (authParams.stateInQuery ? `?state=${authParams.state}` : '')
     passport.authenticate(req.params.serviceName, authParams)(req, res, next)
 }, (req, res) => {
@@ -61,7 +61,7 @@ router.get('/:serviceName/callback', (req, res, next) => {
     }
     let authParams = service.authParams;
     authParams.failureRedirect = "http://localhost:8080/"
-    authParams.callbackURL = "/service/" + req.params.serviceName + "/callback"
+    authParams.callbackURL = "http://sergify.fr/service/" + req.params.serviceName + "/callback"
     passport.authenticate(req.params.serviceName, authParams, (err, user, info) => {
         if (err)
             console.log(err)
