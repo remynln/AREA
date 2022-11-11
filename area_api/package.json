@@ -58,6 +58,7 @@
     "passport-shopify": "^0.1.2",
     "passport-spotify": "^2.0.0",
     "passport-trello": "^1.0.0",
+    "passport-tumblr": "^0.1.2",
     "passport-twitch": "^1.0.3",
     "passport-twitch-latest": "^1.0.0",
     "passport-twitchtv": "^0.1.4",
