@@ -3,13 +3,16 @@ import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import newComment from "~/areas/mixcloud/actions/newComment"
+import like from "~/areas/mixcloud/reactions/like"
 var MixcloudStrategy = require("passport-mixcloud").Strategy
 
 const mixcloud: Service = {
     actions: new Map([
         ["newComment", newComment]
     ]),
-    reactions: new Map([]),
+    reactions: new Map([
+        ["like", like]
+    ]),
     authParams: {
         accessType: 'offline',
         approvalPrompt: 'force'
