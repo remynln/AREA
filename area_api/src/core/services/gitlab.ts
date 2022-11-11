@@ -3,16 +3,21 @@ import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import axios from "axios";
-import addStar from '~/areas/github/reactions/addStar'
-import newStar from '~/areas/github/actions/newStar'
-import starRemoved from '~/areas/github/actions/starRemoved'
-import removeStar from '~/areas/github/reactions/removeStar'
+
+import addStar from '~/areas/gitlab/reactions/addStar'
+import removeStar from '~/areas/gitlab/reactions/removeStar'
+import newStar from '~/areas/gitlab/actions/newStar'
+import starRemoved from '~/areas/gitlab/actions/starRemoved'
 var GitlabStrategy = require("passport-gitlab2").Strategy
 
 const gitlab: Service = {
     actions: new Map([
+        ["newStar", newStar],
+        ["starRemoved", starRemoved]
     ]),
     reactions: new Map([
+        ["addStar", addStar],
+        ["removeStar", removeStar]
     ]),
     authParams: {
         accessType: 'offline',
@@ -30,7 +35,7 @@ const gitlab: Service = {
             let cbObj: OAuthCallbackObj = {
                 data: profile,
                 accessToken: accessToken,
-                refreshToken: '',
+                refreshToken: refreshToken,
                 username: profile.displayName
             }
             console.log(cbObj)
