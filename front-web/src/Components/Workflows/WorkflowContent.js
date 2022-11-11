@@ -5,26 +5,20 @@ import './Workflows.css'
 
 export const WorkflowContent = (props) => {
     const [actionServices, setActionServices] = useState([])
-    const [actionServiceActive, setActionServiceActive] = useState(undefined)
     const [actionTriggers, setActionTrigger] = useState([])
-    const [actionTriggerActive, setActionTriggerActive] = useState(undefined)
     const [actionProperties, setActionProperties] = useState([])
     const [selectedProperty, setSelectedProperty] = useState(undefined)
     const [selectedOperator, setSelectedOperator] = useState(undefined)
     const [conditionText, setConditionText] = useState("")
-    const [conditions, setConditions] = useState("")
     const [conditionSeparator, setConditionSeparator] = useState("&&")
     const [conditionState, setConditionState] = useState("newCondition")
     const [reactionServices, setReactionServices] = useState([])
-    const [reactionServiceActive, setReactionServiceActive] = useState(undefined)
     const [reactions, setReactions] = useState([])
-    const [reactionActive, setReactionActive] = useState(undefined)
-    const [reactionParameters, setReactionParameters] = useState([])
 
     let someOperator = 0
 
-    const operators = [{name: "equal", type: "string", value: "=="}, {name: "in", type: "string", value: "in"}, {name: "superior", type: "int", value: ">"}, {name: "equal", type: "int", value: "=="},
-        {name: "superior or equal", type: "int", value: ">="}, {name: "inferior", type: "int", value: "<"}, {name: "inferior or equalj", type: "int", value: "<="}]
+    const operators = [{name: "equal", type: "string", value: "=="}, {name: "in", type: "string", value: "in"}, {name: "equal", type: "number", value: "=="}, {name: "superior", type: "number", value: ">"},
+        {name: "superior or equal", type: "number", value: ">="}, {name: "inferior", type: "number", value: "<"}, {name: "inferior or equal", type: "number", value: "<="}]
 
     useEffect(() => {
         if (props.inCreation === false) {
@@ -32,16 +26,10 @@ export const WorkflowContent = (props) => {
                 element.active = false
                 return (element)
             }))
-            setActionServiceActive(undefined)
             setActionTrigger([])
-            setActionTriggerActive(undefined)
             setActionProperties([])
             setSelectedProperty(undefined)
             setSelectedOperator(undefined)
-            setConditions("")
-            setReactionServiceActive(undefined)
-            setReactionActive(undefined)
-            setReactionParameters([])
         }
         loadActionServices()
     }, [props.services, props.inCreation])
@@ -70,22 +58,27 @@ export const WorkflowContent = (props) => {
     }
 
     const setServiceActive = async (service) => {
-        if (service.name !== actionServiceActive) {
+        if (service.name !== props.actionServiceActive) {
             await setActionServices(await actionServices.map(element => {
                 if (element.name === service.name) {
                     element.active = true
-                    if (actionServiceActive !== undefined && actionServiceActive) {
+                    if (props.actionServiceActive !== undefined) {
                         setActionServices(actionServices.map(element => {
-                            if (element.name === actionServiceActive)
+                            if (element.name === props.actionServiceActive)
                                 element.active = false
                             return (element)
                         }))
                     }
-                    setActionServiceActive(element.name)
+                    props.setActionServiceActive(element.name)
                 }
                 return (element)
             }))
+            await props.setConditions("")
+            await props.setReactionServiceActive(undefined)
+            await props.setReactionActive(undefined)
+            await props.setActionTriggerActive(undefined)
             await loadServiceTriggers(service)
+            await props.setActionParameters([])
         }
     }
 
@@ -101,12 +94,16 @@ export const WorkflowContent = (props) => {
 
     const setTriggerActive = async (trigger) => {
         try {
-            if (trigger.name !== actionTriggerActive) {
-                const res = await axios.get("/service/" + actionServiceActive + "/action/" + trigger.name, { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+            if (trigger.name !== props.actionTriggerActive) {
+                const res = await axios.get("/service/" + props.actionServiceActive + "/action/" + trigger.name, { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
 
-                await setActionTriggerActive(trigger.name)
+                await props.setActionTriggerActive(trigger.name)
                 await setActionProperties([])
                 let SelectedProperty = 0
+                await props.setActionParameters([])
+                Object.keys(res.data.parameters).map(element => {
+                    props.setActionParameters(current => [...current, { name: element, value: "", type: res.data.parameters[element] }])
+                })
                 await Object.keys(res.data.properties).map(element => {
                     if ((typeof res.data.properties[element]) === "object") {
                         Object.keys(res.data.properties[element]).map(nestedElement => {
@@ -126,7 +123,8 @@ export const WorkflowContent = (props) => {
                 })
                 someOperator = 0
             }
-            loadReactionServices()
+            await props.setConditions("")
+            await loadReactionServices()
         } catch (error) {
             console.log(error)
         }
@@ -142,26 +140,27 @@ export const WorkflowContent = (props) => {
     }
 
     const addCondition = async () => {
-        if (conditions === "") {
-            await setConditions("( Action." + conditionText + " " + selectedOperator + " Action." + selectedProperty)
+        if (props.conditions === "") {
+            await props.setConditions("( Action." + conditionText + " " + selectedOperator + " Action." + selectedProperty)
         } else {
             if (conditionState === "newCondition")
-                await setConditions(conditions + " ) " + conditionSeparator + " ( " + conditionText + " " + selectedOperator + " Action." + selectedProperty)
+                await props.setConditions(props.conditions + " ) " + conditionSeparator + " ( " + conditionText + " " + selectedOperator + " Action." + selectedProperty)
             else
-                await setConditions(conditions + " " + conditionSeparator + " " + conditionText + " " + selectedOperator + " Action." + selectedProperty)
+                await props.setConditions(props.conditions + " " + conditionSeparator + " " + conditionText + " " + selectedOperator + " Action." + selectedProperty)
         }
     }
 
     const clearCondition = () => {
-        setConditions("")
+        props.setConditions("")
     }
 
     const setServiceReactionActive = async (service) => { 
         try {
-            if (service.name !== reactionServiceActive) {
+            if (service.name !== props.reactionServiceActive) {
                 const res = await axios.get("/service/" + service.name + "/reactions", { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
-    
-                await setReactionServiceActive(service.name)
+
+                await props.setReactionActive(undefined)
+                await props.setReactionServiceActive(service.name)
                 await setReactions(res.data)
             }
         } catch (error) {
@@ -171,13 +170,13 @@ export const WorkflowContent = (props) => {
 
     const setActiveReaction = async (reaction) => {
         try {
-            if (reaction.name !== reactionActive) {
-                const res = await axios.get("/service/" + reactionServiceActive + "/reaction/" + reaction.name, { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+            if (reaction.name !== props.reactionActive) {
+                const res = await axios.get("/service/" + props.reactionServiceActive + "/reaction/" + reaction.name, { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
 
-                await setReactionActive(reaction.name)
-                await setReactionParameters([])
+                await props.setReactionActive(reaction.name)
+                await props.setReactionParameters([])
                 Object.keys(res.data.parameters).map(element => {
-                    setReactionParameters(current => [...current, { name: element, value: "", type: res.data.parameters[element] }])
+                    props.setReactionParameters(current => [...current, { name: element, value: "", type: res.data.parameters[element] }])
                 })
             }
         } catch (error) {
@@ -185,12 +184,41 @@ export const WorkflowContent = (props) => {
         }
     }
 
-    const changeParameterValue = (parameter, event) => {
-        setReactionParameters(reactionParameters.map(element => {
+    const changeReactionParameterValue = (parameter, event) => {
+        props.setReactionParameters(props.reactionParameters.map(element => {
             if (element.name === parameter.name)
                 element.value = event.target.value
             return (element)
         }))
+    }
+
+    const changeActionParameterValue = (parameter, event) => {
+        props.setActionParameters(props.actionParameters.map(element => {
+            if (element.name === parameter.name)
+                element.value = event.target.value
+            return (element)
+        }))
+    }
+
+    const checkActionParameters = () => {
+        let valueUndefined = 0
+        props.actionParameters.map(element => {
+            if (element.value === "")
+                valueUndefined = 1
+        })
+        if (props.actionTriggerActive === undefined || valueUndefined === 1)
+            return (false)
+        return (true)
+    }
+
+    const checkIfThereIsActionParameters = () => {
+        let checkGood = 0
+        props.actionParameters.map(element => {
+            checkGood = 1
+        })
+        if (checkGood === 1)
+            return (true)
+        return (false)
     }
 
     return (
@@ -209,19 +237,32 @@ export const WorkflowContent = (props) => {
                     })}
                 </div>
             </div>
-            <div className='WorkflowBlock' style={actionServiceActive === undefined?{display: "none"}:undefined}>
+            <div className='WorkflowBlockTrigger' style={props.actionServiceActive === undefined?{display: "none"}:undefined}>
                 <p className="WorkflowBlockTitle">Action Triggers</p>
                 <div className="ActionServices">
                     {actionTriggers.map((trigger, key) => {            
                         return (
-                            <div className="WorkflowService" key={key} onClick={() => setTriggerActive(trigger)} style={trigger.name === actionTriggerActive?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined}>
+                            <div className="WorkflowService" key={key} onClick={() => setTriggerActive(trigger)} style={trigger.name === props.actionTriggerActive?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined}>
                                 <p className="TextInPanel">{trigger.description}</p>
                             </div>
                         )
                     })}
                 </div>
             </div>
-            <div className='WorkflowBlock' style={actionTriggerActive === undefined?{display: "none"}:undefined}>
+            <div className='WorkflowBlock' style={checkIfThereIsActionParameters() ? undefined : {display: "none"}}>
+                <p className="WorkflowBlockTitle">Reaction Parameters</p>
+                <div className="ActionServices">
+                    {Object.keys(props.actionParameters).map((parameter, key) => {
+                        return (
+                            <div className="Parameters" key={key}>
+                                <p>{props.actionParameters[parameter].name}</p>
+                                <input className="TriggerInput" placeholder={"type: " + props.actionParameters[parameter].type} onChange={(event) => {changeActionParameterValue(props.actionParameters[parameter], event)}}></input>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+            <div className='WorkflowBlock' style={props.actionTriggerActive === undefined?{display: "none"}:undefined}>
                 <p className="WorkflowBlockTitle">Conditions</p>
                 <p className="WorkflowOptionalTitle">* This part is optional</p>
                 <p className="TriggerSubTitle">Properties</p>
@@ -260,8 +301,8 @@ export const WorkflowContent = (props) => {
                         })}
                     </select>
                 </div>
-                <p className="TriggerSubTitle" style={conditions === "" ? {display: "none"} : undefined}>Condition Separator</p>
-                <div className="ConditionSeparator" style={conditions === "" ? {display: "none"} : undefined}>
+                <p className="TriggerSubTitle" style={props.conditions === "" ? {display: "none"} : undefined}>Condition Separator</p>
+                <div className="ConditionSeparator" style={props.conditions === "" ? {display: "none"} : undefined}>
                     <select className="LastConditionDropDown" onChange={(event) => setConditionState(event.target.value)}>
                         <option value="newCondition">new condition</option>
                         <option value="continueCondition">continue last condition</option>
@@ -275,17 +316,17 @@ export const WorkflowContent = (props) => {
                     <div className="ConditionSubmitButton" style={conditionText !== "" ? undefined : {backgroundColor: "#171717", pointerEvents: "none"}} onClick={addCondition}>
                         <p>ADD</p>
                     </div>
-                    <div className="ConditionSubmitButton" onClick={clearCondition} style={conditions === "" ? {display: "none"} : undefined}>
+                    <div className="ConditionSubmitButton" onClick={clearCondition} style={props.conditions === "" ? {display: "none"} : undefined}>
                         <p>CLEAR ALL</p>
                     </div>
                 </div>
             </div>
-            <div className='WorkflowBlockReaction' style={actionTriggerActive === undefined?{display: "none"}:undefined}>
+            <div className='WorkflowBlockReaction' style={checkActionParameters() ? undefined : {display: "none"}}>
                 <p className="WorkflowBlockTitle">Reaction Services</p>
                 <div className="ActionServices">
                     {reactionServices.map((service, key) => {
                         return (
-                            <div className="WorkflowService" key={key} style={service.name === reactionServiceActive?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined} onClick={() => {setServiceReactionActive(service)}}>
+                            <div className="WorkflowService" key={key} style={service.name === props.reactionServiceActive?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined} onClick={() => {setServiceReactionActive(service)}}>
                                 <div style={{display: "flex", justifyContent: "center"}}> 
                                     <img src={require("../../img/" + service.logo + ".png")} className="ServiceLogo" alt="Service_Logo" />
                                 </div>
@@ -294,26 +335,26 @@ export const WorkflowContent = (props) => {
                     })}
                 </div>
             </div>
-            <div className='WorkflowBlock' style={reactionServiceActive === undefined?{display: "none"}:undefined}>
+            <div className='WorkflowBlockTrigger' style={props.reactionServiceActive === undefined?{display: "none"}:undefined}>
                 <p className="WorkflowBlockTitle">Reactions</p>
                 <div className="ActionServices">
                     {reactions.map((reaction, key) => {            
                         return (
-                            <div className="WorkflowReaction" key={key} onClick={() => setActiveReaction(reaction)} style={reactionActive === reaction.name?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined}>
+                            <div className="WorkflowReaction" key={key} onClick={() => setActiveReaction(reaction)} style={props.reactionActive === reaction.name?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined}>
                                     <p className="TextInPanel">{reaction.description}</p>
                             </div>
                         )
                     })}
                 </div>
             </div>
-            <div className='WorkflowBlock' style={reactionActive === undefined?{display: "none"}:undefined}>
+            <div className='WorkflowBlock' style={props.reactionActive === undefined?{display: "none"}:undefined}>
                 <p className="WorkflowBlockTitle">Reaction Parameters</p>
                 <div className="ActionServices">
-                    {Object.keys(reactionParameters).map((parameter, key) => {
+                    {Object.keys(props.reactionParameters).map((parameter, key) => {
                         return (
                             <div className="Parameters" key={key}>
-                                <p>{reactionParameters[parameter].name}</p>
-                                <input className="TriggerInput" placeholder={"type: " + reactionParameters[parameter].type} onChange={(event) => {changeParameterValue(reactionParameters[parameter], event)}}></input>
+                                <p>{props.reactionParameters[parameter].name}</p>
+                                <input className="TriggerInput" placeholder={"type: " + props.reactionParameters[parameter].type} onChange={(event) => {changeReactionParameterValue(props.reactionParameters[parameter], event)}}></input>
                             </div>
                         )
                     })}

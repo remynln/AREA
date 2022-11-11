@@ -61,10 +61,15 @@
 .WorkflowContent {
     margin-left: auto;
     margin-right: auto;
-    height: 84%;
+    height: 82.5%;
     width: 95%;
     overflow-x: hidden;
     overflow-y: scroll;
+}
+
+.WorkflowBlockTrigger {
+    height: 27.5%;
+    padding-bottom: 2.5%;
 }
 
 .WorkflowBlock {
@@ -273,7 +278,7 @@
     font-family: Roboto;
     font-weight: bold;
     position: absolute;
-    right: 6vw;
+    right: 5.5vw;
     cursor: pointer;
 }
 
