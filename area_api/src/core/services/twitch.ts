@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import axios from "axios";
+import streamerView from '~/areas/twitch/actions/streamerView'
+import blockUser from '~/areas/twitch/reactions/blockUser'
 var TwitchStrategy = require("passport-twitch-latest").Strategy
 
 const twitch: Service = {
