@@ -20,7 +20,7 @@ services:
       - client_mobile
     restart: always
     volumes:
-      - apk-volume:/app/client
+      - apk-volume:/usr/src/app/build/apk
 
 volumes:
   apk-volume:
