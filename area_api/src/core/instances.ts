@@ -24,7 +24,7 @@ var tokens: Map<string, Map<string, Tokens>> = new Map([])
 function callbackErrorFun(err: ProcessError) {
     console.log("new error from: " + err.serviceName + "/" + err.name);
     if (err.err instanceof AxiosError) {
-        console.log("acios error")
+        console.log("axios error")
         console.log(err.err.response)
     } else {
         console.log(err.err)
@@ -107,7 +107,7 @@ const AreaInstances = {
                 callbackErrorFun(new ProcessError("", "area init", err))
             }
         })
-        console.log("instanciated")
+        console.log("instances started")
     },
     async enable(areaId: string) {
         let area = areas.get(areaId)

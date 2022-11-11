@@ -85,7 +85,6 @@ export default class Strategy extends PassportStrategy {
               }
             )
           } catch (error: any) {
-            console.log(error.response)
             this.error(error as Error)
           }
         } else {

@@ -27,14 +27,12 @@ const notion: Service = {
         },
         (reqUkn, accessToken, refreshToken, oauthData, profile, callback: any) => {
             let req = reqUkn as any
-            console.log(accessToken, refreshToken, profile)
             let cbObj: OAuthCallbackObj = {
                 data: profile.id,
                 accessToken: accessToken,
                 refreshToken: '',
                 username: profile.name || ''
             }
-            console.log(cbObj)
             let accountToken = req.query.state;
             if (!accountToken || !accountToken.includes(' ')) {
                 callback(null, cbObj)

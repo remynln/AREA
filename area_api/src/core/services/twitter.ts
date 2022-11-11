@@ -31,14 +31,12 @@ const twitter: Service = {
             includeStatus: true
         },
         (req, accessToken, secretToken, profile, callback) => {
-            console.log("tok", req.query.state)
             let cbObj: OAuthCallbackObj = {
                 data: profile.id.toString(),
                 accessToken: accessToken + " " + secretToken,
                 refreshToken: "aaa",
                 username: profile.displayName
             }
-            console.log(cbObj)
             let accountToken = req.query.state as string;
             if (!accountToken || !accountToken.includes(' ')) {
                 callback(null, cbObj)

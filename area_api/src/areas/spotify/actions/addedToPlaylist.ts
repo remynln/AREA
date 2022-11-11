@@ -17,7 +17,6 @@ class addedToFavorite extends Action {
                 })
                 return res.data.tracks.total
             } catch (err: any) {
-                console.log(err.response)
                 if (err.response && err.response.status == 401)
                     return AreaRet.AccessTokenExpired
                 throw err
@@ -43,7 +42,6 @@ class addedToFavorite extends Action {
                 throw err
             }
         })
-        console.log(res.data.items[0].track)
         let mapped: SpotifyTrack[] = res.data.items.map(({ track }: any) => {
             let duration = track.duration / 1000
             return {

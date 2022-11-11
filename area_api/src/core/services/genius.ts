@@ -25,7 +25,6 @@ const genius: Service = {
                 refreshToken: '',
                 username: profile.name
             }
-            console.log(cbObj)
             let accountToken = req.query.state;
             if (!accountToken || !accountToken.includes(' ')) {
                 callback(null, cbObj)

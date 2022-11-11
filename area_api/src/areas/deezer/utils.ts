@@ -14,7 +14,5 @@ export async function getPlaylistTracks(playlistId: number, token: string) {
                 "Authorization": "Bearer" + token
             }
         })
-        console.log("lets goo", res.data.next)
     }
-    console.log(res.data.data)
 }

@@ -47,7 +47,6 @@ const spotify: Service = {
                 refreshToken: refreshToken,
                 username: profile.displayName
             }
-            console.log(cbObj)
             let accountToken = req.query.state;
             if (!accountToken || !accountToken.includes(' ')) {
                 callback(null, cbObj)
@@ -60,7 +59,6 @@ const spotify: Service = {
         }
     ),
     refreshToken: async (refreshToken) => {
-        console.log("ref", refreshToken)
         let res = await axios.post("https://accounts.spotify.com/api/token", new URLSearchParams({
             grant_type: 'refresh_token',
             refresh_token: refreshToken,

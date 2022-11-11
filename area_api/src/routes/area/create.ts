@@ -37,9 +37,9 @@ area.post("/create", checkBody(["action", "reaction", "title"]),
             message: "Internal server error"
         })
         console.log("create route needs checkToken middleware")
+        return
     }
     if (condition) {
-        console.log(action.propertiesType)
         checkConditionSyntax(condition, action.propertiesType)
     }
     let conf: AreaConfig = {

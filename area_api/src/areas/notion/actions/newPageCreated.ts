@@ -65,7 +65,6 @@ class newPageCreated extends Action {
         for (let i of _content) {
             if (this.content.find((item) => _content.id == item.id) != undefined)
                 continue
-            console.log(i)
         }
         this.content = _content
         this.lastUpdate = page.last_edited_time

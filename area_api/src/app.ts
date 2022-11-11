@@ -72,7 +72,7 @@ app.use(errorMiddleware)
 
 AreaInstances.load().then(() => {
     app.listen(config.API_PORT, () => {
-        console.log(`Launched on port ${config.API_PORT}`)
+        console.log(`Ready on port ${config.API_PORT}`)
     })
 })
 
