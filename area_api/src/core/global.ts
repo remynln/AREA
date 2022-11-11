@@ -9,6 +9,7 @@ import github from "./services/github"
 import twitch from "./services/twitch"
 import pinterest from "./services/pinterest"
 import discord from "./services/discord"
+import gitlab from "./services/gitlab"
 import { Action, Reaction } from "./types"
 
 const services = new Map([
@@ -21,6 +22,7 @@ const services = new Map([
     ["twitch", twitch],
     ["pinterest", pinterest],
     ["discord", discord],
+    ["gitlab", gitlab]
 ])
 
 function getAction(actionName: string) {
