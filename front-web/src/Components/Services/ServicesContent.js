@@ -1,26 +1,30 @@
 export const ServicesContent = [
     {
-        link: "http://localhost:8080/auth/service/google?callback=http://localhost:3000/dashboard",
-        logo: "Twitter_Logo"
-    },
-    {
-        link: "http://localhost:8080/auth/service/google?callback=http://localhost:3000/dashboard",
-        logo: "Instagram_Logo"
-    },
-    {
-        link: "http://localhost:8080/auth/service/google?callback=http://localhost:3000/dashboard",
+        name: "google",
         logo: "Google_Logo"
     },
     {
-        link: "http://localhost:8080/auth/service/google?callback=http://localhost:3000/dashboard",
-        logo: "Facebook_Logo"
+        name: "spotify",
+        logo: "Spotify_Logo"
     },
     {
-        link: "http://localhost:8080/auth/service/google?callback=http://localhost:3000/dashboard",
+        name: "deezer",
+        logo: "Deezer_Logo"
+    },
+    {
+        name: "trello",
+        logo: "Trello_Logo"
+    },
+    {
+        name: "twitch",
+        logo: "Twitch_Logo"
+    },
+    {
+        name: "twitter",
+        logo: "Twitter_Logo"
+    },
+    {
+        name: "github",
         logo: "Github_Logo"
-    },
-    {
-        link: "http://localhost:8080/auth/service/google?callback=http://localhost:3000/dashboard",
-        logo: "Outlook_Logo"
     }
 ]

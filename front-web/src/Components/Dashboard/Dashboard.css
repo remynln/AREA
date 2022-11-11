@@ -28,11 +28,7 @@
     height: 40%;
 }
 
-.WorkflowContentTitle {
-    text-align: center;
-}
-
-.WorkflowTitle {
+.DashboardWorkflowTitle {
     display: inline-block;
     font-family: Roboto;
     font-size: 22px;

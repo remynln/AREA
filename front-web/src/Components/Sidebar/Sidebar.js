@@ -2,13 +2,22 @@ import React from "react";
 import './Sidebar.css';
 import { Link } from 'react-router-dom'
 import { SidebarContent } from './SidebarContent';
-import logo from '../../img/Sergify_Logo_Horizontal.png';
+import { useNavigate } from 'react-router-dom'
+import Logo from '../../img/Sergify_Logo_Horizontal.png';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 function Sidebar() {
+    const navigate = useNavigate();
+
+    const DisconnectUser = () => {
+        localStorage.clear()
+        navigate("/login")
+    }
+
     return (
         <div className="Sidebar">
             <div className="SidebarLogo">
-                <img src={logo} className="Logo"/>
+                <img src={Logo} className="Logo" alt="Sidebar_Logo"/>
             </div>
             <ul className="SidebarList">
                 {SidebarContent.map((val, key) => {
@@ -16,12 +25,20 @@ function Sidebar() {
                         <Link key={key} to={val.link}
                         className="row"
                         id={window.location.pathname === val.link ? "active" : ""}>
-                            <div class="SidebarIcon">{val.icon}</div>
-                            <div class="SidebarTitle">{val.title}</div>
+                            <div className="SidebarIcon">{val.icon}</div>
+                            <div className="SidebarTitle">{val.title}</div>
                         </Link>
                     )
                 })}
             </ul>
+            <div className="Logout" onClick={DisconnectUser}>
+                <div className="SidebarIcon">
+                    <LogoutIcon />
+                </div>
+                <div className="SidebarTitle">
+                    <p>Logout</p>
+                </div>
+            </div>
         </div>
     )
 }

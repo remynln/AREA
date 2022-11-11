@@ -2,6 +2,11 @@ import { Request, Response, Router } from 'express'
 import google from "./services"
 import checkBody from '~/middlewares/checkBody'
 import jwt from "jsonwebtoken"
+import db from '~/database/db'
+import { Message } from '@google-cloud/pubsub'
+import { debug } from 'console'
+import checkToken from '~/middlewares/checkToken'
+import JwtFormat from './jwtFormat'
 
 var auth: Router = Router()
 
@@ -17,28 +22,70 @@ function isPasswordValid(username: string) {
     return (/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/i.test(username))
 }
 
-auth.post('/register', checkBody(["email", "username", "password"]), (req: Request, res: Response) => {
+auth.post('/register', checkBody(["email", "username", "password"]), (req: Request, res: Response, next) => {
     if (!isMailValid(req.body.email)) {
-        res.status(400).json({ message: "invalid email"})
+        res.status(400).json({ message: "Invalid email"})
         return;
     }
     if (!isUserNameValid(req.body.username)) {
-        res.status(400).json({ message: "invalid username"})
+        res.status(400).json({ message: "Invalid username"})
         return;
     }
     if (!isPasswordValid(req.body.password)) {
-        res.status(400).json({ message: "invalid password"})
+        res.status(400).json({ message: "Invalid password"})
         return;
     }
-    res.status(200).json({
-        token: jwt.sign({ email: req.body.email }, process.env.JWT_KEY || '')
+    db.register(req.body.password, req.body.email, req.body.username).then(() => {
+        res.status(201).json({
+            token: jwt.sign({
+                email: req.body.email,
+                username: req.body.username
+            } as JwtFormat, process.env.JWT_KEY || '')
+        })
+    }).catch((err) => {
+        next(err)
     })
 })
 
-auth.post('/login', checkBody(["email", "password"]), (req, res) => {
-    res.status(200).json({
-        token: jwt.sign({ email: req.body.email }, process.env.JWT_KEY || '')
+auth.post('/login', checkBody(["email", "password"]), (req, res, next) => {
+    if (!req.body.email || !req.body.password) {
+        res.status(400).json({ message: "Missing email or password"})
+        return
+    }
+    if (req.body.email == "root") {
+        if (req.body.password == process.env.ROOT_PASSWORD) {
+            res.status(200).json({
+                token: jwt.sign({
+                    email: "root",
+                    username: "root",
+                    admin: true
+                } as JwtFormat, process.env.JWT_KEY || '')
+            })
+        } else {
+            res.status(400).json({message: "Invalid password"})
+        }
+    }
+    db.login(req.body.password, req.body.email).then((token) => {
+        if (!token) {
+            res.status(400).json({message: "Invalid password"})
+            return
+        }
+        res.status(200).json({
+            token: jwt.sign(token,
+                process.env.JWT_KEY || '')
+        })
+    }).catch((err) => {
+        next(err)
     })
+})
+
+auth.delete("/unregister", checkToken, (req, res) => {
+    let token = jwt.decode(req.headers.authorization?.split(' ')[1] || '') as JwtFormat
+    let mail = token.email;
+    res.status(200).send({
+        email: mail
+    })
+    // TODO integrate database comm to delete account
 })
 
 auth.use("/service", google)
