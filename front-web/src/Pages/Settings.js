@@ -42,7 +42,7 @@ export const Settings = (props) => {
                                 </div>
                                 <p className='userPanel__sideBar__rows__row__title'>Admin</p>
                             </div>
-                            <a href='/app/client/area_mobile.apk' download style={{textDecoration: "none"}}>
+                            <a href='/apk/area_mobile.apk' download style={{textDecoration: "none"}}>
                                 <div className='userPanel__sideBar__rows__row'>
                                     <div style={{marginRight: "5%", marginTop: "2%"}}>
                                         <DownloadIcon />

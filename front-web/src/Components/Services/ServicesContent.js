@@ -24,6 +24,10 @@ export const ServicesContent = [
         logo: "Twitter_Logo"
     },
     {
+        name: "notion",
+        logo: "Notion_Logo"
+    },
+    {
         name: "github",
         logo: "Github_Logo"
     }
