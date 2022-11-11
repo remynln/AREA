@@ -9,8 +9,10 @@ var TwitchStrategy = require("passport-twitch-latest").Strategy
 
 const twitch: Service = {
     actions: new Map([
+        ["streamerView", streamerView]
     ]),
     reactions: new Map([
+        ["blockUser", blockUser]
     ]),
     authParams: {
         accessType: 'offline',
