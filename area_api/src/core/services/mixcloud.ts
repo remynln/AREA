@@ -21,7 +21,7 @@ const mixcloud: Service = {
         {
             clientID: process.env.MIXCLOUD_CLIENT_ID,
             clientSecret: process.env.MIXCLOUD_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/service/mixcloud/callback",
+            callbackURL: process.env.DOMAIN + "/service/mixcloud/callback",
             passReqToCallback: true,
         },
         (req: any, accessToken: string, refreshToken: string, profile: any, callback: any) => {

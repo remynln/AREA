@@ -33,7 +33,7 @@ const gitlab: Service = {
         {
             clientID: process.env.GITLAB_CLIENT_ID,
             clientSecret: process.env.GITLAB_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/service/gitlab/callback",
+            callbackURL: process.env.DOMAIN + "/service/gitlab/callback",
             passReqToCallback: true,
             scope: ["api"]
         },

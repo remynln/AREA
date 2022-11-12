@@ -26,7 +26,7 @@ const skyrock: Service = {
         {
             consumerKey: process.env.SKYROCK_CLIENT_ID,
             consumerSecret: process.env.SKYROCK_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/service/skyrock/callback",
+            callbackURL: process.env.DOMAIN + "/service/skyrock/callback",
             passReqToCallback: true,
             trelloParams: {
                 scope: "read,write",

@@ -20,7 +20,7 @@ const discord: Service = {
     strategy: new DiscordStrategy({
             clientID: process.env.DISCORD_CLIENT_ID,
             clientSecret: process.env.DISCORD_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/service/discord/callback",
+            callbackURL: process.env.DOMAIN + "/service/discord/callback",
             passReqToCallback: true,
             scope:  [
                 "identify",

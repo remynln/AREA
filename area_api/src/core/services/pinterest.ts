@@ -17,7 +17,7 @@ const pinterest: Service = {
     strategy: new PinterestStrategy({
             clientID: process.env.PINTEREST_CLIENT_ID,
             clientSecret: process.env.PINTEREST_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/service/pinterest/callback",
+            callbackURL: process.env.DOMAIN + "/service/pinterest/callback",
             passReqToCallback: true,
             scope:  ['read_public', 'read_relationships']
         },
