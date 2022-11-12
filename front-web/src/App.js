@@ -6,6 +6,7 @@ import { Workflows } from './Pages/Workflows'
 import { Login } from './Pages/Login'
 import { Register } from './Pages/Register'
 import { PrivateRoutes } from './Components/LoginPage/PrivateRoutes'
+import { ServerAuthentification } from './Components/LoginPage/PrivateRoutes'
 import { useEffect, useState } from 'react';
 import jwt from 'jwt-decode'
 import axios from "axios";
@@ -70,20 +71,23 @@ function App() {
 
   return (
     <div className="App">
-      <Router>
-        <Routes>
-          <Route element={<PrivateRoutes user={user} />}>
-            <Route path="/dashboard" element={<Dashboard user={user} services={services}/>} />
-            <Route path="/workflows" element={<Workflows />} />
-            <Route path="/settings" element={<Settings user={user}/>} />
-            <Route path="*" element={<Navigate to="/dashboard" />} />
-            <Route path="/" element={<Navigate to="/dashboard" />} />
-            <Route path="/home" element={<Navigate to="/dashboard" />} />
-          </Route>
-          <Route path="/login" element={<Login user={user} setUser={setUser} setServices={setServices}/>} />
-          <Route path="/register" element={<Register user={user} setUser={setUser}/>} />
-        </Routes>
-      </Router>
+      {
+        
+      }
+        <Router>
+          <Routes>
+            <Route element={<PrivateRoutes user={user} />}>
+              <Route path="/dashboard" element={<Dashboard user={user} services={services}/>} />
+              <Route path="/workflows" element={<Workflows />} />
+              <Route path="/settings" element={<Settings user={user}/>} />
+              <Route path="*" element={<Navigate to="/dashboard" />} />
+              <Route path="/" element={<Navigate to="/dashboard" />} />
+              <Route path="/home" element={<Navigate to="/dashboard" />} />
+            </Route>
+            <Route path="/login" element={<Login user={user} setUser={setUser} setServices={setServices}/>} />
+            <Route path="/register" element={<Register user={user} setUser={setUser}/>} />
+          </Routes>
+        </Router>
     </div>
   );
 }

@@ -11,7 +11,6 @@ export const Settings = (props) => {
     const [activeRow, setActiveRow] = useState("user")
 
     const checkRowActive = (row) => {
-        console.log(row)
         if (activeRow === row) {
             return {backgroundColor: "#BF1B2C", color: "white", fontWeight: "bold"}
         }
