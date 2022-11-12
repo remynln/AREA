@@ -4,8 +4,8 @@ export const ServicesContent = [
         logo: "Google_Logo"
     },
     {
-        name: "outlook",
-        logo: "Outlook_Logo"
+        name: "microsoft",
+        logo: "Microsoft_Logo"
     },
     {
         name: "spotify",
