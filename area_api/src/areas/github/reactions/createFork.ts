@@ -30,10 +30,10 @@ let config: ReactionConfig = {
     name: "createFork",
     description: "create a fork of a repo",
     paramTypes: {
-        own: "string",
+        owner: "string",
         repository_name: "string",
-        organisation: "string",
-        default_branch: "string"
+        organisation: "string?",
+        default_branch: "string?"
     },
     create: createFork
 }

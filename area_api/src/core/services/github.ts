@@ -7,16 +7,20 @@ import addStar from '~/areas/github/reactions/addStar'
 import newStar from '~/areas/github/actions/newStar'
 import starRemoved from '~/areas/github/actions/starRemoved'
 import removeStar from '~/areas/github/reactions/removeStar'
+import createFork from '~/areas/github/reactions/createFork'
+import listFork from '~/areas/github/actions/listFork'
 var GithubStrategy = require("passport-github2").Strategy
 
 const github: Service = {
     actions: new Map([
         ["newStar", newStar],
-        ["starRemoved", starRemoved]
+        ["starRemoved", starRemoved],
+        ["listFork", listFork]
     ]),
     reactions: new Map([
         ["addStar", addStar],
-        ["removeStar", removeStar]
+        ["removeStar", removeStar],
+        ["createFork", createFork]
     ]),
     authParams: {
         accessType: 'offline',

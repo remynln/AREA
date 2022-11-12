@@ -4,25 +4,23 @@ import axios from "axios";
 import { Octokit } from 'octokit'
 import { link } from "fs";
 
-
-
 class listFork extends Action {
-    start(): Promise<void> {
-        throw new Error("Method not implemented.");
+    override async start(): Promise<void> {
+        const octokit = new Octokit({
+            auth: this.token
+        })
+        await this.refresh(async () => {
+                let res = await octokit.request('GET /repos/{owner}/{repo}/forks{?sort,per_page,page}', {
+                    owner: this.params.creator,
+                    repo: this.params.repository_name,
+                  })
+                return res
+        })
     }
-    stop(): Promise<void> {
-        throw new Error("Method not implemented.");
+    override async stop(): Promise<void> {
+        this.stop()
     }
-    const octokit = new Octokit({
-        auth: 'YOUR-TOKEN'
-      })
-      
-      await octokit.request('GET /repos/{owner}/{repo}/forks{?sort,per_page,page}', {
-        owner: 'this.params.creator',
-        repo: 'this.params.repository_name',
-      })
 }
-
 let config: ActionConfig = {
     serviceName: "github",
     name: "listFork",
