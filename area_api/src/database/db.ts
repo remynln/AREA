@@ -4,7 +4,7 @@ import SetToken from "./setToken";
 import GetToken from "./getToken";
 import getServices from "./getServices";
 import loginService from "./loginService";
-import setArea from "./area/set";
+import setArea, { checkAreaValidity } from "./area/set";
 import getUsers from "./user/getMany";
 import getUserId from "./user/getId";
 import getUser from "./user/get";
@@ -28,6 +28,7 @@ const db = {
     getServices,
     loginService,
     area: {
+        checkValidity: checkAreaValidity,
         set: setArea,
         setStatus: setStatus,
         forEach: forEach,

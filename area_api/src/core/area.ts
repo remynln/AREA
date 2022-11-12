@@ -24,6 +24,7 @@ export class Area {
     actionConf: ActionConfig
     reactionConf: ReactionConfig
     status: "started" | "stopped" | "starting" | "stopping" | "errored" | "locked" = "stopped"
+    dbStatus: string
     error: (err: ProcessError) => void
 
     async refreshTokenFunc<T>(
@@ -92,6 +93,12 @@ export class Area {
         this.reaction.params = formatted
         this.reaction.launch().catch((err) => {
             this.error(new ProcessError(this.reactionConf.serviceName || "None", this.reactionConf.name, err))
+        })
+    }
+
+    loop() {
+        this.action.loop().catch((err) => {
+            this.error(new ProcessError(this.actionConf.serviceName || "None", this.actionConf.name, err))
         })
     }
 

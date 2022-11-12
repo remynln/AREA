@@ -19,6 +19,8 @@ declare global {
         GENIUS_CLIENT_SECRET: string;
         TWITTER_CLIENT_ID: string;
         TWITTER_CLIENT_SECRET: string;
+        MIXCLOUD_CLIENT_ID: string;
+        MIXCLOUD_CLIENT_SECRET: string;
         JWT_KEY: string;
         GOOGLE_APPLICATION_CREDENTIALS: string;
         DB_USER: string;
