@@ -68,6 +68,7 @@ class newPost extends Action {
     }
 
     async start(): Promise<void> {
+        console.log("ok")
         this.getBlogUrl = `https://api.skyrock.com/v2/blog/get.json?username=${this.params.ownerName}`
         try {
             this.nbPost = (await this.getBlog()).nb_posts

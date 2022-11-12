@@ -9,8 +9,8 @@ import global from "./global";
 import { ActionConfig, ReactionConfig, Tokens } from "./types";
 
 
-const AREA_START_DELTA = 2000
-const SERVICE_START_DELTA = 166
+const AREA_START_DELTA = 4000
+const SERVICE_START_DELTA = 333
 const AREA_LOOP_DELTA = "*/5 * * * * *"
 const SERVICE_LOOP_DELTA = 416
 
@@ -87,7 +87,10 @@ async function launchAreasDiffered(areas: Area[]) {
     for (let i of areas) {
         if (i.dbStatus != "enabled" || i.status == "locked")
             continue;
-        i.start()
+        console.log("starting")
+        i.start().catch((err) => {
+            callbackErrorFun(new ProcessError(i.actionConf.serviceName || "", i.actionConf.name, err))
+        })
         await new Promise(r => setTimeout(r, AREA_START_DELTA));
     }
 }
