@@ -9,7 +9,6 @@ interface UserInfo {
 }
 
 class userChanged extends Action {
-    task: ScheduledTask | undefined
     username: string
     avatar: string
     banner_color: string
@@ -68,17 +67,9 @@ class userChanged extends Action {
         this.username = info.username
         this.avatar = info.avatar
         this.banner_color = info.banner_color
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
 
     async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 

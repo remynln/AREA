@@ -14,7 +14,6 @@ interface Comment {
 class newComment extends Action {
     pageId: string
     comments: string[]
-    task: ScheduledTask
 
     async getComments(): Promise<any[]> {
         let res = await axios.get(`https://api.notion.com/v1/comments?block_id=${this.pageId}`, {
@@ -54,17 +53,9 @@ class newComment extends Action {
     override async start(): Promise<void> {
         this.pageId = await getPageId(this.token, this.params.pageId as string)
         this.comments = (await this.getComments()).map((res) => res.id)
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
 
     override async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 

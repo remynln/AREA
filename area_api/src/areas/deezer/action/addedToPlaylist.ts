@@ -19,7 +19,6 @@ interface DeezerTrack {
 }
 
 class addedToPlaylist extends Action {
-    task: ScheduledTask | undefined
     trackNumber: number
     async getPlaylistLen() {
         let id = this.params.playlistId as string
@@ -62,16 +61,8 @@ class addedToPlaylist extends Action {
 
     async start(): Promise<void> {
         this.trackNumber = await this.getPlaylistLen()
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
     async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 

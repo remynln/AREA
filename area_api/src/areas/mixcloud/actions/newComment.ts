@@ -8,7 +8,6 @@ interface ParamTypes {
 }
 
 class newComment extends Action {
-    task: ScheduledTask
     link: string
     lastCommandDate: string | undefined
 
@@ -51,16 +50,8 @@ class newComment extends Action {
     override async start(): Promise<void> {
         this.formatLink()
         await this.getComments()
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
     override async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 

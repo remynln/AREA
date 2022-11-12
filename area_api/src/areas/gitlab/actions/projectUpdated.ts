@@ -9,7 +9,6 @@ interface ProjectInfo {
 }
 
 class projectUpdated extends Action {
-    task: ScheduledTask | undefined
     name: string
     description: string
     async getInfo() {
@@ -55,17 +54,9 @@ class projectUpdated extends Action {
         let info = await this.getInfo()
         this.name = info.data.name,
         this.description = info.data.description
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
 
     async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 

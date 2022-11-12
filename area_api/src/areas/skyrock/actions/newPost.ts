@@ -13,7 +13,6 @@ interface Post {
 }
 
 class newPost extends Action {
-    task: ScheduledTask | undefined
     getBlogUrl: string
     nbPost: number
 
@@ -78,16 +77,8 @@ class newPost extends Action {
             }
             throw err
         }
-        ///this.task = cron.schedule("*/10 * * * * *", () => {
-        ///    this.loop().catch((err) => {
-        ///        this.error(err)
-        ///    })
-        ///})
     }
     async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 

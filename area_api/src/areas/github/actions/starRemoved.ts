@@ -11,7 +11,6 @@ interface Stargazer {
 
 class starRemoved extends Action {
     octokit: Octokit
-    task: ScheduledTask | undefined
     starNumber: number
     async getNumberStargazer() {
         let res = await this.refresh(async () => {
@@ -62,16 +61,8 @@ class starRemoved extends Action {
             auth: this.token
         })
         this.starNumber = await this.getNumberStargazer()
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
     async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 

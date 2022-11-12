@@ -9,7 +9,6 @@ interface TrelloList {
 }
 
 class newList extends Action {
-    task: ScheduledTask
     lastListIds: string[]
     async getLists(): Promise<any[]> {
         let query = `?key=${process.env.TRELLO_CLIENT_ID}&token=${this.token}`
@@ -31,16 +30,8 @@ class newList extends Action {
     }
     override async start(): Promise<void> {
         this.lastListIds = (await this.getLists()).map((item) => item.id)
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
     override async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 

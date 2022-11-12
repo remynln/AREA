@@ -4,7 +4,6 @@ import axios, { AxiosResponse } from "axios";
 import { SpotifyTrack } from "../utils";
 
 class addedToFavorite extends Action {
-    task: ScheduledTask | undefined
     trackNumber: number
     async getPlaylistLen() {
         let playlistId = this.params.playlistId as string
@@ -75,16 +74,8 @@ class addedToFavorite extends Action {
 
     async start(): Promise<void> {
         this.trackNumber = await this.getPlaylistLen()
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
     async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 

@@ -6,7 +6,6 @@ import axios from "axios";
 
 
 class newCard extends Action {
-    task: ScheduledTask
     cardsId: string[]
 
     async getCards(): Promise<any[]> {
@@ -35,11 +34,6 @@ class newCard extends Action {
 
     override async start(): Promise<void> {
         this.cardsId = (await this.getCards()).map((item) => item.id)
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
     override async stop(): Promise<void> {
         

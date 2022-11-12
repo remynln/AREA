@@ -10,7 +10,6 @@ interface Stargazer {
 }
 
 class newStar extends Action {
-    task: ScheduledTask | undefined
     starNumber: number
     async getStarNumber() {
         let res = await this.refresh(async () => {
@@ -53,16 +52,8 @@ class newStar extends Action {
 
     async start(): Promise<void> {
         this.starNumber = await this.getStarNumber()
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
     async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 

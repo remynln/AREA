@@ -6,18 +6,13 @@ import axios from "axios";
 
 
 class newAnnotation extends Action {
-    task: ScheduledTask
 
     async loop() {
         
     }
 
     override async start(): Promise<void> {
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
+        
     }
     override async stop(): Promise<void> {
         
