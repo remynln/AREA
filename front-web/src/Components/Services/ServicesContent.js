@@ -4,6 +4,10 @@ export const ServicesContent = [
         logo: "Google_Logo"
     },
     {
+        name: "outlook",
+        logo: "Outlook_Logo"
+    },
+    {
         name: "spotify",
         logo: "Spotify_Logo"
     },
@@ -26,6 +30,26 @@ export const ServicesContent = [
     {
         name: "notion",
         logo: "Notion_Logo"
+    },
+    {
+        name: "gitlab",
+        logo: "Gitlab_Logo"
+    },
+    {
+        name: "discord",
+        logo: "Discord_Logo"
+    },
+    {
+        name: "skyrock",
+        logo: "Skyrock_Logo"
+    },
+    {
+        name: "mixcloud",
+        logo: "Mixcloud_Logo"
+    },
+    {
+        name: "genius",
+        logo: "Genius_Logo"
     },
     {
         name: "github",

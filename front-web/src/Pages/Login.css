@@ -70,6 +70,7 @@
     font-family: Poppins;
     font-weight: bold;
     color: #EDEDED;
+    cursor: pointer;
 }
 
 .LoginButton:hover {
@@ -80,6 +81,7 @@
     color: #EDEDED;
     font-family: Poppins;
     text-align: center;
+    cursor: pointer;
 }
 
 .RegisterRedirection {

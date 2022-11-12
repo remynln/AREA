@@ -22,13 +22,13 @@ export const Register = (props) => {
             navigate('/dashboard')
         if (password.length < 8 && password.length > 0)
             setError("Password must be more than 8 caracters")
-        else if (password.length > 8 && errorMessage === "Password must be more than 8 caracters")
+        else if (password.length >= 8 && errorMessage === "Password must be more than 8 caracters")
             setError("")
         if (username.length === 0 || email.length === 0 || password.length < 8)
             setRegister(false)
         else
             setRegister(true)
-    });
+    }, [localStorage.getItem("jwt"), props.user.username]);
 
     const navigateToLogin = () => {
         navigate('/login');
@@ -41,13 +41,10 @@ export const Register = (props) => {
             password: password
         })
         .then(res => {
-            if (res.status === 201)
-                localStorage.setItem('jwt', JSON.stringify(res.data.token))
-                props.setUser({username: null})
-                navigate("/dashboard")
+            navigate("/login")
         })
         .catch(error => {
-            setError(error.response.data.message);
+            setError(error.response);
         })
     }
 

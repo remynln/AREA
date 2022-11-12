@@ -6,7 +6,6 @@ import { Workflows } from './Pages/Workflows'
 import { Login } from './Pages/Login'
 import { Register } from './Pages/Register'
 import { PrivateRoutes } from './Components/LoginPage/PrivateRoutes'
-import { ServerAuthentification } from './Components/LoginPage/PrivateRoutes'
 import { useEffect, useState } from 'react';
 import jwt from 'jwt-decode'
 import axios from "axios";
@@ -14,6 +13,7 @@ import axios from "axios";
 function App() {
   const [user, setUser] = useState(localStorage.getItem("jwt")===null?false:{username: null})
   const [services, setServices] = useState([])
+  const [users, setUsers] = useState([])
 
   axios.defaults.baseURL = process.env.REACT_APP_SERVER_IP;
 
@@ -64,28 +64,37 @@ function App() {
       const user = await jwt(JSON.parse(localStorage.getItem("jwt")))
 
       setUser({username: user.username, email: user.email, admin: user.admin})
+      if (user.admin === true)
+        loadUsers()
     } catch (error) {
       console.log(error)
     }
   }
 
+  const loadUsers = async () => {
+    try {
+      const res = await axios.get("/users", { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+      
+      setUsers(res.data)
+    } catch (error) {
+        console.log(error)
+    }
+  }
+
   return (
     <div className="App">
-      {
-        
-      }
         <Router>
           <Routes>
             <Route element={<PrivateRoutes user={user} />}>
               <Route path="/dashboard" element={<Dashboard user={user} services={services}/>} />
               <Route path="/workflows" element={<Workflows />} />
-              <Route path="/settings" element={<Settings user={user}/>} />
+              <Route path="/settings" element={<Settings user={user} users={users} setUsers={setUsers}/>} />
               <Route path="*" element={<Navigate to="/dashboard" />} />
               <Route path="/" element={<Navigate to="/dashboard" />} />
               <Route path="/home" element={<Navigate to="/dashboard" />} />
             </Route>
             <Route path="/login" element={<Login user={user} setUser={setUser} setServices={setServices}/>} />
-            <Route path="/register" element={<Register user={user} setUser={setUser}/>} />
+            <Route path="/register" element={<Register user={user} setUsers={setUsers}/>} />
           </Routes>
         </Router>
     </div>
