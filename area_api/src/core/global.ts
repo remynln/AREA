@@ -9,7 +9,12 @@ import trello from "./services/trello"
 import github from "./services/github"
 import twitch from "./services/twitch"
 import twitter from "./services/twitter"
+import skyrock from "./services/skyrock"
+import pinterest from "./services/pinterest"
+import discord from "./services/discord"
+import gitlab from "./services/gitlab"
 import { Action, Reaction } from "./types"
+import mixcloud from "./services/mixcloud"
 
 const services = new Map([
     ["google", google],
@@ -20,7 +25,12 @@ const services = new Map([
     ["github", github],
     ["twitch", twitch],
     ["genius", genius],
-    ["twitter", twitter]
+    ["twitter", twitter],
+    ["mixcloud", mixcloud],
+    ["skyrock", skyrock],
+    ["pinterest", pinterest],
+    ["discord", discord],
+    ["gitlab", gitlab]
 ])
 
 function getAction(actionName: string) {

@@ -64,6 +64,7 @@ auth.post('/login', checkBody(["email", "password"]), (req, res, next) => {
         } else {
             res.status(400).json({message: "Invalid password"})
         }
+        return
     }
     db.login(req.body.password, req.body.email).then((token) => {
         if (!token) {

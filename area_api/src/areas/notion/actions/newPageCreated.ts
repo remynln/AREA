@@ -7,7 +7,6 @@ import cron from "node-cron"
 
 class newPageCreated extends Action {
     pageId: string
-    task: ScheduledTask
     lastUpdate: string
     content: any[]
 
@@ -74,24 +73,16 @@ class newPageCreated extends Action {
         this.pageId = await this.getIdFromUrl()
         let page = await this.getPage()
         this.content = await this.getBlocks()
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
 
     override async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 
 let config: ActionConfig = {
     serviceName: "notion",
     name: "newPageCreated",
-    description: "a new notion's page was created",
+    description: "When a new notion's page is created",
     paramTypes: {
         pageUrl: "string"
     },

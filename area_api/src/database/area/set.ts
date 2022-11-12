@@ -5,7 +5,17 @@ import { Area } from '~/core/area';
 import { Types } from 'mongoose';
 
 
-// get the connected service in function of user email
+export async function checkAreaValidity(area: Area) {
+    let user = await User.findOne({ mail: area.accountMail });
+    if (!user) {
+        throw new DatabaseError(`Account with email ${area.accountMail} does not exists`, 404)
+    }
+    let trigger = await Trigger.findOne({ user_id: user._id, title: area.title})
+    if (trigger) {
+        throw new DatabaseError(`Trigger with title '${area.title}' already exists for ${user.username}`, 403)
+    }
+}
+
 export default async function setArea(area: Area) {
     let user = await User.findOne({ mail: area.accountMail });
     if (!user) {

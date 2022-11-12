@@ -13,7 +13,6 @@ interface Stargazer {
 
 class newStar extends Action {
     octokit: Octokit
-    task: ScheduledTask | undefined
     starNumber: number
     async getNumberStargazer() {
         let res = await this.refresh(async () => {
@@ -66,23 +65,15 @@ class newStar extends Action {
             auth: this.token
         })
         this.starNumber = await this.getNumberStargazer()
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
     async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 
 let config: ActionConfig = {
     serviceName: "github",
     name: "newStar",
-    description: "triggers when a star is added to a repository",
+    description: "When a star is added to a repository",
     paramTypes: {
         "creator": "string",
         "repository_name": "string"

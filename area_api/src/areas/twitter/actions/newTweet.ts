@@ -9,7 +9,6 @@ interface ParamTypes {
 }
 
 class newTweet extends Action {
-    task: ScheduledTask
     lastId: string | undefined
     async searchTweet() {
         let params = this.params as ParamTypes
@@ -48,14 +47,8 @@ class newTweet extends Action {
     override async start(): Promise<void> {
         let res = await this.searchTweet()
         this.lastId = res.meta.newest_id
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
     override async stop(): Promise<void> {
-        
     }
 }
 

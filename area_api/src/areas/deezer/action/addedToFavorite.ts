@@ -19,7 +19,6 @@ interface DeezerTrack {
 }
 
 class addedToFavorite extends Action {
-    task: ScheduledTask | undefined
     trackNumber: number
     async getPlaylistLen() {
         let res = await axios.get(`https://api.deezer.com/user/me/tracks?access_token=${this.token}`)
@@ -60,23 +59,15 @@ class addedToFavorite extends Action {
 
     async start(): Promise<void> {
         this.trackNumber = await this.getPlaylistLen()
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
     async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 
 let config: ActionConfig = {
     serviceName: "deezer",
     name: "addedToFavorite",
-    description: "triggers when a track is added to a playlist",
+    description: "When a track is added to a playlist",
     paramTypes: {
     },
     propertiesType: {
