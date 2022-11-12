@@ -67,8 +67,12 @@ function createCron(serviceName: string) {
         console.log("looping", serviceName, selectedCron.current)
         let end = selectedCron.current
         do {
-            if (selectedCron.current >= selectedAreas.length)
+            if (selectedCron.current >= selectedAreas.length) {
+                if (end == 0) {
+                    return
+                }
                 selectedCron.current = 0
+            }
             if (selectedAreas[selectedCron.current].status == "started") {
                 selectedAreas[selectedCron.current].loop()
                 selectedCron.current = selectedCron.current + 1
