@@ -3,6 +3,7 @@ import cron, { ScheduledTask } from "node-cron"
 import axios from "axios";
 import { SkyrockOauth } from "../reactions/addPost";
 import { reseller } from "googleapis/build/src/apis/reseller";
+import { AreaError } from "~/core/errors";
 
 interface Post {
     "id": string,
@@ -49,10 +50,11 @@ class newPost extends Action {
         let newNbPost = (await this.getBlog()).nb_posts
         if (this.nbPost >= newNbPost)
             return
-        let i = this.nbPost
+        let i = 0
         let list: any = await this.getList(Math.floor(i / 10))
-        while (i < newNbPost) {
-            let elem = list[Object.keys(list)[i % 10]]
+        console.log(list)
+        while (i < newNbPost - this.nbPost) {
+            let elem = list[Object.keys(list)[Object.keys(list).length - 1 - (i % 10)]]
             this.trigger({
                 id: elem.id_post,
                 title: elem.title,
@@ -68,12 +70,19 @@ class newPost extends Action {
 
     async start(): Promise<void> {
         this.getBlogUrl = `https://api.skyrock.com/v2/blog/get.json?username=${this.params.ownerName}`
-        this.nbPost = (await this.getBlog()).nb_posts
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
+        try {
+            this.nbPost = (await this.getBlog()).nb_posts
+        } catch (err: any) {
+            if (err.response && err.response.status == 404) {
+                throw new AreaError(`user '${this.params.ownerName}' not found`, 404)
+            }
+            throw err
+        }
+        ///this.task = cron.schedule("*/10 * * * * *", () => {
+        ///    this.loop().catch((err) => {
+        ///        this.error(err)
+        ///    })
+        ///})
     }
     async stop(): Promise<void> {
         if (this.task == undefined)

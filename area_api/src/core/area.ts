@@ -95,6 +95,12 @@ export class Area {
         })
     }
 
+    loop() {
+        this.action.loop().catch((err) => {
+            this.error(new ProcessError(this.actionConf.serviceName || "None", this.actionConf.name, err))
+        })
+    }
+
     constructor(
         accMail: string,
         tokens: Map<string, Tokens>,

@@ -196,6 +196,10 @@ class newMail extends Action {
     static subs: undefined | Map<string, Sub>
     static _sub: undefined | Subscription
 
+    async loop() {
+        
+    }
+
     async _newMessageCallback(mess: any) {
         if (!newMail.subs) {
             return

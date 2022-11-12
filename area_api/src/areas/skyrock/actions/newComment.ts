@@ -79,7 +79,6 @@ class newPost extends Action {
             this.nbComments = (await this.getPost()).nb_comments
         } catch (err: any) {
             if (err.response && err.response.status == 404) {
-                console.log("bizarre")
                 throw new AreaError(`skyblog post '${this.params.postId}' not found`, 404)
             }
             throw err

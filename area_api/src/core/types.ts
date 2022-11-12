@@ -47,6 +47,7 @@ export abstract class Action {
     accountMail: string
     abstract start(): Promise<void>
     abstract stop(): Promise<void>
+    abstract loop(): Promise<void>
 
     constructor(
         trigger: (properties: any) => void,

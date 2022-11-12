@@ -1,5 +1,7 @@
 import { AxiosError } from "axios";
 import { Types } from "mongoose";
+import { ScheduledTask } from "node-cron";
+import cron from "node-cron";
 import db from "~/database/db";
 import { Area } from "./area";
 import { AreaError, DatabaseError, ProcessError } from "./errors";
@@ -8,6 +10,12 @@ import { ActionConfig, ReactionConfig, Tokens } from "./types";
 
 // This map stores areas instances, with db trigger id as key
 var areas: Map<string, Area> = new Map([])
+
+// This map stores areas instances, with action'sService name as key
+var areasServiceIndex: Map<string, Area[]> = new Map([])
+
+//cron associated with service to poll event from actions
+var cronTasks: Map<string, { task: ScheduledTask, current: number}> = new Map([])
 
 async function filterAsync<T>(arr: T[], predicate: (item: T) => Promise<boolean>) {
     const results: boolean[] = []
@@ -39,6 +47,32 @@ export interface AreaConfig {
     reaction: { conf: ReactionConfig, params: any }
 }
 
+function createCron(serviceName: string) {
+    console.log("cron creation")
+    return cron.schedule("*/5 * * * * *", () => {
+        let selectedCron = cronTasks.get(serviceName)
+        if (!selectedCron)
+        return
+        let selectedAreas = areasServiceIndex.get(serviceName)
+        if (!selectedAreas)
+        return
+        if (selectedAreas.length == 0)
+        return
+        console.log("looping", serviceName, selectedCron.current)
+        let end = selectedCron.current
+        do {
+            if (selectedCron.current >= selectedAreas.length)
+                selectedCron.current = 0
+            if (selectedAreas[selectedCron.current].status == "started") {
+                selectedAreas[selectedCron.current].loop()
+                selectedCron.current = selectedCron.current + 1
+                return
+            }
+            selectedCron.current = selectedCron.current + 1
+        } while (selectedCron.current != end)
+    })
+}
+
 const AreaInstances = {
     get(id: string) {
         return areas.get(id)
@@ -47,6 +81,22 @@ const AreaInstances = {
         let user = await db.user.get(accountId)
         return Array.from(areas.entries())
             .filter(([_, value]) => value.accountMail == user.mail)
+    },
+    async addToCronTasks(area: Area) {
+        let serviceName = area.actionConf.serviceName || ''
+        var selected = areasServiceIndex.get(serviceName)
+        if (!selected) {
+            selected = []
+            areasServiceIndex.set(serviceName, selected)
+        }
+        selected.push(area)
+        if (cronTasks.has(serviceName))
+            return
+        var newCron = createCron(serviceName)
+        cronTasks.set(serviceName, {
+            task: newCron,
+            current: 0
+        })
     },
     async add(area: AreaConfig, accountMail: string) {
         let _tokens = tokens.get(accountMail)
@@ -65,8 +115,10 @@ const AreaInstances = {
             area.reaction,
             callbackErrorFun
         )
+        await db.area.checkValidity(instance)
         await instance.start()
         let id = await db.area.set(instance)
+        this.addToCronTasks(instance)
         areas.set(id.toHexString(), instance)
     },
     async load() {
@@ -98,8 +150,10 @@ const AreaInstances = {
                     callbackErrorFun
                 )
                 areas.set(area._id.toHexString(), areaInstance)
+                this.addToCronTasks(areaInstance)
                 if (area.status == "enabled" && areaInstance.status != "locked") {
                     await areaInstance.start()
+                    await new Promise(r => setTimeout(r, 2000));
                 }
                 if (area.status == "locked")
                     areaInstance.status = "locked"
