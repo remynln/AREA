@@ -4,11 +4,17 @@ import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import axios from "axios";
 import { OAuth } from "oauth";
+import addPost from "~/areas/skyrock/reactions/addPost"
+import newPost from "~/areas/skyrock/actions/newPost"
 var SkyrockStrategy = require("~/strategies/skyrock");
 
 const skyrock: Service = {
-    actions: new Map([]),
-    reactions: new Map([]),
+    actions: new Map([
+        ["newPost", newPost]
+    ]),
+    reactions: new Map([
+        ["addPost", addPost]
+    ]),
     authParams: {
         accessType: 'offline',
         approvalPrompt: 'force',
@@ -44,8 +50,8 @@ const skyrock: Service = {
             }).then((res) => {
                 let cbObj: OAuthCallbackObj = {
                     data: res.data.id_user.toString(),
-                    accessToken: accessToken,
-                    refreshToken: refreshToken,
+                    accessToken: accessToken + " " + refreshToken,
+                    refreshToken: '',
                     username: res.data.username
                 }
                 let accountToken = req.query.state;
@@ -54,7 +60,7 @@ const skyrock: Service = {
                     return
                 }
                 let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
-                db.setToken(accessToken, refreshToken, mail, 'trello').then(() => {
+                db.setToken(accessToken + " " + refreshToken, "", mail, 'skyrock').then(() => {
                     callback(null, cbObj)
                 })    
             }).catch((err) => {
