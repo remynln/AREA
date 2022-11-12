@@ -88,6 +88,18 @@ flutter:
      - assets/dashboard/service/twitch_not_connected.png
      - assets/dashboard/service/github_connected.png
      - assets/dashboard/service/github_not_connected.png
+     - assets/dashboard/service/notion_connected.png
+     - assets/dashboard/service/notion_not_connected.png
+     - assets/dashboard/service/discord_connected.png
+     - assets/dashboard/service/discord_not_connected.png
+     - assets/dashboard/service/mixcloud_connected.png
+     - assets/dashboard/service/mixcloud_not_connected.png
+     - assets/dashboard/service/skyrock_connected.png
+     - assets/dashboard/service/skyrock_not_connected.png
+     - assets/dashboard/service/genius_connected.png
+     - assets/dashboard/service/genius_not_connected.png
+     - assets/dashboard/service/gitlab_connected.png
+     - assets/dashboard/service/gitlab_not_connected.png
 
   fonts:
     - family: RobotoMono
