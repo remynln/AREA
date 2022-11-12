@@ -3,6 +3,7 @@ import cron, { ScheduledTask } from "node-cron"
 import axios from "axios";
 import { SkyrockOauth } from "../reactions/addPost";
 import { reseller } from "googleapis/build/src/apis/reseller";
+import { AreaError } from "~/core/errors";
 
 interface PostComment {
     id: string,
@@ -74,7 +75,15 @@ class newPost extends Action {
 
     async start(): Promise<void> {
         this.getPostUrl = `https://api.skyrock.com/v2/blog/get_post.json?id_post=${this.params.postId}`
-        this.nbComments = (await this.getPost()).nb_comments
+        try {
+            this.nbComments = (await this.getPost()).nb_comments
+        } catch (err: any) {
+            if (err.response && err.response.status == 404) {
+                console.log("bizarre")
+                throw new AreaError(`skyblog post '${this.params.postId}' not found`, 404)
+            }
+            throw err
+        }
         this.task = cron.schedule("*/10 * * * * *", () => {
             this.loop().catch((err) => {
                 this.error(err)
