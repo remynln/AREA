@@ -3,10 +3,13 @@ import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import axios from "axios";
+
+import userChanged from '~/areas/discord/action/userChanged'
 var DiscordStrategy = require("passport-discord").Strategy
 
 const discord: Service = {
     actions: new Map([
+        ["userChanged", userChanged],
     ]),
     reactions: new Map([
     ]),
