@@ -23,36 +23,25 @@ class projectUpdated extends Action {
 
     async getNewInfo(info: any) {
         let res: any
-        let current_name: string = ""
-        let current_description: string = ""
-        await this.getInfo()
-        info.data.map((item: any) => {
-            current_name = item.name,
-            current_description = item.description
-        })
+        let current_name: string = info.data.name
+        let current_description: string = info.data.description
         if (current_name != this.name || current_description != this.description) {
             let repository_id: number = this.params.repository_id
             res = await await axios.get(`https://gitlab.com/api/v4/projects/${repository_id}?access_token=${this.token}`)
             this.name = current_name
             this.description = current_description
         }
-        let mapped: ProjectInfo = res.data.map((item: any) => {
-            return {
-                name: item.name,
-                description: item.description
-            } as ProjectInfo
-        })
+        let mapped: ProjectInfo = {
+            name: res.data.name,
+            description: res.data.description
+        }
         return mapped
     }
 
     async loop() {
         let info = await this.getInfo()
-        let current_name: string = ""
-        let current_description: string = ""
-        info.data.map((item: any) => {
-            current_name = item.name,
-            current_description = item.description
-        })
+        let current_name: string = info.data.name
+        let current_description: string = info.data.description
         if (current_name != this.name || current_description != this.description) {
             let newInfos = await this.getNewInfo(info)
             this.trigger(newInfos)
@@ -64,10 +53,8 @@ class projectUpdated extends Action {
 
     async start(): Promise<void> {
         let info = await this.getInfo()
-        info.data.map((item: any) => {
-            this.name = item.name,
-            this.description = item.description
-        })
+        this.name = info.data.name,
+        this.description = info.data.description
         this.task = cron.schedule("*/10 * * * * *", () => {
             this.loop().catch((err) => {
                 this.error(err)
