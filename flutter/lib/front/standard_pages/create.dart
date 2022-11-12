@@ -589,7 +589,7 @@ class _CreateWidgetState extends State<CreateWidget> {
         child: TextButton(
             onPressed: (() {
               _condition.text +=
-                  "[Action.${_firstDropDown}] ${_comparatorDropDown} ${_secondFree.text.isEmpty ? "[Action.${_secondDropDown}]" : _secondFree.text}";
+                  "Action.${_firstDropDown} ${_comparatorDropDown} ${_secondFree.text.isEmpty ? "Action.${_secondDropDown}" : "\"${_secondFree.text}\""}";
               setState(() {});
             }),
             style: ButtonStyle(
