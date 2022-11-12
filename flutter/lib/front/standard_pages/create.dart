@@ -429,6 +429,9 @@ class _CreateWidgetState extends State<CreateWidget> {
       list.add(Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: TextField(
+            onTap: () {
+              _currentField = key;
+            },
             onChanged: (String change) {
               _currentField = key;
             },
