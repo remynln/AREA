@@ -68,11 +68,12 @@ class _CreateWidgetState extends State<CreateWidget> {
       list.add(GestureDetector(
           onTap: () {
             if (isAction) {
-              _actionService.name = Services().allServices()[index].name;
+              _actionService = Services().allServices()[index];
             } else {
-              _reactionService.name = Services().allServices()[index].name;
+              _reactionService = Services().allServices()[index];
             }
-            setState(() {});
+            setStateWidget(() {});
+            Navigator.of(context).pop();
           },
           child: Services().allServices()[index].name ==
                   (isAction ? _actionService.name : _reactionService.name)
@@ -81,34 +82,6 @@ class _CreateWidgetState extends State<CreateWidget> {
                   filterQuality: FilterQuality.high)));
       list.add(const SizedBox(height: 20));
     }
-    list.add(Container(
-      height: 60,
-      padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(
-        onPressed: () {
-          if (isAction && _actionService.name.isNotEmpty) {
-            _actionService = Services()
-                .allServices()
-                .firstWhere((element) => _actionService.name == element.name);
-            setStateWidget(() {});
-          } else if (!isAction && _reactionService.name.isNotEmpty) {
-            _reactionService = Services()
-                .allServices()
-                .firstWhere((element) => _reactionService.name == element.name);
-            setStateWidget(() {});
-          } else {
-            return;
-          }
-          Navigator.of(context).pop();
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: switchColor(
-                isAction ? _actionService.name : _reactionService.name)),
-        child: const Text(
-          "CONFIRM",
-        ),
-      ),
-    ));
     return (Column(children: list));
   }
 
@@ -211,8 +184,10 @@ class _CreateWidgetState extends State<CreateWidget> {
           width: 223,
           child: GestureDetector(
               onTap: () {
-                _actionTrigger.name = actionsAnswer[index].name;
-                setState(() {});
+                _actionTrigger = actionsAnswer
+                    .firstWhere((element) => actionsAnswer[index].name == element.name);
+                setStateWidget(() {});
+                Navigator.of(context).pop();
               },
               child: actionsAnswer[index].name == _actionTrigger.name
                   ? getTriggerText(
@@ -225,27 +200,6 @@ class _CreateWidgetState extends State<CreateWidget> {
                       const Color.fromRGBO(62, 149, 49, 1)))));
       list.add(const SizedBox(height: 20));
     }
-    list.add(Container(
-      height: 60,
-      padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(
-        onPressed: () {
-          if (_actionTrigger.name.isNotEmpty) {
-            _actionTrigger = actionsAnswer
-                .firstWhere((element) => _actionTrigger.name == element.name);
-            setStateWidget(() {});
-          } else {
-            return;
-          }
-          Navigator.of(context).pop();
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: switchColor(_actionTrigger.name)),
-        child: const Text(
-          "CONFIRM",
-        ),
-      ),
-    ));
     return (Column(children: list));
   }
 
@@ -262,8 +216,10 @@ class _CreateWidgetState extends State<CreateWidget> {
           width: 223,
           child: GestureDetector(
               onTap: () {
-                _reactionTrigger.name = reactionsAnswer[index].name;
-                setState(() {});
+                _reactionTrigger = reactionsAnswer
+                    .firstWhere((element) => reactionsAnswer[index].name == element.name);
+                setStateWidget(() {});
+                Navigator.of(context).pop();
               },
               child: reactionsAnswer[index].name == _reactionTrigger.name
                   ? getTriggerText(
@@ -276,27 +232,6 @@ class _CreateWidgetState extends State<CreateWidget> {
                       const Color.fromRGBO(62, 149, 49, 1)))));
       list.add(const SizedBox(height: 20));
     }
-    list.add(Container(
-      height: 60,
-      padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(
-        onPressed: () {
-          if (_reactionTrigger.name.isNotEmpty) {
-            _reactionTrigger = reactionsAnswer
-                .firstWhere((element) => _reactionTrigger.name == element.name);
-            setStateWidget(() {});
-          } else {
-            return;
-          }
-          Navigator.of(context).pop();
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: switchColor(_reactionTrigger.name)),
-        child: const Text(
-          "CONFIRM",
-        ),
-      ),
-    ));
     return (Column(children: list));
   }
 
@@ -307,7 +242,7 @@ class _CreateWidgetState extends State<CreateWidget> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+              scrollDirection: Axis.vertical,
               child: displayActionTriggers(
                   snapshot.data, context, setState, setStateWidget));
         } else {
@@ -494,6 +429,9 @@ class _CreateWidgetState extends State<CreateWidget> {
       list.add(Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: TextField(
+            onTap: () {
+              _currentField = key;
+            },
             onChanged: (String change) {
               _currentField = key;
             },
@@ -654,7 +592,7 @@ class _CreateWidgetState extends State<CreateWidget> {
         child: TextButton(
             onPressed: (() {
               _condition.text +=
-                  "[Action.${_firstDropDown}] ${_comparatorDropDown} ${_secondFree.text.isEmpty ? "[Action.${_secondDropDown}]" : _secondFree.text}";
+                  "Action.${_firstDropDown} ${_comparatorDropDown} ${_secondFree.text.isEmpty ? "Action.${_secondDropDown}" : "\"${_secondFree.text}\""}";
               setState(() {});
             }),
             style: ButtonStyle(
@@ -793,6 +731,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                 _actionTrigger.parameters[key] = value.text;
               }
             });
+            FocusScope.of(context).unfocus();
             setState(() {});
           },
           style: ElevatedButton.styleFrom(
@@ -874,6 +813,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                 _reactionTrigger.parameters[key] = value.text;
               }
             });
+            FocusScope.of(context).unfocus();
             setState(() {});
           },
           style: ElevatedButton.styleFrom(
@@ -1012,6 +952,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                     return;
                   }
                   _titleSubmitment = true;
+                  FocusScope.of(context).unfocus();
                   setState(() {});
                 },
                 style: ElevatedButton.styleFrom(
