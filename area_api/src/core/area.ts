@@ -24,6 +24,7 @@ export class Area {
     actionConf: ActionConfig
     reactionConf: ReactionConfig
     status: "started" | "stopped" | "starting" | "stopping" | "errored" | "locked" = "stopped"
+    dbStatus: string
     error: (err: ProcessError) => void
 
     async refreshTokenFunc<T>(

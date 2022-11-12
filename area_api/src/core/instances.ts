@@ -8,6 +8,12 @@ import { AreaError, DatabaseError, ProcessError } from "./errors";
 import global from "./global";
 import { ActionConfig, ReactionConfig, Tokens } from "./types";
 
+
+const AREA_START_DELTA = 2000
+const SERVICE_START_DELTA = 166
+const AREA_LOOP_DELTA = "*/5 * * * * *"
+const SERVICE_LOOP_DELTA = 416
+
 // This map stores areas instances, with db trigger id as key
 var areas: Map<string, Area> = new Map([])
 
@@ -49,15 +55,15 @@ export interface AreaConfig {
 
 function createCron(serviceName: string) {
     console.log("cron creation")
-    return cron.schedule("*/5 * * * * *", () => {
+    return cron.schedule(AREA_LOOP_DELTA, () => {
         let selectedCron = cronTasks.get(serviceName)
         if (!selectedCron)
-        return
+            return
         let selectedAreas = areasServiceIndex.get(serviceName)
         if (!selectedAreas)
-        return
+            return
         if (selectedAreas.length == 0)
-        return
+            return
         console.log("looping", serviceName, selectedCron.current)
         let end = selectedCron.current
         do {
@@ -71,6 +77,15 @@ function createCron(serviceName: string) {
             selectedCron.current = selectedCron.current + 1
         } while (selectedCron.current != end)
     })
+}
+
+async function launchAreasDiffered(areas: Area[]) {
+    for (let i of areas) {
+        if (i.dbStatus != "enabled" || i.status == "locked")
+            continue;
+        i.start()
+        await new Promise(r => setTimeout(r, AREA_START_DELTA));
+    }
 }
 
 const AreaInstances = {
@@ -121,6 +136,21 @@ const AreaInstances = {
         this.addToCronTasks(instance)
         areas.set(id.toHexString(), instance)
     },
+    async loadStart() {
+        let promises: Promise<void>[] = []
+        for (let [key, value] of areasServiceIndex.entries()) {
+            promises.push(launchAreasDiffered(value))
+            await new Promise(r => setTimeout(r, SERVICE_START_DELTA));
+        }
+        await Promise.all(promises)
+        for (let [key, value] of areasServiceIndex.entries()) {
+            cronTasks.set(key, {
+                task: createCron(key),
+                current: 0
+            })
+            await new Promise(r => setTimeout(r, SERVICE_LOOP_DELTA));
+        }
+    },
     async load() {
         console.log("starting area instances")
         await db.area.forEach(async (accMail, newTokens, area) => {
@@ -150,17 +180,24 @@ const AreaInstances = {
                     callbackErrorFun
                 )
                 areas.set(area._id.toHexString(), areaInstance)
-                this.addToCronTasks(areaInstance)
-                if (area.status == "enabled" && areaInstance.status != "locked") {
-                    await areaInstance.start()
-                    await new Promise(r => setTimeout(r, 2000));
+                var selected = areasServiceIndex.get(areaInstance.actionConf.serviceName || '')
+                if (!selected) {
+                    selected = []
+                    areasServiceIndex.set(areaInstance.actionConf.serviceName || '', selected)
                 }
+                selected.push(areaInstance)
+                areaInstance.dbStatus = area.status
                 if (area.status == "locked")
                     areaInstance.status = "locked"
             } catch (err) {
                 callbackErrorFun(new ProcessError("", "area init", err))
             }
         })
+        try {
+            await this.loadStart()
+        } catch (err) {
+            callbackErrorFun(new ProcessError("", "area start", err))
+        }
         console.log("instances started")
     },
     async enable(areaId: string) {
