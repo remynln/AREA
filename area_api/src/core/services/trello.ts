@@ -25,7 +25,7 @@ const trello: Service = {
         {
             consumerKey: process.env.TRELLO_CLIENT_ID,
             consumerSecret: process.env.TRELLO_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/service/trello/callback",
+            callbackURL: process.env.DOMAIN + "/service/trello/callback",
             passReqToCallback: true,
             trelloParams: {
                 scope: "read,write",

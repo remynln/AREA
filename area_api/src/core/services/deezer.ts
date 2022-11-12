@@ -27,7 +27,7 @@ const deezer: Service = {
         {
             clientID: process.env.DEEZER_CLIENT_ID,
             clientSecret: process.env.DEEZER_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/service/deezer/callback",
+            callbackURL: process.env.DOMAIN + "/service/deezer/callback",
             passReqToCallback: true,
             scope: ["basic_access", "delete_library", "manage_library", "offline_access", "listening_history"]
         },

@@ -17,7 +17,7 @@ const twitch: Service = {
     strategy: new TwitchStrategy({
             clientID: process.env.TWITCH_CLIENT_ID,
             clientSecret: process.env.TWITCH_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/service/twitch/callback",
+            callbackURL: process.env.DOMAIN + "/service/twitch/callback",
             passReqToCallback: true,
             scope:  ['user_read', 'user:read:email', 'user:manage:whispers', 'channel:read:subscriptions', 'user:manage:blocked_users', 'user:edit:follows']
         },

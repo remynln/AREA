@@ -26,7 +26,7 @@ const github: Service = {
         {
             clientID: process.env.GITHUB_CLIENT_ID,
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/service/github/callback",
+            callbackURL: process.env.DOMAIN + "/service/github/callback",
             passReqToCallback: true,
             scope: ["repo", "gist", "user"]
         },

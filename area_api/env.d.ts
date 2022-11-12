@@ -25,6 +25,7 @@ declare global {
         DB_PASSWORD: string;
         ROOT_PASSWORD: string;
         SESSION_SECRET: string;
+        DOMAIN: string;
       }
     }
   }

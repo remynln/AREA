@@ -15,7 +15,7 @@ const genius: Service = {
         {
             clientID: process.env.GENIUS_CLIENT_ID || '',
             clientSecret: process.env.GENIUS_CLIENT_SECRET || '',
-            callbackURL: "http://localhost:8080/service/genius/callback",
+            callbackURL: process.env.DOMAIN + "/service/genius/callback",
             scope: ["me", "create_annotation", "manage_annotation", "vote"]
         },
         (req: any, accessToken: string, refreshToken: any, profile: any, callback: any) => {

@@ -26,7 +26,7 @@ const twitter: Service = {
         {
             consumerKey: process.env.TWITTER_CLIENT_ID || '',
             consumerSecret: process.env.TWITTER_CLIENT_SECRET || '',
-            callbackURL: "http://localhost:8080/service/twitter/callback",
+            callbackURL: process.env.DOMAIN + "/service/twitter/callback",
             passReqToCallback: true,
             includeStatus: true
         },

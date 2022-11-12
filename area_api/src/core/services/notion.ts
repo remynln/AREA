@@ -23,7 +23,7 @@ const notion: Service = {
         {
             clientID: process.env.NOTION_CLIENT_ID || '',
             clientSecret: process.env.NOTION_CLIENT_SECRET || '',
-            callbackURL: "http://localhost:8080/service/notion/callback"
+            callbackURL: process.env.DOMAIN + "/service/notion/callback"
         },
         (reqUkn, accessToken, refreshToken, oauthData, profile, callback: any) => {
             let req = reqUkn as any

@@ -27,7 +27,7 @@ const spotify: Service = {
         {
             clientID: process.env.SPOTIFY_CLIENT_ID,
             clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/service/spotify/callback",
+            callbackURL: process.env.DOMAIN + "/service/spotify/callback",
             passReqToCallback: true,
             scope: [
                 "playlist-read-private",
