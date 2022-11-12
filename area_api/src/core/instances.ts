@@ -227,6 +227,18 @@ const AreaInstances = {
             throw new DatabaseError(`area with id '${area} not found`, 404)
         if (area.status != "stopped" && area.status != "locked" && area.status != "errored")
             area.stop()
+        let selected = areasServiceIndex.get(area.actionConf.serviceName || '')
+        if (!selected)
+            return
+        let index = selected.indexOf(area)
+        if (index == -1)
+            return
+        selected.splice(index, 1)
+        let selectedCron = cronTasks.get(area.actionConf.serviceName || '')
+        if (!selectedCron)
+            return
+        if (selectedCron.current > index)
+            selectedCron.current--
         areas.delete(areaId)
         await db.area.delete(areaId)
     },
