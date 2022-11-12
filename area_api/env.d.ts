@@ -15,6 +15,12 @@ declare global {
         GITHUB_CLIENT_SECRET: string;
         TWITCH_CLIENT_ID: string;
         TWITCH_CLIENT_SECRET: string;
+        PINTEREST_CLIENT_ID: string;
+        PINTEREST_CLIENT_SECRET: string;
+        DISCORD_CLIENT_ID: string;
+        DISCORD_CLIENT_SECRET: string;
+        GITLAB_CLIENT_ID: string;
+        GITLAB_CLIENT_SECRET: string;
         JWT_KEY: string;
         GOOGLE_APPLICATION_CREDENTIALS: string;
         DB_USER: string;

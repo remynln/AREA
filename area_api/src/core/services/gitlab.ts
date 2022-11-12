@@ -6,18 +6,24 @@ import axios from "axios";
 
 import addStar from '~/areas/gitlab/reactions/addStar'
 import removeStar from '~/areas/gitlab/reactions/removeStar'
+import fork from '~/areas/gitlab/reactions/fork'
+import edit from '~/areas/gitlab/reactions/edit'
 import newStar from '~/areas/gitlab/actions/newStar'
 import starRemoved from '~/areas/gitlab/actions/starRemoved'
+import projectUpdated from '~/areas/gitlab/actions/projectUpdated'
 var GitlabStrategy = require("passport-gitlab2").Strategy
 
 const gitlab: Service = {
     actions: new Map([
         ["newStar", newStar],
-        ["starRemoved", starRemoved]
+        ["starRemoved", starRemoved],
+        ["projectUpdated", projectUpdated]
     ]),
     reactions: new Map([
         ["addStar", addStar],
-        ["removeStar", removeStar]
+        ["removeStar", removeStar],
+        ["fork", fork],
+        ["edit", edit]
     ]),
     authParams: {
         accessType: 'offline',
