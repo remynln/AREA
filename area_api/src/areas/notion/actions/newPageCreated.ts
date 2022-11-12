@@ -82,7 +82,7 @@ class newPageCreated extends Action {
 let config: ActionConfig = {
     serviceName: "notion",
     name: "newPageCreated",
-    description: "a new notion's page was created",
+    description: "When a new notion's page is created",
     paramTypes: {
         pageUrl: "string"
     },

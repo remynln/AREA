@@ -69,7 +69,7 @@ class addedToPlaylist extends Action {
 let config: ActionConfig = {
     serviceName: "deezer",
     name: "addedToPlaylist",
-    description: "triggers when a track is added to a playlist",
+    description: "When a track is added to a playlist",
     paramTypes: {
         "playlistId": "number" 
     },

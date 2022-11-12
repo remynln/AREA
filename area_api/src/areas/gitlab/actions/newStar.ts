@@ -60,7 +60,7 @@ class newStar extends Action {
 let config: ActionConfig = {
     serviceName: "gitlab",
     name: "newStar",
-    description: "triggers when a star is added to a repository",
+    description: "When a star is added to a repository",
     paramTypes: {
         repository_id: "number"
     },

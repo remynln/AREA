@@ -63,7 +63,7 @@ class projectUpdated extends Action {
 let config: ActionConfig = {
     serviceName: "gitlab",
     name: "projectUpdated",
-    description: "triggers when a project name or description change",
+    description: "When a project name or description change",
     paramTypes: {
         repository_id: "number"
     },

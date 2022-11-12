@@ -76,7 +76,7 @@ class userChanged extends Action {
 let config: ActionConfig = {
     serviceName: "discord",
     name: "userChanged",
-    description: "triggers when a user name, avatar or banner color changed",
+    description: "When a user name, avatar or banner color changed",
     paramTypes: {
     },
     propertiesType: {

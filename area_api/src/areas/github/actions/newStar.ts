@@ -73,7 +73,7 @@ class newStar extends Action {
 let config: ActionConfig = {
     serviceName: "github",
     name: "newStar",
-    description: "triggers when a star is added to a repository",
+    description: "When a star is added to a repository",
     paramTypes: {
         "creator": "string",
         "repository_name": "string"

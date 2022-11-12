@@ -80,7 +80,7 @@ class addedToFavorite extends Action {
 let config: ActionConfig = {
     serviceName: "spotify",
     name: "addedToLibrary",
-    description: "triggers when a track is added to a playlist",
+    description: "When a track is added to favorite",
     paramTypes: {
     },
     propertiesType: {

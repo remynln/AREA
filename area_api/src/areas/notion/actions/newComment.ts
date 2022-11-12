@@ -62,7 +62,7 @@ class newComment extends Action {
 let config: ActionConfig = {
     serviceName: "notion",
     name: "newComment",
-    description: "a new notion's page was created",
+    description: "When a new comment is posted",
     paramTypes: {
         pageId: "string"
     },

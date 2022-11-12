@@ -60,7 +60,7 @@ class starRemoved extends Action {
 let config: ActionConfig = {
     serviceName: "gitlab",
     name: "starRemoved",
-    description: "triggers when a star is removed from a repository",
+    description: "When a star is removed from a repository",
     paramTypes: {
         repository_id: "number"
     },

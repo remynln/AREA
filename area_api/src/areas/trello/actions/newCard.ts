@@ -43,7 +43,7 @@ class newCard extends Action {
 let config: ActionConfig = {
     serviceName: "trello",
     name: "newCard",
-    description: "When a new list is created",
+    description: "When a new card is created",
     paramTypes: {
         "boardId": "string"
     },
