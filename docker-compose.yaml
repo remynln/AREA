@@ -20,7 +20,8 @@ services:
       - client_mobile
     restart: always
     volumes:
-      - apk-volume:/usr/src/app/build/apk
+      - apk-volume:/app
+    entrypoint: ["bash", "post-install.sh"]
 
 volumes:
   apk-volume:
