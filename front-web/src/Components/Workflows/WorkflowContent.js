@@ -141,7 +141,7 @@ export const WorkflowContent = (props) => {
 
     const addCondition = async () => {
         if (props.conditions === "") {
-            await props.setConditions("( Action." + conditionText + " " + selectedOperator + " Action." + selectedProperty)
+            await props.setConditions("( " + conditionText + " " + selectedOperator + " Action." + selectedProperty)
         } else {
             if (conditionState === "newCondition")
                 await props.setConditions(props.conditions + " ) " + conditionSeparator + " ( " + conditionText + " " + selectedOperator + " Action." + selectedProperty)
