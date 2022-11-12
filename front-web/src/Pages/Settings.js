@@ -3,7 +3,13 @@ import PersonIcon from '@mui/icons-material/Person';
 import ShieldIcon from '@mui/icons-material/Shield';
 import DownloadIcon from '@mui/icons-material/Download';
 import Admin_False from "../img/Admin_False.png"
+import Admin_Team from "../img/Admin_Team.png"
+import Admin_Title_1 from "../img/Admin_Title_1.png"
+import Admin_Title_2 from "../img/Admin_Title_2.png"
+import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
+import axios from 'axios';
 import './Home.css'
 import './Settings.css'
 
@@ -11,11 +17,30 @@ export const Settings = (props) => {
     const [activeRow, setActiveRow] = useState("user")
 
     const checkRowActive = (row) => {
-        console.log(row)
         if (activeRow === row) {
             return {backgroundColor: "#BF1B2C", color: "white", fontWeight: "bold"}
         }
         return (undefined)
+    }
+
+    const deleteUser = async (user) => {
+        try {
+            await axios.delete("/user/" + user.id, { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+
+            await loadUsers()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const loadUsers = async () => {
+      try {
+            const res = await axios.get("/users", { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+
+            props.setUsers(res.data)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -72,7 +97,29 @@ export const Settings = (props) => {
                                 <p className='settings__content__admin__false__title'>YOU ARE NOT AN ADMIN !</p>
                             </div>
                             <div className='settings__content__admin__true' style={props.user.admin === true ? undefined : {display: "none"}}>
-
+                                <p className='settings__content__admin__team__title'> <img src={Admin_Title_1} alt='Admin Img'
+                                    className="settings__content__admin__team__title__img"/>WELCOME ON SERGIFY ADMIN TEAM <img className='settings__content__admin__team__title__img' src={Admin_Title_2} alt='Admin Img'/></p>
+                                <div className='settings__content__admin__team'>
+                                    <img src={Admin_Team} alt='Admin Team' className='settings__content__admin__team__img'></img>
+                                </div>
+                                <div className='settings__content__admin__content'>
+                                    <p className='settings__content__admin__users__title'>Sergify Users</p>
+                                    <div className='settings__content__admin__content__users'>
+                                        {props.users.map((element, key) => {
+                                            return (
+                                                <div className='settings__content__admin__content__user' key={key}>
+                                                    <PersonIcon />
+                                                    <p className='settings__content__admin__content__user__name'>{element.username}</p>
+                                                    <AlternateEmailIcon />
+                                                    <p className='settings__content__admin__content__user__email'>{element.email}</p>
+                                                    <div className='settings__content__admin__content__user__delete' onClick={() => {deleteUser(element)}}>
+                                                        <DeleteIcon />
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

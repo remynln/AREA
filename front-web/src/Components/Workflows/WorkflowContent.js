@@ -223,6 +223,16 @@ export const WorkflowContent = (props) => {
 
     return (
         <div className="WorkflowContent">
+            <div className="WorkflowInformations">
+                <div className="Parameters">
+                    <p>Title</p>
+                    <input className="TriggerInput" placeholder={"title"} onChange={(event) => {props.setTitle(event.target.value)}}></input>
+                </div>
+                <div className="Parameters">
+                    <p>Description</p>
+                    <input className="TriggerInput" placeholder={"description"} onChange={(event) => {props.setDescription(event.target.value)}}></input>
+                </div>
+            </div>
             <div className='WorkflowBlock'>
                 <p className="WorkflowBlockTitle">Action Services</p>
                 <div className="ActionServices">
@@ -285,7 +295,7 @@ export const WorkflowContent = (props) => {
                 <p className="TriggerSubTitle">Condition & Comparison Operator</p>
                 <div className="TriggerCondition">
                     <div className="TriggerInputBackground">
-                        <input className="TriggerInput" style={{fontSize: "18px"}} placeholder={getSelectedPropertyType()} onChange={(event) => setConditionText(event.target.value)}></input>
+                        <input className="TriggerInput" placeholder={getSelectedPropertyType()} onChange={(event) => setConditionText(event.target.value)}></input>
                     </div>
                     <select className="ConditionDropDown" onChange={(event) => setSelectedOperator(event.target.value)}>
                         {operators.map((element, key) => {

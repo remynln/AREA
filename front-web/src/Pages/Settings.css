@@ -104,7 +104,7 @@
 }
 
 .settings__content__admin__false {
-    width: 100%;
+    width: 110%;
     height: 100%;
     display: flex;
     align-items: center;
@@ -131,6 +131,106 @@
     justify-content: center;
 }
 
+.settings__content__admin__true {
+    width: 110%;
+    height: 100%;
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.settings__content__admin__team {
+    width: 100%;
+    height: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.settings__content__admin__team__img {
+    margin-top: 20vh;
+    width: 35vw;
+}
+
+.settings__content__admin__team__title {
+    width: 100%;
+    text-align: center;
+    font-family: Poppins;
+    animation: color-change 1s infinite;
+    font-size: 22px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+@keyframes color-change {
+  0% { color: red; }
+  25% { color: rgb(255, 217, 0); }
+  50% { color: rgb(43, 255, 0); }
+  75% { color: rgb(0, 225, 255); }
+  100% { color: rgb(25, 0, 255); }
+}
+
+.settings__content__admin__content {
+    margin-top: 30vh;
+    width: 100%;
+    height: 75%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.settings__content__admin__team__title__img {
+    width: 5vw;
+}
+
+.settings__content__admin__users__title {
+    font-weight: bold;
+    color: #EDEDED;
+    font-family: Poppins;
+    font-size: 18px;
+    margin-top: -15vh;
+}
+
+.settings__content__admin__content__users {
+    height: 75%;
+    width: 30vw;
+    border: 1px solid rgb(237, 237, 237, .5);
+    overflow: hidden;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+
+.settings__content__admin__content__user {
+    width: 100%;
+    height: 15%;
+    display: flex;
+    align-items: center;
+    color: #EDEDED;
+    justify-content: center;
+}
+
+.settings__content__admin__content__user__name {
+    margin-right: 1vw;
+    margin-left: 0.5vw;
+}
+
+.settings__content__admin__content__user__email {
+    margin-left: 0.5vw;
+}
+
+.settings__content__admin__content__user__delete {
+    margin-left: 0.5vw;
+    cursor: pointer;
+}
+
+.settings__content__admin__content__user__delete:hover {
+    color: #f10c23;
+}
+
 @media only screen and (max-height: 850px) {
     .settings__content__admin__false__img {
         width: 1550px;
@@ -138,6 +238,10 @@
 
     .settings__content__admin__false__title {
         height: 6vh;
+    }
+
+    .settings__content__admin__team__img {
+        margin-top: 10vh;
     }
 }
 
@@ -185,6 +289,18 @@
         width: 26vw;
         font-size: 16px;
     }
+
+    .settings__content__admin__team__img {
+        width: 40vw;
+    }
+
+    .settings__content__admin__team__title__img {
+        width: 7.5vw;
+    }
+
+    .settings__content__admin__content__users {
+        width: 40vw;
+    }
 }
 
 @media only screen and (max-width: 1100px) {
@@ -194,6 +310,22 @@
 
     .settings__content__admin__false__title {
         width: 30vw;
+    }
+
+    .settings__content__admin__team__img {
+        width: 50vw;
+    }
+
+    .settings__content__admin__team__title {
+        font-size: 18px;
+    }
+
+    .settings__content__admin__content__users {
+        width: 50vw;
+    }
+
+    .settings__content__admin__users__title {
+        margin-top: -20vh;
     }
 }
 
@@ -205,6 +337,14 @@
     .settings__content__admin__false__title {
         width: 35vw;
     }
+
+    .settings__content__admin__team__img {
+        width: 50vw;
+    }
+
+    .settings__content__admin__content__user {
+        font-size: 14px;
+    }
 }
 
 @media only screen and (max-width: 700px) {
@@ -215,6 +355,14 @@
     .settings__content__admin__false__title {
         width: 40vw;
         font-size: 14px;
+    }
+
+    .settings__content__admin__team__img {
+        width: 60vw;
+    }
+
+    .settings__content__admin__content__user {
+        justify-content: flex-start;
     }
 }
 
@@ -229,5 +377,17 @@
 
     .settings__content__admin__false__img {
         padding-top: 175%;
+    }
+
+    .settings__content__admin__team__img {
+        width: 75vw;
+    }
+
+    .settings__content__admin__team__title {
+        font-size: 16px;
+    }
+
+    .settings__content__admin__users__title {
+        margin-top: -30vh;
     }
 }
