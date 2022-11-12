@@ -6,11 +6,13 @@ import axios from "axios";
 import { OAuth } from "oauth";
 import addPost from "~/areas/skyrock/reactions/addPost"
 import newPost from "~/areas/skyrock/actions/newPost"
+import newComment from "~/areas/skyrock/actions/newComment"
 var SkyrockStrategy = require("~/strategies/skyrock");
 
 const skyrock: Service = {
     actions: new Map([
-        ["newPost", newPost]
+        ["newPost", newPost],
+        ["newComment", newComment]
     ]),
     reactions: new Map([
         ["addPost", addPost]
