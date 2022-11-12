@@ -37,6 +37,7 @@ class _CreateWidgetState extends State<CreateWidget> {
   String _firstDropDown = "";
   String _secondDropDown = "";
   String _comparatorDropDown = "";
+  TextEditingController _secondFree = TextEditingController();
   TextEditingController _condition = TextEditingController();
 
   Service _reactionService = Service("", "", "");
@@ -59,51 +60,55 @@ class _CreateWidgetState extends State<CreateWidget> {
       return Container();
     }
     for (var index = 0; index < Services().allServices().length; index++) {
-      if (servicesAnswer.connected.contains(Services().allServices()[index].name) == false) {
+      if (servicesAnswer.connected
+              .contains(Services().allServices()[index].name) ==
+          false) {
         continue;
       }
       list.add(GestureDetector(
-              onTap: () {
-                if (isAction) {
-                  _actionService.name = Services().allServices()[index].name;
-                } else {
-                  _reactionService.name = Services().allServices()[index].name;
-                }
-                setState(() {});
-              },
-              child: Services().allServices()[index].name ==
-                      (isAction ? _actionService.name : _reactionService.name)
-                  ? Image.asset(Services().allServices()[index].not_connected_image)
-                  : Image.asset(Services().allServices()[index].connected_image,
-                      filterQuality: FilterQuality.high)));
+          onTap: () {
+            if (isAction) {
+              _actionService.name = Services().allServices()[index].name;
+            } else {
+              _reactionService.name = Services().allServices()[index].name;
+            }
+            setState(() {});
+          },
+          child: Services().allServices()[index].name ==
+                  (isAction ? _actionService.name : _reactionService.name)
+              ? Image.asset(Services().allServices()[index].not_connected_image)
+              : Image.asset(Services().allServices()[index].connected_image,
+                  filterQuality: FilterQuality.high)));
       list.add(const SizedBox(height: 20));
     }
     list.add(Container(
-          height: 60,
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              if (isAction && _actionService.name.isNotEmpty) {
-                _actionService = Services().allServices().firstWhere(
-                    (element) => _actionService.name == element.name);
-                setStateWidget(() {});
-              } else if (!isAction && _reactionService.name.isNotEmpty) {
-                _reactionService = Services().allServices().firstWhere(
-                    (element) => _reactionService.name == element.name);
-                setStateWidget(() {});
-              } else {
-                return;
-              }
-              Navigator.of(context).pop();
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: switchColor(
-                    isAction ? _actionService.name : _reactionService.name)),
-            child: const Text(
-              "CONFIRM",
-            ),
-          ),
-        ));
+      height: 60,
+      padding: const EdgeInsets.all(8.0),
+      child: ElevatedButton(
+        onPressed: () {
+          if (isAction && _actionService.name.isNotEmpty) {
+            _actionService = Services()
+                .allServices()
+                .firstWhere((element) => _actionService.name == element.name);
+            setStateWidget(() {});
+          } else if (!isAction && _reactionService.name.isNotEmpty) {
+            _reactionService = Services()
+                .allServices()
+                .firstWhere((element) => _reactionService.name == element.name);
+            setStateWidget(() {});
+          } else {
+            return;
+          }
+          Navigator.of(context).pop();
+        },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: switchColor(
+                isAction ? _actionService.name : _reactionService.name)),
+        child: const Text(
+          "CONFIRM",
+        ),
+      ),
+    ));
     return (Column(children: list));
   }
 
@@ -151,14 +156,14 @@ class _CreateWidgetState extends State<CreateWidget> {
                   ),
                 ),
                 title: Text(
-                      (isAction ? "Action's Service" : "Reaction's Service"),
-                      style: const TextStyle(
-                          fontSize: 23,
-                          color: Colors.white,
-                          fontFamily: "RobotoMono",
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
+                  (isAction ? "Action's Service" : "Reaction's Service"),
+                  style: const TextStyle(
+                      fontSize: 23,
+                      color: Colors.white,
+                      fontFamily: "RobotoMono",
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
                 content: SizedBox(
                     height: 500,
                     width: 600,
@@ -221,26 +226,26 @@ class _CreateWidgetState extends State<CreateWidget> {
       list.add(const SizedBox(height: 20));
     }
     list.add(Container(
-          height: 60,
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              if (_actionTrigger.name.isNotEmpty) {
-                _actionTrigger = actionsAnswer.firstWhere(
-                    (element) => _actionTrigger.name == element.name);
-                setStateWidget(() {});
-              } else {
-                return;
-              }
-              Navigator.of(context).pop();
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: switchColor(_actionTrigger.name)),
-            child: const Text(
-              "CONFIRM",
-            ),
-          ),
-        ));
+      height: 60,
+      padding: const EdgeInsets.all(8.0),
+      child: ElevatedButton(
+        onPressed: () {
+          if (_actionTrigger.name.isNotEmpty) {
+            _actionTrigger = actionsAnswer
+                .firstWhere((element) => _actionTrigger.name == element.name);
+            setStateWidget(() {});
+          } else {
+            return;
+          }
+          Navigator.of(context).pop();
+        },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: switchColor(_actionTrigger.name)),
+        child: const Text(
+          "CONFIRM",
+        ),
+      ),
+    ));
     return (Column(children: list));
   }
 
@@ -361,14 +366,14 @@ class _CreateWidgetState extends State<CreateWidget> {
                   ),
                 ),
                 title: Text(
-                      isAction ? "Action's Trigger" : "Reaction's Trigger",
-                      style: const TextStyle(
-                          fontSize: 23,
-                          color: Colors.white,
-                          fontFamily: "RobotoMono",
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
+                  isAction ? "Action's Trigger" : "Reaction's Trigger",
+                  style: const TextStyle(
+                      fontSize: 23,
+                      color: Colors.white,
+                      fontFamily: "RobotoMono",
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
                 content: SizedBox(
                     height: 500,
                     width: 600,
@@ -543,63 +548,90 @@ class _CreateWidgetState extends State<CreateWidget> {
     return list;
   }
 
-  List<Widget> getTypeComparators(String type) {
+  Align getTypeComparators(String type) {
     List<Widget> list = [];
     List<String> comparators = [];
 
     if (type == "string") {
-      comparators = ["==", "===", "in"];
+      comparators = ["==", "in"];
     } else {
       comparators = [">", "<", "<=", ">=", "=="];
     }
     if (_comparatorDropDown.isEmpty) {
       _comparatorDropDown = comparators[0];
     }
-    list.add(Row(children: [
+    return (Align(
+        child: DropdownButton<String>(
+            value: _comparatorDropDown,
+            items: comparators.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(value: value, child: Text(value));
+            }).toList(),
+            dropdownColor: Color.fromRGBO(60, 60, 60, 1),
+            style: TextStyle(color: Colors.white, fontFamily: "RobotoMono"),
+            underline: Container(height: 1.5, color: Colors.black),
+            onChanged: (String? element) {
+              _comparatorDropDown = element!;
+              setState(() {});
+            })));
+  }
+
+  Row getSecondComparison(Map<String, dynamic> properties) {
+    return Row(children: <Widget>[
       Padding(
           padding: EdgeInsets.only(left: 20),
-          child: DropdownButton<String>(
-              value: _comparatorDropDown,
-              items: comparators.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                    value: value, child: Text(value));
-              }).toList(),
-              dropdownColor: Color.fromRGBO(60, 60, 60, 1),
-              style: TextStyle(color: Colors.white, fontFamily: "RobotoMono"),
-              underline: Container(height: 1.5, color: Colors.black),
-              onChanged: (String? element) {
-                _comparatorDropDown = element!;
-                setState(() {});
-              })),
+          child: SizedBox(
+              height: 40,
+              width: 100,
+              child: TextField(
+                onChanged: (String _) {
+                  setState(() {});
+                },
+                controller: _secondFree,
+                cursorColor: Colors.white,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: "RobotoMono",
+                    fontSize: 14),
+                decoration: InputDecoration(
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.black, width: 1.5)),
+                    hintStyle: const TextStyle(
+                        color: Color.fromRGBO(148, 163, 184, 1),
+                        fontStyle: FontStyle.italic),
+                    hintText: "empty"),
+              ))),
+      Spacer(),
+      Text("OR",
+          style: TextStyle(color: Colors.white, fontFamily: "RobotoMono")),
       Spacer(),
       Padding(
-          padding: EdgeInsets.only(right: 20),
-          child: TextButton(
-              onPressed: (() {
-                _condition.text +=
-                    "[Action.${_firstDropDown}] ${_comparatorDropDown} [Action.${_secondDropDown}]";
-                setState(() {});
-              }),
-              style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll(Color.fromRGBO(60, 60, 60, 1)),
-                  side: MaterialStatePropertyAll<BorderSide>(
-                      BorderSide(color: Colors.black, width: 1.5))),
-              child:
-                  Text("ADD CONDITION", style: TextStyle(color: Colors.white))))
-    ]));
-    return list;
+          padding: EdgeInsets.only(right: 20, top: 12),
+          child: SizedBox(
+              height: 45,
+              child: DropdownButton<String>(
+                  value: _secondDropDown,
+                  items: getDropDownInfo(properties, _firstDropDown),
+                  dropdownColor: Color.fromRGBO(60, 60, 60, 1),
+                  style:
+                      TextStyle(color: Colors.white, fontFamily: "RobotoMono"),
+                  underline: Container(height: 1.5, color: Colors.black),
+                  onChanged: _secondFree.text.isEmpty
+                      ? (String? element) {
+                          _secondDropDown = element!;
+                          setState(() {});
+                        }
+                      : null)))
+    ]);
   }
 
   List<Widget> getConditionZone(properties) {
     List<Widget> list = [];
-    List<Widget> temporary_list = [];
 
     if (_firstDropDown.isEmpty) {
       _firstDropDown = properties.keys.first;
     }
-    temporary_list.add(Padding(
-        padding: EdgeInsets.only(left: 20),
+    list.add(Align(
         child: DropdownButton<String>(
             value: _firstDropDown,
             items: getDropDownInfo(properties, ""),
@@ -611,26 +643,27 @@ class _CreateWidgetState extends State<CreateWidget> {
               _secondDropDown = "";
               setState(() {});
             })));
+    list.add(getTypeComparators(properties[_firstDropDown]));
     if (_secondDropDown.isEmpty) {
       _secondDropDown = properties.keys.firstWhere((element) =>
           (properties[element] == properties[_firstDropDown] &&
               element != _firstDropDown));
     }
-    temporary_list.add(Spacer());
-    temporary_list.add(Padding(
-        padding: EdgeInsets.only(right: 20),
-        child: DropdownButton<String>(
-            value: _secondDropDown,
-            items: getDropDownInfo(properties, _firstDropDown),
-            dropdownColor: Color.fromRGBO(60, 60, 60, 1),
-            style: TextStyle(color: Colors.white, fontFamily: "RobotoMono"),
-            underline: Container(height: 1.5, color: Colors.black),
-            onChanged: (String? element) {
-              _secondDropDown = element!;
+    list.add(getSecondComparison(properties));
+    list.add(Align(
+        child: TextButton(
+            onPressed: (() {
+              _condition.text +=
+                  "[Action.${_firstDropDown}] ${_comparatorDropDown} ${_secondFree.text.isEmpty ? "[Action.${_secondDropDown}]" : _secondFree.text}";
               setState(() {});
-            })));
-    list.add(Row(children: temporary_list));
-    list += getTypeComparators(properties[_firstDropDown]);
+            }),
+            style: ButtonStyle(
+                backgroundColor:
+                    MaterialStatePropertyAll(Color.fromRGBO(60, 60, 60, 1)),
+                side: MaterialStatePropertyAll<BorderSide>(
+                    BorderSide(color: Colors.black, width: 1.5))),
+            child:
+                Text("ADD CONDITION", style: TextStyle(color: Colors.white)))));
     return list;
   }
 
@@ -641,36 +674,32 @@ class _CreateWidgetState extends State<CreateWidget> {
         child: Text("for another condition",
             style: TextStyle(
                 fontSize: 16, color: Colors.white, fontFamily: "RobotoMono"))));
-    list.add(Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        TextButton(
-                onPressed: (() {
-                  _condition.text += " && ";
-                  setState(() {});
-                }),
-                style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStatePropertyAll(Color.fromRGBO(60, 60, 60, 1)),
-                    side: MaterialStatePropertyAll<BorderSide>(
-                        BorderSide(color: Colors.black, width: 1.5))),
-                child:
-                Text("AND", style: TextStyle(color: Colors.white))),
-        SizedBox(width: 80),
-        TextButton(
-                onPressed: (() {
-                  _condition.text += " || ";
-                  setState(() {});
-                }),
-                style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStatePropertyAll(Color.fromRGBO(60, 60, 60, 1)),
-                    side: MaterialStatePropertyAll<BorderSide>(
-                        BorderSide(color: Colors.black, width: 1.5))),
-                child:
-                Text("OR", style: TextStyle(color: Colors.white)))
-      ]
-    ));
+    list.add(Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      TextButton(
+          onPressed: (() {
+            _condition.text += " && ";
+            _secondFree.text = "";
+            setState(() {});
+          }),
+          style: ButtonStyle(
+              backgroundColor:
+                  MaterialStatePropertyAll(Color.fromRGBO(60, 60, 60, 1)),
+              side: MaterialStatePropertyAll<BorderSide>(
+                  BorderSide(color: Colors.black, width: 1.5))),
+          child: Text("AND", style: TextStyle(color: Colors.white))),
+      SizedBox(width: 80),
+      TextButton(
+          onPressed: (() {
+            _condition.text += " || ";
+            setState(() {});
+          }),
+          style: ButtonStyle(
+              backgroundColor:
+                  MaterialStatePropertyAll(Color.fromRGBO(60, 60, 60, 1)),
+              side: MaterialStatePropertyAll<BorderSide>(
+                  BorderSide(color: Colors.black, width: 1.5))),
+          child: Text("OR", style: TextStyle(color: Colors.white)))
+    ]));
     return list;
   }
 
@@ -684,19 +713,24 @@ class _CreateWidgetState extends State<CreateWidget> {
           padding: EdgeInsets.only(left: 20),
           child: Text("Condition",
               style: TextStyle(
-                  fontSize: 16, color: Colors.white, fontFamily: "RobotoMono"))),
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontFamily: "RobotoMono"))),
       Spacer(),
       Padding(
           padding: EdgeInsets.only(right: 20),
           child: TextButton(
               onPressed: (() {
                 _condition.text = "";
+                _secondFree.text = "";
                 setState(() {});
               }),
               style: ButtonStyle(
                   side: MaterialStatePropertyAll<BorderSide>(BorderSide(
                       color: Color.fromRGBO(191, 27, 44, 1), width: 1))),
-              child: Text("clear", style: TextStyle(color: Colors.white, fontFamily: "RobotoMono"))))
+              child: Text("clear",
+                  style: TextStyle(
+                      color: Colors.white, fontFamily: "RobotoMono"))))
     ]));
     list.add(SizedBox(height: 10));
     list.add(Padding(
@@ -718,7 +752,7 @@ class _CreateWidgetState extends State<CreateWidget> {
           ),
         )));
     list.add(SizedBox(height: 10));
-    if (_condition.text.isEmpty || _condition.text[_condition.text.length - 1] != ']') {
+    if (_condition.text.isEmpty || _condition.text[_condition.text.length - 1] == ' ') {
       list += getConditionZone(properties);
     } else {
       list += getOperatorZone();
