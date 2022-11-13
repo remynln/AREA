@@ -13,7 +13,7 @@ function Dashboard_Services(props) {
             <div className="ServicesContentTitle">
                 <p className="BasicServicesTitle">Services</p>
             </div>
-            <Services services={props.services}/>
+            <Services services={props.services} setServices={props.setServices}/>
         </div>
     )
 }

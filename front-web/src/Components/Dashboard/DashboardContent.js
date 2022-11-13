@@ -15,7 +15,7 @@ export const DashboardContent = (props) => {
             </div>
             <WorkflowPanel inCreation={inCreation} setInCreation={setInCreation} services={props.services} setAreas={props.setAreas}/>
             <Dashboard_Workflows inCreation={inCreation} setInCreation={setInCreation} areas={props.areas} setAreas={props.setAreas}/>
-            <Dashboard_Services inCreation={inCreation} services={props.services}/>
+            <Dashboard_Services inCreation={inCreation} services={props.services} setServices={props.setServices}/>
         </div>
     )
 }

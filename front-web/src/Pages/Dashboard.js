@@ -6,7 +6,7 @@ export const Dashboard = (props) => {
     return (
         <div className="Home">
             <Sidebar />
-            <DashboardContent user={props.user} services={props.services} areas={props.areas} setAreas={props.setAreas}/>
+            <DashboardContent user={props.user} services={props.services} areas={props.areas} setAreas={props.setAreas} setServices={props.setServices}/>
         </div>
     )
 }

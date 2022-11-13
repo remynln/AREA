@@ -7,7 +7,8 @@ function Services(props) {
         <div className="Services">
             {ServicesContent.map((val, key) => {
                 return (
-                   <SingleService key={key} link={val.link} logo={val.logo} name={val.name} service={props.services.find(element => element.name === val.name)}/>
+                   <SingleService key={key} link={val.link} logo={val.logo} name={val.name} services={props.services}
+                    service={props.services.find(element => element.name === val.name)} setServices={props.setServices}/>
                 )
             })}
         </div>
