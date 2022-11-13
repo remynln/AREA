@@ -31,7 +31,7 @@ for branch in $(git for-each-ref --format='%(refname:short)'); do
     git checkout $true_branch_name > /dev/null
 	find . -type f -name ".env" ! -path "./front-web/*" ! -path "./area_api/node_modules/*"
     env_file=$(find . -type f -name ".env" ! -path "./front-web/*" ! -path "./area_api/node_modules/*")
-    if [[ -z $env_file || $env_file -eq " " ]]; then
+    if [[ -z $env_file || "$env_file" -neq " " ]]; then
         echo "$env_file in $true_branch_name"
     fi
 done
