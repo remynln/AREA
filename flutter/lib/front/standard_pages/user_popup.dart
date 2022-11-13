@@ -191,7 +191,9 @@ void openUser(String token, context, setStateParent) {
                 child: FutureBuilder(
                   future: ApiService().getUserInformation(token),
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
+                    print(snapshot);
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        snapshot.data != null) {
                       return SingleChildScrollView(
                           scrollDirection: Axis.vertical,
                           child: Column(
@@ -202,6 +204,8 @@ void openUser(String token, context, setStateParent) {
                                       snapshot.data) +
                                   getUserInformationUserWidgets(
                                       token, setStateParent, context)));
+                    } else if (snapshot.connectionState == ConnectionState.done) {
+                      return Container();
                     } else {
                       return const Center(
                           child:
