@@ -186,8 +186,7 @@ const loadFunctions = {
             for (let i of value.areas) {
                 if (i.status == "locked" || i.dbStatus != "enabled")
                     continue
-                let promise = i.start()
-                promise.catch((err) => {
+                let promise = i.start().catch((err) => {
                     callbackErrorFun(new ProcessError(i.actionConf.serviceName || "None", i.actionConf.name, err))
                 })
                 promises.push(promise)
