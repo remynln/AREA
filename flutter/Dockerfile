@@ -21,7 +21,7 @@ RUN rm gradle-7.3.3-bin.zip
 RUN mkdir -p /app/android
 RUN echo "sdk.dir=$ANDROID_SDK" >> /app/android/local.properties
 RUN echo "flutter.sdk=$FLUTTER_PATH" >> /app/android/local.properties
-RUN echo "flutter.buildMode=debug" >> /app/android/local.properties
+RUN echo "flutter.buildMode=release" >> /app/android/local.properties
 RUN echo "flutter.versionName=1.0.0" >> /app/android/local.properties
 RUN echo "flutter.versionCode=1" >> /app/android/local.properties
 
@@ -31,4 +31,4 @@ COPY ./ /app/
 RUN gradle --refresh-dependencies
 RUN flutter build apk --release
 
-CMD mv ../build/app/outputs/apk/release/app-release.apk /app/client/area_mobile.apk
+CMD mv ../app/build/app/outputs/flutter-apk/app-release.apk /app/client/area_mobile.apk

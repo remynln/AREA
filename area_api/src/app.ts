@@ -26,7 +26,7 @@ const pubsub = new PubSub({ projectId: "sergify" });
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
 
 const app = express()
-const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.l1fcbpz.mongodb.net/area?retryWrites=true&w=majority`
+const url = process.env.DB_LINK || ""
 
 mongoose.connect(url).then(() => {
     console.log("Connected to database")
