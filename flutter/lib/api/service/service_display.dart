@@ -123,12 +123,14 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
     return FutureBuilder(
       future: ApiService().getConnectedServices(widget.token),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
           return Padding(
               padding: const EdgeInsetsDirectional.only(start: 20),
               child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: createWidgetList(snapshot.data)));
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          return Container();
         } else {
           return const Center(
               child: CircularProgressIndicator(color: Colors.white));

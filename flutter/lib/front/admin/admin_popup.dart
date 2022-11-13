@@ -80,7 +80,7 @@ void openAdmin(String token, context) {
                 child: FutureBuilder(
                   future: ApiService().getUsers(token),
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
                       return Column(children: [
                         Row(children: [
                           Expanded(
@@ -126,6 +126,8 @@ void openAdmin(String token, context) {
                                     children: getUsersWidgets(
                                         token, context, setState, snapshot.data, search.text))))
                       ]);
+                    } else if (snapshot.connectionState == ConnectionState.done) {
+                      return Container();
                     } else {
                       return const Center(
                           child:

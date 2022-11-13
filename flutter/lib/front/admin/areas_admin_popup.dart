@@ -14,7 +14,10 @@ List<Widget> getAreasFromUser(
   List<Widget> list = [];
 
   if (answer == null || answer == [] || answer.length == 0) {
-    return [Text("NO AREAS", style: TextStyle(color: Colors.white, fontFamily: "Roboto"))];
+    return [
+      Text("NO AREAS",
+          style: TextStyle(color: Colors.white, fontFamily: "Roboto"))
+    ];
   }
   for (AreaAnswer area in answer) {
     list.add(getSettingsWidget(area.title, () {
@@ -53,7 +56,8 @@ void openAreasUserAsAdmin(
                 child: FutureBuilder(
                   future: ApiService().getUserAreas(token, user_id: user_id),
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        snapshot.data != null) {
                       return SingleChildScrollView(
                           padding: EdgeInsets.only(top: 10),
                           scrollDirection: Axis.vertical,
@@ -62,7 +66,10 @@ void openAreasUserAsAdmin(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
-                              children: getAreasFromUser(token, context, setStateParent, snapshot.data)));
+                              children: getAreasFromUser(token, context,
+                                  setStateParent, snapshot.data)));
+                    } else if (snapshot.connectionState == ConnectionState.done) {
+                      return Container();
                     } else {
                       return const Center(
                           child:

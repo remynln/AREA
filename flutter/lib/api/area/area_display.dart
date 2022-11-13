@@ -134,10 +134,12 @@ class _AreaDisplayState extends State<AreaDisplay> {
     return FutureBuilder(
       future: ApiService().getUserAreas(widget.token),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
           if (widget.isDashboardDisplay) {
             List<Widget> list = createWidgetList(snapshot.data);
             return list.isEmpty ? Container() : list[0];
+          } else if (snapshot.connectionState == ConnectionState.done) {
+            return Container();
           } else {
             return SingleChildScrollView(
                 scrollDirection: Axis.vertical,

@@ -72,7 +72,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           if (!mounted) return;
           setState(() {
             _initialUri = initialUri;
-            _checkUriToken(_initialUri!.queryParameters, _initialUri!.host);
+            //_checkUriToken(_initialUri!.queryParameters, _initialUri!.host);
           });
         } else {
           print("initial uri is null !");

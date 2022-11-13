@@ -100,6 +100,8 @@ flutter:
      - assets/dashboard/service/genius_not_connected.png
      - assets/dashboard/service/gitlab_connected.png
      - assets/dashboard/service/gitlab_not_connected.png
+     - assets/dashboard/service/microsoft_connected.png
+     - assets/dashboard/service/microsoft_not_connected.png
 
   fonts:
     - family: RobotoMono

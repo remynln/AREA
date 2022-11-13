@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:area/front/admin/areas_admin_popup.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +10,16 @@ import 'package:area/front/standard_pages/user_popup.dart';
 void openUserAsAdmin(String token, context, setStateParent, UserAnswer answer) {
   bool adminValue = false;
   TextEditingController controller = TextEditingController();
+  var user = "";
+  try {
+    var token_info = token.split('.')[1];
+    token_info += token_info.length % 4 == 0
+        ? ''
+        : (token_info.length % 4 == 3 ? '=' : '==');
+    user = jsonDecode(utf8.fuse(base64).decode(token_info))["username"];
+  } catch (e) {
+    log("Can't get username");
+  }
 
   showDialog(
       context: context,
@@ -40,6 +53,7 @@ void openUserAsAdmin(String token, context, setStateParent, UserAnswer answer) {
                         mainAxisSize: MainAxisSize.min,
                         children: getUserInformationBasicWidgets(answer) +
                             <Widget>[
+                              user != "root" ? SizedBox(height: 15) : Container(),
                               TextButton(
                                   onPressed: () {
                                     openAreasUserAsAdmin(token, context, setStateParent, answer.id);
@@ -52,6 +66,7 @@ void openUserAsAdmin(String token, context, setStateParent, UserAnswer answer) {
                                                   width: 1.5))),
                                   child: const Text("VIEW AREAS",
                                       style: TextStyle(color: Colors.white))),
+                              user != "root" ? SizedBox(height: 15) : Container(),
                               const SizedBox(height: 10),
                               const Divider(color: Colors.white),
                               const SizedBox(height: 10),
@@ -75,7 +90,7 @@ void openUserAsAdmin(String token, context, setStateParent, UserAnswer answer) {
                                           const Color.fromRGBO(68, 68, 68, 1),
                                     ),
                                   )),
-                              Row(
+                              user == "root" ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text("Admin ?",
@@ -93,7 +108,7 @@ void openUserAsAdmin(String token, context, setStateParent, UserAnswer answer) {
                                         setState(() {});
                                       })
                                 ],
-                              ),
+                              ) : Container(),
                               TextButton(
                                   onPressed: () {
                                     updateUserInformation(
@@ -101,6 +116,7 @@ void openUserAsAdmin(String token, context, setStateParent, UserAnswer answer) {
                                         user_id: answer.id,
                                         isAdmin: true,
                                         updateAdmin: adminValue);
+                                    Navigator.of(context).pop();
                                   },
                                   style: const ButtonStyle(
                                       side:
@@ -118,7 +134,7 @@ void openUserAsAdmin(String token, context, setStateParent, UserAnswer answer) {
                               const SizedBox(height: 10),
                               TextButton(
                                   onPressed: () {
-                                    deleteUserVerification(context, token,
+                                    deleteUserVerification(context, setStateParent, token,
                                         user_id: answer.id);
                                   },
                                   style: const ButtonStyle(

@@ -18,7 +18,7 @@ Future<void> deleteUser(String token, {String user_id = "me"}) async {
   await ApiService().deleteUser(token, user_id: user_id);
 }
 
-void deleteUserVerification(context, String token, {String user_id = "me"}) {
+void deleteUserVerification(context, setStateParent, String token, {String user_id = "me"}) {
   showDialog(
       context: context,
       builder: (context) {
@@ -48,6 +48,9 @@ void deleteUserVerification(context, String token, {String user_id = "me"}) {
                         onPressed: () {
                           deleteUser(token, user_id: user_id);
                           if (user_id != "me") {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                            setStateParent((){});
                             return;
                           }
                           Navigator.pushAndRemoveUntil<void>(
@@ -154,7 +157,7 @@ List<Widget> getUserInformationUserWidgets(
     const SizedBox(height: 10),
     TextButton(
         onPressed: () {
-          deleteUserVerification(context, token);
+          deleteUserVerification(context, setStateParent, token);
         },
         style: const ButtonStyle(
             side: MaterialStatePropertyAll<BorderSide>(BorderSide(
@@ -191,7 +194,9 @@ void openUser(String token, context, setStateParent) {
                 child: FutureBuilder(
                   future: ApiService().getUserInformation(token),
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
+                    print(snapshot);
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        snapshot.data != null) {
                       return SingleChildScrollView(
                           scrollDirection: Axis.vertical,
                           child: Column(
@@ -202,6 +207,8 @@ void openUser(String token, context, setStateParent) {
                                       snapshot.data) +
                                   getUserInformationUserWidgets(
                                       token, setStateParent, context)));
+                    } else if (snapshot.connectionState == ConnectionState.done) {
+                      return Container();
                     } else {
                       return const Center(
                           child:

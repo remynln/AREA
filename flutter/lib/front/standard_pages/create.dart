@@ -89,11 +89,13 @@ class _CreateWidgetState extends State<CreateWidget> {
     return FutureBuilder(
       future: ApiService().getConnectedServices(widget.token),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
           return SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: displayServices(
                   snapshot.data, context, setState, setStateWidget, isAction));
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          return Container();
         } else {
           return Container(
               width: MediaQuery.of(context).size.width / 1.8,
@@ -240,11 +242,13 @@ class _CreateWidgetState extends State<CreateWidget> {
       future:
           ApiService().getActionsFromService(widget.token, _actionService.name),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
           return SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: displayActionTriggers(
                   snapshot.data, context, setState, setStateWidget));
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          return Container();
         } else {
           return Container(
               width: MediaQuery.of(context).size.width / 1.8,
@@ -261,11 +265,13 @@ class _CreateWidgetState extends State<CreateWidget> {
       future: ApiService()
           .getReactionsFromService(widget.token, _reactionService.name),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
           return SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: displayReactionTriggers(
                   snapshot.data, context, setState, setStateWidget));
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          return Container();
         } else {
           return Container(
               width: MediaQuery.of(context).size.width / 1.8,
