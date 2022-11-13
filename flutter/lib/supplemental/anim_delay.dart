@@ -36,7 +36,9 @@ class _DelayedAnimationState extends State<DelayedAnimation>
     ).animate(curve);
 
     Timer(Duration(milliseconds: widget.delay), () {
-      _controller.forward();
+      if (mounted) {
+        _controller.forward();
+      }
     });
   }
 
