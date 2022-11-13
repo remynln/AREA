@@ -56,7 +56,6 @@
     "octokit": "^2.0.10",
     "passport": "^0.6.0",
     "passport-deezer": "^0.2.0",
-<<<<<<< HEAD
     "passport-discord": "^0.1.4",
     "passport-github2": "^0.1.12",
     "passport-gitlab2": "^5.0.0",
@@ -75,13 +74,6 @@
     "passport-twitch-latest": "^1.0.0",
     "passport-twitchtv": "^0.1.4",
     "request-ip": "^3.3.0",
-=======
-    "passport-github2": "^0.1.12",
-    "passport-google-oauth20": "^2.0.0",
-    "passport-google-oidc": "^0.1.0",
-    "passport-microsoft": "^1.0.0",
-    "readline-sync": "^1.4.10",
->>>>>>> microsoft
     "uninstall": "^0.0.0"
   }
 }
