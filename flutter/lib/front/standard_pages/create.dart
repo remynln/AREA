@@ -69,8 +69,15 @@ class _CreateWidgetState extends State<CreateWidget> {
           onTap: () {
             if (isAction) {
               _actionService = Services().allServices()[index];
+              _actionTrigger = ActionsAnswer();
+              _firstDropDown = "";
+              _secondDropDown = "";
+              _comparatorDropDown = "";
+              _secondFree = TextEditingController();
+              _condition = TextEditingController();
             } else {
               _reactionService = Services().allServices()[index];
+              _reactionTrigger = ReactionsAnswer();
             }
             setStateWidget(() {});
             Navigator.of(context).pop();
