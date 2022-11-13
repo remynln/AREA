@@ -138,13 +138,13 @@ class _AreaDisplayState extends State<AreaDisplay> {
           if (widget.isDashboardDisplay) {
             List<Widget> list = createWidgetList(snapshot.data);
             return list.isEmpty ? Container() : list[0];
-          } else if (snapshot.connectionState == ConnectionState.done) {
-            return Container();
           } else {
             return SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Column(children: createWidgetList(snapshot.data)));
           }
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          return Container();
         } else {
           return const Center(
               child: CircularProgressIndicator(color: Colors.white));
