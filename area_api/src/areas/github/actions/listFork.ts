@@ -20,7 +20,7 @@ class listFork extends Action {
     override async stop(): Promise<void> {
         this.stop()
     }
-}
+}   
 let config: ActionConfig = {
     serviceName: "github",
     name: "listFork",
