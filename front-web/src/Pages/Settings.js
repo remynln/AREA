@@ -25,7 +25,8 @@ export const Settings = (props) => {
 
     const deleteUser = async (user) => {
         try {
-            await axios.delete("/user/" + user.id, { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+            await axios.delete("/user/" + user.id,
+                { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
 
             await loadUsers()
         } catch (error) {
@@ -35,7 +36,8 @@ export const Settings = (props) => {
 
     const loadUsers = async () => {
       try {
-            const res = await axios.get("/users", { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+            const res = await axios.get("/users",
+                { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
 
             props.setUsers(res.data)
         } catch (error) {
@@ -98,7 +100,8 @@ export const Settings = (props) => {
                             </div>
                             <div className='settings__content__admin__true' style={props.user.admin === true ? undefined : {display: "none"}}>
                                 <p className='settings__content__admin__team__title'> <img src={Admin_Title_1} alt='Admin Img'
-                                    className="settings__content__admin__team__title__img"/>WELCOME ON SERGIFY ADMIN TEAM <img className='settings__content__admin__team__title__img' src={Admin_Title_2} alt='Admin Img'/></p>
+                                    className="settings__content__admin__team__title__img"/>WELCOME ON SERGIFY ADMIN TEAM
+                                        <img className='settings__content__admin__team__title__img' src={Admin_Title_2} alt='Admin Img'/></p>
                                 <div className='settings__content__admin__team'>
                                     <img src={Admin_Team} alt='Admin Team' className='settings__content__admin__team__img'></img>
                                 </div>
@@ -112,7 +115,8 @@ export const Settings = (props) => {
                                                     <p className='settings__content__admin__content__user__name'>{element.username}</p>
                                                     <AlternateEmailIcon />
                                                     <p className='settings__content__admin__content__user__email'>{element.email}</p>
-                                                    <div className='settings__content__admin__content__user__delete' onClick={() => {deleteUser(element)}}>
+                                                    <div className='settings__content__admin__content__user__delete'
+                                                        onClick={() => {deleteUser(element)}}>
                                                         <DeleteIcon />
                                                     </div>
                                                 </div>
