@@ -17,8 +17,9 @@ export const WorkflowContent = (props) => {
 
     let someOperator = 0
 
-    const operators = [{name: "equal", type: "string", value: "=="}, {name: "in", type: "string", value: "in"}, {name: "equal", type: "number", value: "=="}, {name: "superior", type: "number", value: ">"},
-        {name: "superior or equal", type: "number", value: ">="}, {name: "inferior", type: "number", value: "<"}, {name: "inferior or equal", type: "number", value: "<="}]
+    const operators = [{name: "equal", type: "string", value: "=="},{name: "in", type: "string", value: "in"},
+        {name: "equal", type: "number", value: "=="}, {name: "superior", type: "number", value: ">"}, {name: "superior or equal", type: "number", value: ">="},
+        {name: "inferior", type: "number", value: "<"}, {name: "inferior or equal", type: "number", value: "<="}]
 
     useEffect(() => {
         if (props.inCreation === false) {
@@ -84,7 +85,8 @@ export const WorkflowContent = (props) => {
 
     const loadServiceTriggers = async (service) => {
         try {
-            const res = await axios.get("/service/" + service.name + "/actions", { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+            const res = await axios.get("/service/" + service.name + "/actions",
+                { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
 
             await setActionTrigger(res.data)
         } catch (error) {
@@ -95,7 +97,8 @@ export const WorkflowContent = (props) => {
     const setTriggerActive = async (trigger) => {
         try {
             if (trigger.name !== props.actionTriggerActive) {
-                const res = await axios.get("/service/" + props.actionServiceActive + "/action/" + trigger.name, { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+                const res = await axios.get("/service/" + props.actionServiceActive + "/action/" + trigger.name,
+                    { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
 
                 await props.setActionTriggerActive(trigger.name)
                 await setActionProperties([])
@@ -107,7 +110,8 @@ export const WorkflowContent = (props) => {
                 await Object.keys(res.data.properties).map(element => {
                     if ((typeof res.data.properties[element]) === "object") {
                         Object.keys(res.data.properties[element]).map(nestedElement => {
-                                setActionProperties(current => [...current, { name: element + "." + nestedElement, value: undefined, type: res.data.properties[element][nestedElement] }])
+                                setActionProperties(current => [...current,
+                                    { name: element + "." + nestedElement, value: undefined, type: res.data.properties[element][nestedElement] }])
                                 if (selectedProperty === undefined && SelectedProperty === 0) {
                                     setSelectedProperty(element + "." + nestedElement)
                                     SelectedProperty = 1
@@ -157,7 +161,8 @@ export const WorkflowContent = (props) => {
     const setServiceReactionActive = async (service) => { 
         try {
             if (service.name !== props.reactionServiceActive) {
-                const res = await axios.get("/service/" + service.name + "/reactions", { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+                const res = await axios.get("/service/" + service.name + "/reactions",
+                    { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
 
                 await props.setReactionActive(undefined)
                 await props.setReactionServiceActive(service.name)
@@ -171,7 +176,8 @@ export const WorkflowContent = (props) => {
     const setActiveReaction = async (reaction) => {
         try {
             if (reaction.name !== props.reactionActive) {
-                const res = await axios.get("/service/" + props.reactionServiceActive + "/reaction/" + reaction.name, { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+                const res = await axios.get("/service/" + props.reactionServiceActive + "/reaction/" + reaction.name,
+                    { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
 
                 await props.setReactionActive(reaction.name)
                 await props.setReactionParameters([])
@@ -238,7 +244,8 @@ export const WorkflowContent = (props) => {
                 <div className="ActionServices">
                     {actionServices.map((service, key) => {
                         return (
-                            <div className="WorkflowService" key={key} onClick={() => setServiceActive(service)} style={service.active?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined}>
+                            <div className="WorkflowService" key={key} onClick={() => setServiceActive(service)}
+                                style={service.active?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined}>
                                 <div style={{display: "flex", justifyContent: "center"}}> 
                                     <img src={require("../../img/" + service.logo + ".png")} className="ServiceLogo" alt="Service_Logo" />
                                 </div>
@@ -252,7 +259,8 @@ export const WorkflowContent = (props) => {
                 <div className="ActionServices">
                     {actionTriggers.map((trigger, key) => {            
                         return (
-                            <div className="WorkflowService" key={key} onClick={() => setTriggerActive(trigger)} style={trigger.name === props.actionTriggerActive?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined}>
+                            <div className="WorkflowService" key={key} onClick={() => setTriggerActive(trigger)}
+                                style={trigger.name === props.actionTriggerActive?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined}>
                                 <p className="TextInPanel">{trigger.description}</p>
                             </div>
                         )
@@ -266,7 +274,8 @@ export const WorkflowContent = (props) => {
                         return (
                             <div className="Parameters" key={key}>
                                 <p>{props.actionParameters[parameter].name}</p>
-                                <input className="TriggerInput" placeholder={"type: " + props.actionParameters[parameter].type} onChange={(event) => {changeActionParameterValue(props.actionParameters[parameter], event)}}></input>
+                                <input className="TriggerInput" placeholder={"type: " + props.actionParameters[parameter].type}
+                                    onChange={(event) => {changeActionParameterValue(props.actionParameters[parameter], event)}}></input>
                             </div>
                         )
                     })}
@@ -295,7 +304,8 @@ export const WorkflowContent = (props) => {
                 <p className="TriggerSubTitle">Condition & Comparison Operator</p>
                 <div className="TriggerCondition">
                     <div className="TriggerInputBackground">
-                        <input className="TriggerInput" placeholder={getSelectedPropertyType()} onChange={(event) => setConditionText(event.target.value)}></input>
+                        <input className="TriggerInput" placeholder={getSelectedPropertyType()}
+                            onChange={(event) => setConditionText(event.target.value)}></input>
                     </div>
                     <select className="ConditionDropDown" onChange={(event) => setSelectedOperator(event.target.value)}>
                         {operators.map((element, key) => {
@@ -323,7 +333,8 @@ export const WorkflowContent = (props) => {
                     </select>
                 </div>
                 <div className="TriggerCondition">
-                    <div className="ConditionSubmitButton" style={conditionText !== "" ? undefined : {backgroundColor: "#171717", pointerEvents: "none"}} onClick={addCondition}>
+                    <div className="ConditionSubmitButton"
+                        style={conditionText !== "" ? undefined : {backgroundColor: "#171717", pointerEvents: "none"}} onClick={addCondition}>
                         <p>ADD</p>
                     </div>
                     <div className="ConditionSubmitButton" onClick={clearCondition} style={props.conditions === "" ? {display: "none"} : undefined}>
@@ -336,7 +347,9 @@ export const WorkflowContent = (props) => {
                 <div className="ActionServices">
                     {reactionServices.map((service, key) => {
                         return (
-                            <div className="WorkflowService" key={key} style={service.name === props.reactionServiceActive?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined} onClick={() => {setServiceReactionActive(service)}}>
+                            <div className="WorkflowService" key={key}
+                                style={service.name === props.reactionServiceActive?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined}
+                                onClick={() => {setServiceReactionActive(service)}}>
                                 <div style={{display: "flex", justifyContent: "center"}}> 
                                     <img src={require("../../img/" + service.logo + ".png")} className="ServiceLogo" alt="Service_Logo" />
                                 </div>
@@ -350,7 +363,8 @@ export const WorkflowContent = (props) => {
                 <div className="ActionServices">
                     {reactions.map((reaction, key) => {            
                         return (
-                            <div className="WorkflowReaction" key={key} onClick={() => setActiveReaction(reaction)} style={props.reactionActive === reaction.name?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined}>
+                            <div className="WorkflowReaction" key={key} onClick={() => setActiveReaction(reaction)}
+                            style={props.reactionActive === reaction.name?{boxShadow: "0px 0px 0px 2px #f10c23 inset"}:undefined}>
                                     <p className="TextInPanel">{reaction.description}</p>
                             </div>
                         )
@@ -364,7 +378,8 @@ export const WorkflowContent = (props) => {
                         return (
                             <div className="Parameters" key={key}>
                                 <p>{props.reactionParameters[parameter].name}</p>
-                                <input className="TriggerInput" placeholder={"type: " + props.reactionParameters[parameter].type} onChange={(event) => {changeReactionParameterValue(props.reactionParameters[parameter], event)}}></input>
+                                <input className="TriggerInput"placeholder={"type: " + props.reactionParameters[parameter].type}
+                                onChange={(event) => {changeReactionParameterValue(props.reactionParameters[parameter], event)}}></input>
                             </div>
                         )
                     })}
