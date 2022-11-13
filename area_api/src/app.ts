@@ -18,6 +18,8 @@ import errorMiddleware from './middlewares/errorHandler';
 import checkAdmin from './middlewares/checkAdmin';
 import AreaInstances from './core/instances';
 import aboutRouter from './routes/about.json';
+import { PubSub } from '@google-cloud/pubsub';
+const pubsub = new PubSub({ projectId: "sergify" });
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
@@ -70,9 +72,19 @@ app.use(errorMiddleware)
  * On demande à Express d'ecouter les requêtes sur le port défini dans la config
  */
 
-AreaInstances.load().then(() => {
-    app.listen(config.API_PORT, () => {
-        console.log(`Ready on port ${config.API_PORT}`)
+async function initGmailSub() {
+    const topic = pubsub.topic("my-topic")
+    var sub = topic.subscription("gmail-sub");
+    if ((await sub.exists())[0]) {
+        await sub.delete()
+    }
+    await topic.createSubscription("gmail-sub");
+}
+initGmailSub().then(() => {
+    AreaInstances.load().then(() => {
+        app.listen(config.API_PORT, () => {
+            console.log(`Ready on port ${config.API_PORT}`)
+        })
     })
 })
 

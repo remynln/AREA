@@ -18,10 +18,77 @@ const SERVICE_LOOP_DELTA = 416
 var areas: Map<string, Area> = new Map([])
 
 // This map stores areas instances, with action'sService name as key
-var areasServiceIndex: Map<string, Area[]> = new Map([])
 
+
+interface CronTask {
+    task: ScheduledTask | undefined
+    current: number
+    areas: Area[]
+}
+
+
+function cronTaskFun(cronTask: CronTask) {
+    let itNumber = 0
+    while (cronTask.areas[cronTask.current].status != "started") {
+        if (itNumber > cronTask.areas.length)
+            return
+        cronTask.current++;
+        itNumber++;
+        if (cronTask.current >= cronTask.areas.length)
+            cronTask.current = 0
+    }
+    cronTask.areas[cronTask.current].loop()
+    cronTask.current++;
+    if (cronTask.current >= cronTask.areas.length)
+        cronTask.current = 0
+}
 //cron associated with service to poll event from actions
-var cronTasks: Map<string, { task: ScheduledTask, current: number}> = new Map([])
+var cronTasks = {
+    ref: new Map([]) as Map<string, CronTask>,
+    addWithoutCron(area: Area) {
+        let serviceName = area.actionConf.serviceName || ''
+        var selected = this.ref.get(serviceName)
+        if (!selected) {
+            let newSelected: CronTask = {
+                areas: [area],
+                current: 0,
+                task: undefined
+            }
+            this.ref.set(serviceName, newSelected)
+            return
+        }
+        selected.areas.push(area)
+    },
+    add(area: Area) {
+        let serviceName = area.actionConf.serviceName || ''
+        var selected = this.ref.get(serviceName)
+        if (!selected) {
+            let newSelected: CronTask = {
+                areas: [area],
+                current: 0,
+                task: undefined
+            }
+            newSelected.task = cron.schedule(AREA_LOOP_DELTA, () => {
+                cronTaskFun(newSelected)
+            })
+            this.ref.set(serviceName, newSelected)
+            return
+        }
+        selected.areas.push(area)
+    },
+    delete(area: Area) {
+        let serviceName = area.actionConf.serviceName || ''
+        let selected = this.ref.get(serviceName)
+        if (!selected)
+            return
+        let index = selected.areas.indexOf(area)
+        if (index == -1)
+            return
+        selected.areas.splice(index, 1)
+        if (selected.current > index)
+            selected.current--;
+    }
+}
 
 async function filterAsync<T>(arr: T[], predicate: (item: T) => Promise<boolean>) {
     const results: boolean[] = []
@@ -33,7 +100,38 @@ async function filterAsync<T>(arr: T[], predicate: (item: T) => Promise<boolean>
 
 // This map stores access and refresh token for each users,
 // with user's mail as key, the second key is service name
-var tokens: Map<string, Map<string, Tokens>> = new Map([])
+var tokens = {
+    ref: new Map([]) as Map<string, Map<string, Tokens>>,
+    getOne(email: string, service: string) {
+        let selectedUser = this.ref.get(email)
+        if (!selectedUser)
+            return undefined
+        return selectedUser.get(service)
+    },
+    getUser(email: string) {
+        return this.ref.get(email)
+    },
+    set(email: string, tokens: Map<string, Tokens>) {
+        this.ref.set(email, tokens)
+    },
+    setOne(email: string, service: string, token: Tokens) {
+        let userTokens = this.ref.get(email)
+        if (!userTokens) {
+            let newUserTokens = new Map([[service, token]])
+            this.ref.set(email, newUserTokens)
+            return
+        }
+        userTokens.set(service, token)
+    },
+    delete(email: string, service: string) {
+        let selectedUser = this.ref.get(email)
+        if (!selectedUser)
+            return
+        selectedUser.delete(service)
+    }
+}
+
+
 
 function callbackErrorFun(err: ProcessError) {
     console.log("new error from: " + err.serviceName + "/" + err.name);
@@ -53,45 +151,57 @@ export interface AreaConfig {
     reaction: { conf: ReactionConfig, params: any }
 }
 
-function createCron(serviceName: string) {
-    console.log("cron creation")
-    return cron.schedule(AREA_LOOP_DELTA, () => {
-        let selectedCron = cronTasks.get(serviceName)
-        if (!selectedCron)
-            return
-        let selectedAreas = areasServiceIndex.get(serviceName)
-        if (!selectedAreas)
-            return
-        if (selectedAreas.length == 0)
-            return
-        console.log("looping", serviceName, selectedCron.current)
-        let end = selectedCron.current
-        do {
-            if (selectedCron.current >= selectedAreas.length) {
-                if (end == 0) {
-                    return
-                }
-                selectedCron.current = 0
-            }
-            if (selectedAreas[selectedCron.current].status == "started") {
-                selectedAreas[selectedCron.current].loop()
-                selectedCron.current = selectedCron.current + 1
+const loadFunctions = {
+    async loadDb() {
+        await db.area.forEach(async (email, newUserTokens, trigger) => {
+            if (!tokens.getUser(email))
+                tokens.set(email, newUserTokens)
+            let userTokens = tokens.getUser(email)
+            if (!userTokens)
                 return
-            }
-            selectedCron.current = selectedCron.current + 1
-        } while (selectedCron.current != end)
-    })
-}
-
-async function launchAreasDiffered(areas: Area[]) {
-    for (let i of areas) {
-        if (i.dbStatus != "enabled" || i.status == "locked")
-            continue;
-        console.log("starting")
-        i.start().catch((err) => {
-            callbackErrorFun(new ProcessError(i.actionConf.serviceName || "", i.actionConf.name, err))
+            let actionConf = global.getAction(trigger.action)
+            let reactionConf = global.getReaction(trigger.reaction)
+            if (!actionConf || !reactionConf)
+                return
+            let instance = new Area(
+                email,
+                userTokens,
+                trigger.title,
+                trigger.description,
+                { conf: actionConf, params: trigger.action_params != "" ? JSON.parse(trigger.action_params) : {}},
+                trigger.condition,
+                { conf: reactionConf, params: trigger.reaction_params != "" ? JSON.parse(trigger.reaction_params) : {}},
+                callbackErrorFun
+            )
+            instance.dbStatus = trigger.status
+            areas.set(trigger._id.toHexString(), instance)
         })
-        await new Promise(r => setTimeout(r, AREA_START_DELTA));
+    },
+    async loadCronSystem() {
+        for (let [key, value] of areas) {
+            cronTasks.addWithoutCron(value)
+        }
+        var promises: Promise<void>[] = []
+        for (let [key, value] of cronTasks.ref) {
+            for (let i of value.areas) {
+                if (i.status == "locked" || i.dbStatus != "enabled")
+                    continue
+                let promise = i.start()
+                promise.catch((err) => {
+                    callbackErrorFun(new ProcessError(i.actionConf.serviceName || "None", i.actionConf.name, err))
+                })
+                promises.push(promise)
+                await new Promise(r => setTimeout(r, AREA_START_DELTA));
+            }
+            await new Promise(r => setTimeout(r, SERVICE_START_DELTA));
+        }
+        await Promise.all(promises)
+        for (let [key, value] of cronTasks.ref) {
+            value.task = cron.schedule(AREA_LOOP_DELTA, () => {
+                cronTaskFun(value)
+            })
+            await new Promise(r => setTimeout(r, SERVICE_LOOP_DELTA));
+        }
     }
 }
 
@@ -104,32 +214,21 @@ const AreaInstances = {
         return Array.from(areas.entries())
             .filter(([_, value]) => value.accountMail == user.mail)
     },
-    async addToCronTasks(area: Area) {
-        let serviceName = area.actionConf.serviceName || ''
-        var selected = areasServiceIndex.get(serviceName)
-        if (!selected) {
-            selected = []
-            areasServiceIndex.set(serviceName, selected)
-        }
-        selected.push(area)
-        if (cronTasks.has(serviceName))
-            return
-        var newCron = createCron(serviceName)
-        cronTasks.set(serviceName, {
-            task: newCron,
-            current: 0
-        })
+    async load() {
+        console.log("loading areas...")
+        await loadFunctions.loadDb()
+        console.log("starting areas...")
+        await loadFunctions.loadCronSystem();
+        console.log("areas ready")
     },
     async add(area: AreaConfig, accountMail: string) {
-        let _tokens = tokens.get(accountMail)
-        if (!_tokens) {
-            let user = await db.user.getFromMail(accountMail)
-            _tokens = await db.token.getFromUser(user._id)
-            tokens.set(accountMail, _tokens)
+        let userTokens = tokens.getUser(accountMail)
+        if (!userTokens) {
+            throw new AreaError("You are not connected to any services", 403)
         }
         let instance = new Area(
             accountMail,
-            _tokens,
+            userTokens,
             area.title,
             area.description,
             area.action,
@@ -137,141 +236,45 @@ const AreaInstances = {
             area.reaction,
             callbackErrorFun
         )
+        if (instance.status == "locked") {
+            throw new AreaError("You are not connected to the needed services", 403)
+        }
         await db.area.checkValidity(instance)
         await instance.start()
         let id = await db.area.set(instance)
-        this.addToCronTasks(instance)
         areas.set(id.toHexString(), instance)
-    },
-    async loadStart() {
-        let promises: Promise<void>[] = []
-        for (let [key, value] of areasServiceIndex.entries()) {
-            promises.push(launchAreasDiffered(value))
-            await new Promise(r => setTimeout(r, SERVICE_START_DELTA));
-        }
-        await Promise.all(promises)
-        for (let [key, value] of areasServiceIndex.entries()) {
-            cronTasks.set(key, {
-                task: createCron(key),
-                current: 0
-            })
-            await new Promise(r => setTimeout(r, SERVICE_LOOP_DELTA));
-        }
-    },
-    async load() {
-        console.log("starting area instances")
-        await db.area.forEach(async (accMail, newTokens, area) => {
-            if (!tokens.has(accMail)) {
-                tokens.set(accMail, newTokens)
-            }
-            try {
-                let action = global.getAction(area.action)
-                let reaction = global.getReaction(area.reaction)
-                if (!action || !reaction) {
-                    throw Error("Action or reaction does not exists")
-                }
-                let areaInstance = new Area(
-                    accMail,
-                    tokens.get(accMail)!,
-                    area.title,
-                    area.description,
-                    {
-                        conf: action,
-                        params: area.action_params != '' ? JSON.parse(area.action_params) : ''
-                    },
-                    area.condition,
-                    {
-                        conf: reaction,
-                        params: area.reaction_params != '' ? JSON.parse(area.reaction_params) : ''
-                    },
-                    callbackErrorFun
-                )
-                areas.set(area._id.toHexString(), areaInstance)
-                var selected = areasServiceIndex.get(areaInstance.actionConf.serviceName || '')
-                if (!selected) {
-                    selected = []
-                    areasServiceIndex.set(areaInstance.actionConf.serviceName || '', selected)
-                }
-                selected.push(areaInstance)
-                areaInstance.dbStatus = area.status
-                if (area.status == "locked")
-                    areaInstance.status = "locked"
-            } catch (err) {
-                callbackErrorFun(new ProcessError("", "area init", err))
-            }
-        })
-        try {
-            await this.loadStart()
-        } catch (err) {
-            callbackErrorFun(new ProcessError("", "area start", err))
-        }
-        console.log("instances started")
+        cronTasks.add(instance)
     },
     async enable(areaId: string) {
-        let area = areas.get(areaId)
-        if (!area)
+        let instance = areas.get(areaId)
+        if (!instance)
             throw new AreaError(`area with code ${areaId} does not exists`, 404)
-        await area.start()
+        await instance.start()
         await db.area.setStatus(areaId, "enabled")
     },
     async disable(areaId: string) {
-        let trigger = await db.area.get(areaId)
-        if (trigger.status?.startsWith("locked"))
-            throw new AreaError(`can't start trigger: not connected to ${trigger.status?.split(' ')[1]}`, 401)
-        let area = areas.get(areaId)
-        if (!area)
+        let instance = areas.get(areaId)
+        if (!instance)
             throw new AreaError(`area with code ${areaId} does not exists`, 404)
-        await area.stop()
+        await instance.stop()
         await db.area.setStatus(areaId, "disabled")
     },
-    async delete(areaId: string) {
-        let area = areas.get(areaId)
-        if (!area)
-            throw new DatabaseError(`area with id '${area} not found`, 404)
-        if (area.status != "stopped" && area.status != "locked" && area.status != "errored")
-            area.stop()
-        let selected = areasServiceIndex.get(area.actionConf.serviceName || '')
-        if (!selected)
-            return
-        let index = selected.indexOf(area)
-        if (index == -1)
-            return
-        selected.splice(index, 1)
-        let selectedCron = cronTasks.get(area.actionConf.serviceName || '')
-        if (!selectedCron)
-            return
-        if (selectedCron.current > index)
-            selectedCron.current--
-        areas.delete(areaId)
-        await db.area.delete(areaId)
-    },
     async disconnectFromService(email: string, serviceName: string) {
-        let service = global.services.get(serviceName)
-        if (!service)
-            throw new AreaError(`Service with name '${serviceName}' does not exists`, 404)
-        let user = await db.user.getFromMail(email)
-        for (let [key, value] of areas.entries()) {
-            if (value.accountMail != email)
+        if (!global.services.has(serviceName))
+            throw new AreaError(`Service with name '${serviceName}' does not exists`, 404);
+        for (let [key, value] of areas) {
+            if (
+                value.actionConf.serviceName != serviceName &&
+                value.reactionConf.serviceName != serviceName
+            ) {
                 continue
-            if (value.actionConf.serviceName != serviceName && value.reactionConf.serviceName != serviceName)
-                continue
-            try {
-                await value.forceStop()
-            } catch (err) {
-                callbackErrorFun(new ProcessError(value.actionConf.serviceName || 'None', value.actionConf.name, err))
             }
+            await value.forceStop()
             value.status = "locked"
-            await db.area.setStatus(key, "locked")
+            db.area.setStatus(key, "locked")
         }
-        let tok = tokens.get(user.mail || '')
-        if (!tok)
-            return
-            let serviceTok = tok.get(serviceName)
-        if (!serviceTok)
-            return
-        if (serviceTok.dbId)
-            await db.token.delete(serviceTok.dbId)
-        tok.delete(serviceName)
+        await db.token.delete(email, serviceName)
+        tokens.delete(email, serviceName)
     },
     async connectToService(email: string, serviceName: string) {
         // Update tokens
@@ -280,37 +283,32 @@ const AreaInstances = {
         let _serviceTokens = _tokens.get(serviceName)
         if (!_serviceTokens)
             return
-        let userTokens = tokens.get(email)
-        if (!userTokens) {
-            userTokens = new Map([])
-            tokens.set(email, userTokens)
-        }
-        userTokens.set(serviceName, _serviceTokens)
-
-        //change updated tokens
-        for (let [key, value] of areas.entries()) {
-            if (value.accountMail != email)
-                continue
-            if (value.actionConf.serviceName != serviceName && value.reactionConf.serviceName != serviceName)
-                continue
+        tokens.setOne(email, serviceName, _serviceTokens)
+        
+        for (let [key, value] of areas) {
             if (value.actionConf.serviceName == serviceName) {
                 value.actionTokens = _serviceTokens
                 value.action.token = _serviceTokens.access
             }
-            if (value.reactionConf.serviceName == serviceName) {
+            else if (value.reactionConf.serviceName == serviceName) {
                 value.reactionTokens = _serviceTokens
                 value.reaction.token = _serviceTokens.access
-            }
-            if (value.status != "locked")
+            } else {
                 continue
-            if (
-                userTokens.has(value.actionConf.serviceName || '') &&
-                userTokens.has(value.reactionConf.serviceName || '')
-            ) {
-                value.status = "stopped"
-                await db.area.setStatus(key, "disabled")
             }
+            if (value.status == "locked")
+                value.status = "stopped"
         }
+    },
+    async delete(areaId: string) {
+        let area = areas.get(areaId)
+        if (!area)
+            throw new DatabaseError(`area with id '${area} not found`, 404)
+        if (area.status != "stopped" && area.status != "locked" && area.status != "errored")
+            await area.stop()
+        cronTasks.delete(area)
+        areas.delete(areaId)
+        await db.area.delete(areaId)
     }
 }
 
