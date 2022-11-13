@@ -1,0 +1,25 @@
+.workflow__page {
+    width: 90%;
+    height: 100%;
+    margin-left: 2.5%;
+    overflow: hidden;
+}
+
+.dashboard__workflows__title {
+    font-family: Poppins;
+    font-weight: bold;
+    color: #EDEDED;
+    font-size: 28px;
+}
+
+.workflows__display {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    white-space: nowrap;
+}
