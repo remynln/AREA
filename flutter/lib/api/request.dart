@@ -173,14 +173,12 @@ class ApiService {
       if (condition != "null") {
         body_data["condition"] = condition;
       }
-      print(jsonEncode(body_data));
       var response =
           await http.post(uri, headers: headers, body: jsonEncode(body_data));
       if (response.statusCode != 200) {
         log(response.statusCode.toString());
       } else
-        print("AYAYA");
-      return json.decode(response.body)["message"];
+        return json.decode(response.body)["message"];
     } catch (e) {
       log(e.toString());
     }
@@ -206,8 +204,7 @@ class ApiService {
 
   Future<void> disconnectToService(String token, String service_name) async {
     try {
-      final uri = Uri.http(
-          "${ApiConstants.ip}:${ApiConstants.port}",
+      final uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
           ApiConstants.serviceEndpoint(service_name));
       final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
       var response = await http.delete(uri, headers: headers);
@@ -219,7 +216,8 @@ class ApiService {
     }
   }
 
-  Future<List<AreaAnswer>?> getUserAreas(String token, {String user_id = "me"}) async {
+  Future<List<AreaAnswer>?> getUserAreas(String token,
+      {String user_id = "me"}) async {
     try {
       var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
           ApiConstants.userAreasEndpoint(user_id: user_id));
@@ -233,8 +231,12 @@ class ApiService {
       }
       List<AreaAnswer> model = areaAnswerFromJson(response.body);
       String token_info = token.split('.')[1];
-      token_info += token_info.length % 4 == 0 ? '' : (token_info.length % 4 == 3 ? '=' : '==');
-      if (jsonDecode(utf8.fuse(base64).decode(token_info))["username"] == "root" && jsonDecode(utf8.fuse(base64).decode(token_info))["admin"] == true) {
+      token_info += token_info.length % 4 == 0
+          ? ''
+          : (token_info.length % 4 == 3 ? '=' : '==');
+      if (jsonDecode(utf8.fuse(base64).decode(token_info))["username"] ==
+              "root" &&
+          jsonDecode(utf8.fuse(base64).decode(token_info))["admin"] == true) {
         return model;
       }
       for (var index = 0; index < model.length; index++) {
@@ -309,6 +311,12 @@ class ApiService {
   Future<List<UserAnswer>> getUsers(String token,
       {int limit = 100, int page = 0}) async {
     try {
+      var token_info = token.split('.')[1];
+      token_info += token_info.length % 4 == 0
+          ? ''
+          : (token_info.length % 4 == 3 ? '=' : '==');
+      String name = jsonDecode(utf8.fuse(base64).decode(token_info))["username"];
+
       final uri = Uri.http(
           "${ApiConstants.ip}:${ApiConstants.port}",
           ApiConstants.usersEndpoint,
@@ -322,9 +330,16 @@ class ApiService {
       List<UserAnswer> answers = [];
       List<dynamic> users = jsonDecode(response.body);
       for (Map<String, dynamic> element in users) {
-        UserAnswer? current = await getUserInformation(token, user_id: element["id"]);
+        if (element["admin"] == true && name != "root") {
+          continue;
+        }
+        UserAnswer? current =
+            await getUserInformation(token, user_id: element["id"]);
+        if (current == null) {
+          continue;
+        }
         current?.id = element["id"];
-        if (element.containsKey("admin") && element["admin"] == true) {
+        if (element["admin"] == true) {
           current?.isAdmin = true;
         }
         answers.add(current!);
@@ -356,20 +371,35 @@ class ApiService {
   }
 
   Future<void> updateUserInformation(String token, String new_username,
-      {String user_id = "me", bool isAdmin = false, bool updateAdmin = false}) async {
+      {String user_id = "me",
+      bool isAdmin = false,
+      bool updateAdmin = false}) async {
     try {
+      var token_info = token.split('.')[1];
+      token_info += token_info.length % 4 == 0
+          ? ''
+          : (token_info.length % 4 == 3 ? '=' : '==');
+      String name = jsonDecode(utf8.fuse(base64).decode(token_info))["username"];
+
       var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
           ApiConstants.userEndpoint(user_id));
       Map<String, dynamic> body = {"username": new_username};
-      if (isAdmin) {
-        body["admin"] = updateAdmin;
+      if (isAdmin && name == "root") {
+        body["admin"] = updateAdmin.toString();
       }
-      final headers = {HttpHeaders.authorizationHeader: 'Bearer $token'};
-      var response = await http.put(uri, headers: headers, body: body);
+      final headers = {
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+        HttpHeaders.contentTypeHeader: 'application/json'
+      };
+      var response =
+          await http.put(uri, headers: headers, body: jsonEncode(body));
       if (response.statusCode != 200) {
         log(response.statusCode.toString());
-        print(response.body);
       }
+      print(jsonEncode(body));
+      print(uri);
+      print(headers);
+      print(response.body);
     } catch (e) {
       log(e.toString());
     }
