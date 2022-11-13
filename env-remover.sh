@@ -35,7 +35,7 @@ fi
 
 for branch in $(git for-each-ref --format='%(refname:short)'); do
     true_branch_name=$(echo $branch | sed -e 's/\origin\///g')
-    git checkout -f $true_branch_name --no-guess > /dev/null
+    git checkout -f $true_branch_name > /dev/null
     env_file=$(find . -type f -name ".env" ! -path "./front-web/*" ! -path "./area_api/node_modules/*" | cut -c 3-)
     if [ -z $env_file ]; then
         echo -e "\e[32mno .env in $true_branch_name\e[0m"
