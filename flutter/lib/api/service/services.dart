@@ -13,7 +13,8 @@ List<String> SERVICE_NAMES = [
   "mixcloud",
   "skyrock",
   "genius",
-  "gitlab"
+  "gitlab",
+  "microsoft"
 ];
 
 class Services {
