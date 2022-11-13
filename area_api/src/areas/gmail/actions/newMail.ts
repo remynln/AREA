@@ -116,11 +116,6 @@ async function initSub() {
     const topic = pubsub.topic(TOPIC_NAME)
     let subName = "gmail-sub" //"sub-" + accMail.replace("@", '-')
     var sub = topic.subscription(subName);
-    //if (!(await sub.exists())[0]) {
-    //    console.log("ooooo")
-    //    await topic.createSubscription(subName);
-    //}
-    //sub = topic.subscription(subName);
     return sub;
 }
 
