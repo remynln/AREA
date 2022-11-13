@@ -44,7 +44,6 @@ const gitlab: Service = {
                 refreshToken: refreshToken,
                 username: profile.displayName
             }
-            console.log(cbObj)
             let accountToken = req.query.state;
             if (!accountToken || !accountToken.includes(' ')) {
                 callback(null, cbObj)

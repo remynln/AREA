@@ -3,6 +3,7 @@ import { Action, ActionConfig } from "~/core/types";
 import cron from "node-cron"
 import axios from "axios";
 import { TwitterOauth } from "../reactions/tweet";
+import { AreaError } from "~/core/errors";
 
 interface ParamTypes {
     from: string,
@@ -21,12 +22,19 @@ class newTweet extends Action {
             secret,
             "GET"
         )
-        let res = await axios.get("https://api.twitter.com/2/tweets/search/recent" + query, {
-            headers: {
-                "authorization": header
+        try {
+            let res = await axios.get("https://api.twitter.com/2/tweets/search/recent" + query, {
+                headers: {
+                    "authorization": header
+                }
+            })
+            return (res.data)
+        } catch (err: any) {
+            if (err.response && err.response.status == 400) {
+                throw new AreaError(`invalid from param '${params.from}'`, 400)
             }
-        })
-        return (res.data)
+            throw err
+        }
     }
 
     async loop() {

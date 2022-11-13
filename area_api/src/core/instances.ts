@@ -128,6 +128,9 @@ var tokens = {
         if (!selectedUser)
             return
         selectedUser.delete(service)
+    },
+    deleteUser(email: string) {
+        let user = this.ref.delete(email)
     }
 }
 
@@ -308,6 +311,9 @@ const AreaInstances = {
         cronTasks.delete(area)
         areas.delete(areaId)
         await db.area.delete(areaId)
+    },
+    async deleteUser(email: string) {
+        tokens.deleteUser(email)
     }
 }
 

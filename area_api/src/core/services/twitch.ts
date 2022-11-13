@@ -22,16 +22,12 @@ const twitch: Service = {
             scope:  ['user_read', 'user:read:email', 'user:manage:whispers', 'channel:read:subscriptions', 'user:manage:blocked_users', 'user:edit:follows']
         },
         (req: any, accessToken: string, refreshToken: string, profile: any, _:any, callback: any) => {
-            console.log("profile",profile)
-            console.log("access token",accessToken)
-            console.log("refresh token",refreshToken)
             let cbObj: OAuthCallbackObj = {
                 data: profile,
                 accessToken: accessToken,
                 refreshToken: refreshToken,
                 username: profile.displayName
             }
-            console.log(cbObj)
             let accountToken = req.query.state;
             if (!accountToken || !accountToken.includes(' ')) {
                 callback(null, cbObj)

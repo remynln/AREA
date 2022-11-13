@@ -31,16 +31,12 @@ const discord: Service = {
             ]
         },
         (req: any, accessToken: string, refreshToken: string, profile: any, callback: any) => {
-            console.log("profile",profile)
-            console.log("access token",accessToken)
-            console.log("refresh token",refreshToken)
             let cbObj: OAuthCallbackObj = {
                 data: profile,
                 accessToken: accessToken,
                 refreshToken: refreshToken,
                 username: profile.displayName
             }
-            console.log(cbObj)
             let accountToken = req.query.state;
             if (!accountToken || !accountToken.includes(' ')) {
                 callback(null, cbObj)

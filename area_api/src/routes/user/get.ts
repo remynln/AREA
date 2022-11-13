@@ -2,10 +2,12 @@ import { Router } from "express";
 import db from "~/database/db";
 import User from "~/models/user";
 import { UserPut } from "~/database/user/update"
+import AreaInstances from "~/core/instances";
 var router = Router()
 
 router.delete("/", (req, res, next) => {
     db.user.delete(res.locals.targetUser).then((user) => {
+        AreaInstances.deleteUser(user.mail || '')
         res.status(200).json({
             message: "OK"
         })
