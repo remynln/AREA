@@ -2,12 +2,22 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
 .WorkflowAdd {
-    width: 240px;
-    height: 320px;
+    width: 14vw;
+    height: 33vh;
     background-color: #444444;
     border-radius: 24px;
     position: relative;
     cursor: pointer;
+}
+
+.workflow {
+    width: 14vw;
+    height: 33vh;
+    background-color: #444444;
+    border-radius: 24px;
+    margin-left: 1vw;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .WorkflowCreate {
@@ -301,20 +311,268 @@
 }
 
 @media only screen and (max-height: 900px) {
-    .WorkflowAdd {
-        width: 180px;
-        height: 280px;
-    }
-
     .WorkflowAdd #icon {
         transform: scale(1.5, 1.5);
     }
 }
 
-@media only screen and (max-height: 700px) {
+.workflow__title {
+    margin-top: 1vh;
+    color: #EDEDED;
+    text-align: center;
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.workflow__description {
+    margin-top: -0.5vh;
+    margin-left: 5%;
+    color: #EDEDED;
+    font-family: Poppins;
+    font-size: 12px;
+    border: 1px solid rgb(237, 237, 237, .5);
+    width: 90%;
+    height: 15%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+.workflow__description__title {
+    margin-top: -0.5vh;
+    color: #EDEDED;
+    font-family: Poppins;
+    font-weight: bold;
+    font-size: 14px;
+    font-style: italic;
+    margin-left: 5%;
+}
+
+.workflow__services {
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 1vh;
+    height: 35%;
+    display: flex;
+    align-items: center;
+}
+
+.workflow__services__content {
+    width: 50%;
+    height: 100%;
+    color: #EDEDED;
+    border-radius: 24px;
+    font-family: Poppins;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.workflow__services__content__logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4vw;
+    margin-top: -1vh;
+    border: 2px solid black;
+    background-color: #EDEDED;
+    border-radius: 12px;
+}
+
+.workflow__interactions {
+    width: 100%;
+    margin-top: 10%;
+    margin-left: 5%;
+}
+
+.workflow__interactions_delete {
+    width: 25%;
+    float: right;
+    transform: scale(1.25, 1.25);
+    color: #EDEDED;
+    cursor: pointer;
+}
+
+.workflow__interactions_delete:hover {
+    color: #f10c23;
+}
+
+@media only screen and (max-width: 1500px) {
+    .ClosePanel {
+        transform: scale(1.5, 1.5);
+    }
+
+    .NewWorkflowTitle {
+        font-size: 20px;
+    }
+
+    .WorkflowInformations {
+        font-size: 18px;
+    }
+
+    .WorkflowBlockTitle {
+        font-size: 18px;
+    }
+
+    .TextInPanel {
+        font-size: 12px;
+    }
+
+    .TriggerInput {
+        font-size: 12px;
+    }
+
+    .TriggerDropDown {
+        font-size: 14px;
+    }
+
+    .ConditionDropDown {
+        font-size: 14px;
+    }
+
+    .LastConditionDropDown {
+        font-size: 14px;
+    }
+
+    .CreateWorkflowButton {
+        width: 9vw;
+    }
+
+    .ConditionSubmitButton {
+        width: 6vw;
+    }
+
+    .ConditionSubmitButton {
+        font-size: 14px;
+        width: 9vw;
+    }
+
+    .NewWorkflowTitle {
+        font-size: 20px;
+    }
+
     .WorkflowAdd {
-        width: 150px;
-        height: 230px;
+        width: 20vw;
+    }
+
+    .workflow {
+        width: 20vw;
+    }
+
+    .workflow__services__content__logo {
+        width: 6vw;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .CreateWorkflowButton {
+        width: 12vw;
+    }
+
+    .ConditionSubmitButton {
+        width: 12vw;
+    }
+
+    .WorkflowService {
+        width: 35vw;
+        height: 12vh;
+    }
+
+    .WorkflowAdd {
+        width: 30vw;
+    }
+
+    .workflow {
+        width: 30vw;
+    }
+
+    .workflow__title {
+        font-size: 14px;
+    }
+
+    .workflow__description__title {
+        font-size: 12px;
+    }
+
+    .workflow__description {
+        font-size: 10px;
+    }
+
+    .workflow__services__content {
+        font-size: 12px;
+    }
+
+    .workflow__services__content__logo {
+        width: 10vw;
+    }
+
+    .workflow__interactions {
+        margin-top: 5%;
+    }
+
+    .workflow__interactions_delete {
+        transform: scale(0.95, 0.95);
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .CreateWorkflowButton {
+        width: 16vw;
+    }
+    
+    .ConditionDropDown {
+        width: 18vw;
+    }
+
+    .TriggerDropDown {
+        width: 28vw;
+    }
+
+    .ConditionSubmitButton {
+        width: 16vw;
+    }
+
+    .WorkflowAdd {
+        width: 34vw;
+    }
+
+    .workflow {
+        width: 34vw;
+    }
+
+    .workflow__services__content__logo {
+        width: 14vw;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .CreateWorkflowButton {
+        width: 20vw;
+    }
+
+    .ConditionSubmitButton {
+        width: 20vw;
+        font-size: 12px;
+    }
+
+    .LastConditionDropDown {
+        width: 34vw;
+    }
+
+    .NewWorkflowTitle {
+        font-size: 18px;
+    }
+
+    .WorkflowAdd {
+        width: 40vw;
+    }
+
+    .workflow {
+        width: 40vw;
     }
 }
 

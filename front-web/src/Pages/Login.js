@@ -25,6 +25,7 @@ export const Login = (props) => {
         else if (props.user !== false && localStorage.getItem("jwt") === null) {
             props.setUser(false)
             props.setServices([])
+            props.setAreas([])
         }
         if (username.length === 0 || password.length < 8)
             setLogin(false)

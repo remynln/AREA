@@ -13,6 +13,7 @@ import axios from "axios";
 function App() {
   const [user, setUser] = useState(localStorage.getItem("jwt")===null?false:{username: null})
   const [services, setServices] = useState([])
+  const [areas, setAreas] = useState([])
   const [users, setUsers] = useState([])
 
   axios.defaults.baseURL = process.env.REACT_APP_SERVER_IP;
@@ -20,7 +21,6 @@ function App() {
   useEffect(() => {
     if (user.username === null) {
       loadUser()
-      loadServices()
     }
   }, [localStorage.getItem("jwt"), user]);
 
@@ -63,7 +63,13 @@ function App() {
     try {
       const user = await jwt(JSON.parse(localStorage.getItem("jwt")))
 
-      setUser({username: user.username, email: user.email, admin: user.admin})
+      if (user.username === "root")
+        await setUser({username: user.username, email: user.email, admin: user.admin, superuser: true})
+      else {
+        await setUser({username: user.username, email: user.email, admin: user.admin, superuser: false})
+        await loadServices()
+        await loadAreas()
+      }
       if (user.admin === true)
         loadUsers()
     } catch (error) {
@@ -73,11 +79,23 @@ function App() {
 
   const loadUsers = async () => {
     try {
-      const res = await axios.get("/users", { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+      const res = await axios.get("/users",
+        { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
       
       setUsers(res.data)
     } catch (error) {
         console.log(error)
+    }
+  }
+
+  const loadAreas = async () => {
+    try {
+      const res = await axios.get("/user/me/areas",
+        { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+
+        await setAreas(res.data)
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -86,14 +104,14 @@ function App() {
         <Router>
           <Routes>
             <Route element={<PrivateRoutes user={user} />}>
-              <Route path="/dashboard" element={<Dashboard user={user} services={services}/>} />
+              <Route path="/dashboard" element={<Dashboard user={user} services={services} areas={areas} setAreas={setAreas}/>} />
               <Route path="/workflows" element={<Workflows />} />
               <Route path="/settings" element={<Settings user={user} users={users} setUsers={setUsers}/>} />
               <Route path="*" element={<Navigate to="/dashboard" />} />
               <Route path="/" element={<Navigate to="/dashboard" />} />
               <Route path="/home" element={<Navigate to="/dashboard" />} />
             </Route>
-            <Route path="/login" element={<Login user={user} setUser={setUser} setServices={setServices}/>} />
+            <Route path="/login" element={<Login user={user} setUser={setUser} setServices={setServices} setAreas={setAreas}/>} />
             <Route path="/register" element={<Register user={user} setUsers={setUsers}/>} />
           </Routes>
         </Router>

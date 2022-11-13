@@ -231,6 +231,11 @@
     color: #f10c23;
 }
 
+.settings__content__admin__content__user__setadmin {
+    margin-left: 1%;
+    cursor: pointer;
+}
+
 @media only screen and (max-height: 850px) {
     .settings__content__admin__false__img {
         width: 1550px;
