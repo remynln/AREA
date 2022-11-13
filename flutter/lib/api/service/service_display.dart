@@ -30,8 +30,7 @@ class _ServiceDisplayState extends State<ServiceDisplay> {
   void callApiFunction(String service_name, bool isConnected) async {
     try {
       if (isConnected) {
-        await ApiService().disconnectToService(widget.token, service_name);
-        widget.setStateParent(() {});
+        await ApiService().disconnectToService(widget.token, service_name, widget.setStateParent);
       } else {
         await ApiService()
             .connectToService(widget.token, service_name, "sergify://");

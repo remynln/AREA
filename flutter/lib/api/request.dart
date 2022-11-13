@@ -266,7 +266,7 @@ class ApiService {
     }
   }
 
-  Future<void> disconnectToService(String token, String service_name) async {
+  Future<void> disconnectToService(String token, String service_name, setStateParent) async {
     try {
       final uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
           ApiConstants.serviceEndpoint(service_name));
@@ -278,6 +278,7 @@ class ApiService {
     } catch (e) {
       log(e.toString());
     }
+    setStateParent((){});
   }
 
   Future<List<AreaAnswer>?> getUserAreas(String token,
