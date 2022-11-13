@@ -104,7 +104,7 @@ function App() {
         <Router>
           <Routes>
             <Route element={<PrivateRoutes user={user} />}>
-              <Route path="/dashboard" element={<Dashboard user={user} services={services} areas={areas} setAreas={setAreas}/>} />
+              <Route path="/dashboard" element={<Dashboard user={user} services={services} setServices={setServices} areas={areas} setAreas={setAreas}/>} />
               <Route path="/workflows" element={<Workflows services={services} areas={areas} setAreas={setAreas}/>} />
               <Route path="/settings" element={<Settings user={user} users={users} setUsers={setUsers}/>} />
               <Route path="*" element={<Navigate to="/dashboard" />} />
