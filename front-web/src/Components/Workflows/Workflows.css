@@ -575,3 +575,110 @@
         width: 40vw;
     }
 }
+
+@media only screen and (max-width: 1500px) {
+    .ClosePanel {
+        transform: scale(1.5, 1.5);
+    }
+
+    .NewWorkflowTitle {
+        font-size: 20px;
+    }
+
+    .WorkflowInformations {
+        font-size: 18px;
+    }
+    WorkflowService
+    .WorkflowBlockTitle {
+        font-size: 18px;
+    }
+
+    .TextInPanel {
+        font-size: 12px;
+    }
+
+    .TriggerInput {
+        font-size: 12px;
+    }
+
+    .TriggerDropDown {
+        font-size: 14px;
+    }
+
+    .ConditionDropDown {
+        font-size: 14px;
+    }
+
+    .LastConditionDropDown {
+        font-size: 14px;
+    }
+
+    .CreateWorkflowButton {
+        width: 9vw;
+    }
+
+    .ConditionSubmitButton {
+        width: 6vw;
+    }
+
+    .ConditionSubmitButton {
+        font-size: 14px;
+        width: 9vw;
+    }
+
+    .NewWorkflowTitle {
+        font-size: 20px;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .CreateWorkflowButton {
+        width: 12vw;
+    }
+
+    .ConditionSubmitButton {
+        width: 12vw;
+    }
+
+    .WorkflowService {
+        width: 35vw;
+        height: 12vh;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .CreateWorkflowButton {
+        width: 16vw;
+    }
+    
+    .ConditionDropDown {
+        width: 18vw;
+    }
+
+    .TriggerDropDown {
+        width: 28vw;
+    }
+
+    .ConditionSubmitButton {
+        width: 16vw;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .CreateWorkflowButton {
+        width: 20vw;
+    }
+
+    .ConditionSubmitButton {
+        width: 20vw;
+        font-size: 12px;
+    }
+
+    .LastConditionDropDown {
+        width: 34vw;
+    }
+
+    .NewWorkflowTitle {
+        font-size: 18px;
+    }
+}
