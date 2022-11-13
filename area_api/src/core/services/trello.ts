@@ -50,7 +50,7 @@ const trello: Service = {
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
             db.setToken(accessToken, refreshToken, mail, 'trello').then(() => {
                 callback(null, cbObj)
-            })
+            }).catch((err) => callback(err))
         }
     ) as any,
     refreshToken: async (refreshToken) => {

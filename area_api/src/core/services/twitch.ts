@@ -40,7 +40,7 @@ const twitch: Service = {
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
             db.setToken(accessToken, refreshToken, mail, 'twitch').then(() => {
                 callback(null, cbObj)
-            })
+            }).catch((err) => callback(err))
         }
     ),
     refreshToken: async (refreshToken) => {

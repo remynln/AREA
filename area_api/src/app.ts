@@ -19,13 +19,14 @@ import checkAdmin from './middlewares/checkAdmin';
 import AreaInstances from './core/instances';
 import aboutRouter from './routes/about.json';
 import { PubSub } from '@google-cloud/pubsub';
+import process from 'node:process';
 const pubsub = new PubSub({ projectId: "sergify" });
 //import { PetsController } from '~/resources/pets/pets.controller'
 //import { ExceptionsHandler } from '~/middlewares/exceptions.handler'
 //import { UnknownRoutesHandler } from '~/middlewares/unknownRoutes.handler'
 
 const app = express()
-const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@area.4a3tikc.mongodb.net/area?retryWrites=true&w=majority`
+const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.l1fcbpz.mongodb.net/area?retryWrites=true&w=majority`
 
 mongoose.connect(url).then(() => {
     console.log("Connected to database")
