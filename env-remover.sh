@@ -28,11 +28,8 @@ function remove_env() {
 
 for branch in $(git for-each-ref --format='%(refname:short)'); do
     true_branch_name=$(echo $branch | sed -e 's/\origin\///g')
-    echo "Branch name:  $true_branch_name"
-    echo "checkouting"
     git checkout $true_branch_name > /dev/null
-    echo "Actual branch: $(git rev-parse --abbrev-ref HEAD)"
-    echo "Finding .env (excluding front web)"
+	find . -type f -name ".env" ! -path "./front-web/*" ! -path "./area_api/node_modules/*"
     env_file=$(find . -type f -name ".env" ! -path "./front-web/*" ! -path "./area_api/node_modules/*")
     if [[ -z $env_file ]]; then
         echo "$env_file in $true_branch_name"
