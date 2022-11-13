@@ -13,7 +13,6 @@ const microsoft: Service = {
     refreshToken: async (it: string) => {
         let res
         try {
-            console.log("AAAAA")
             res = await axios.post("https://login.microsoftonline.com/common/oauth2/v2.0/token", qs.stringify({
                 client_id: process.env.MICROSOFT_CLIENT_ID,
                 client_secret: process.env.MICROSOFT_CLIENT_SECRET,
@@ -45,10 +44,8 @@ const microsoft: Service = {
         passReqToCallback: true,
         scope: [
             'https://graph.microsoft.com/.default',
-            'https://graph.microsoft.com/User.Read'
         ]
         }, function(req: any, accessToken: any, refresh_token: any, profile: any, callback: any) {
-            console.log("AAAAA" )
             let accountToken = req.query.state;
             let cbObj = {
                 data: profile._json.email,
