@@ -1,11 +1,27 @@
-name: gitleaks
-on: [pull_request, push, workflow_dispatch]
+name: Git Leaks
+on: [push, workflow_dispatch]
 jobs:
-  scan:
-    name: gitleaks
+  list:
+    name: Path lister
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
         with:
-          fetch-depth: 0
-      - run: "[ \"find . -type f -name '.env' ! -path './front-web/*' ! -path './area_api/node_modules/*'\" ] && exit 1|| exit 0"
+          python-version: "3.7"
+
+      - uses: actions/checkout@v1
+
+      - name: Fetch action
+        id: pl
+        uses: Rishabh510/Path-lister-action@master
+        with:
+          path: "area_api/"
+          type: ".env"
+
+      - name: Output results
+        run: |
+          echo "Found ${{ steps.pl.outputs.path_count }} file(s) with this extension:"
+          for i in ${{ steps.pl.outputs.paths }}; do
+          echo $i
+          done
