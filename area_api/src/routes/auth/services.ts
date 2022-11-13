@@ -40,7 +40,7 @@ router.get('/:serviceName', (req, res) => {
     authParams.failureRedirect = req.query.callback as string
     authParams.callbackURL = "/auth/service/" + req.params.serviceName + "/callback"
     authParams.state = req.query.callback as string
-    passport.authenticate(req.params.serviceName, authParams)(req, res)
+    passport.authenticate(service.strategy, authParams)(req, res)
 }, (req, res) => {
 })
 

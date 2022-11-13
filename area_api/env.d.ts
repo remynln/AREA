@@ -3,6 +3,8 @@ declare global {
       interface ProcessEnv {
         GOOGLE_CLIENT_ID: string;
         GOOGLE_CLIENT_SECRET: string;
+        MICROSOFT_CLIENT_ID: string;
+        MICROSOFT_CLIENT_SECRET: string;
         DEEZER_CLIENT_ID: string;
         DEEZER_CLIENT_SECRET: string;
         SPOTIFY_CLIENT_ID: string;

@@ -3,6 +3,7 @@ import { formatContent } from "./formatting"
 import deezer from "./services/deezer"
 import genius from "./services/genius"
 import google from "./services/google"
+<<<<<<< HEAD
 import notion from "./services/notion"
 import spotify from "./services/spotify"
 import trello from "./services/trello"
@@ -13,12 +14,16 @@ import skyrock from "./services/skyrock"
 import pinterest from "./services/pinterest"
 import discord from "./services/discord"
 import gitlab from "./services/gitlab"
+=======
+import microsoft from "./services/microsoft"
+>>>>>>> microsoft
 import { Action, Reaction } from "./types"
 import mixcloud from "./services/mixcloud"
 
 const services = new Map([
     ["google", google],
     ["deezer", deezer],
+<<<<<<< HEAD
     ["spotify", spotify],
     ["notion", notion],
     ["trello", trello],
@@ -31,6 +36,9 @@ const services = new Map([
     ["pinterest", pinterest],
     ["discord", discord],
     ["gitlab", gitlab]
+=======
+    ["microsoft", microsoft]
+>>>>>>> microsoft
 ])
 
 function getAction(actionName: string) {

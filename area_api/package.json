@@ -23,8 +23,11 @@
     "typescript": "^4.8.3"
   },
   "dependencies": {
+    "@azure/identity": "^3.0.0",
     "@google-cloud/pubsub": "^3.2.0",
     "@googleapis/docs": "^1.0.1",
+    "@microsoft/microsoft-graph-client": "^3.0.2",
+    "@microsoft/microsoft-graph-types": "^2.25.0",
     "@types/axios": "^0.14.0",
     "@types/bcrypt": "^5.0.0",
     "@types/express-session": "^1.17.5",
@@ -42,6 +45,7 @@
     "express": "^4.18.1",
     "express-session": "^1.17.3",
     "googleapis": "^108.0.0",
+    "isomorphic-fetch": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
     "mimetext": "^2.0.10",
     "moment": "^2.29.4",
@@ -52,6 +56,7 @@
     "octokit": "^2.0.10",
     "passport": "^0.6.0",
     "passport-deezer": "^0.2.0",
+<<<<<<< HEAD
     "passport-discord": "^0.1.4",
     "passport-github2": "^0.1.12",
     "passport-gitlab2": "^5.0.0",
@@ -70,6 +75,13 @@
     "passport-twitch-latest": "^1.0.0",
     "passport-twitchtv": "^0.1.4",
     "request-ip": "^3.3.0",
+=======
+    "passport-github2": "^0.1.12",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-google-oidc": "^0.1.0",
+    "passport-microsoft": "^1.0.0",
+    "readline-sync": "^1.4.10",
+>>>>>>> microsoft
     "uninstall": "^0.0.0"
   }
 }
