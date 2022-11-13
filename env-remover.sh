@@ -25,6 +25,13 @@ function remove_env() {
     fi
 }
 
+force=""
+
+if [ -n $1 ] && [ "$1" == "-f" ]; then
+    force="-f"
+    echo "Force enabled"
+fi
+
 
 for branch in $(git for-each-ref --format='%(refname:short)'); do
     true_branch_name=$(echo $branch | sed -e 's/\origin\///g')
@@ -34,5 +41,6 @@ for branch in $(git for-each-ref --format='%(refname:short)'); do
         echo -e "\e[32mno .env in $true_branch_name\e[0m"
     else
         echo -e "\e[31m\e[1m\e[4m.env founded at $env_file in $true_branch_name\e[0m"
+        remove_env $env_file $force
     fi
 done
