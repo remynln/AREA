@@ -31,7 +31,6 @@ const pinterest: Service = {
                 refreshToken: refreshToken,
                 username: profile.displayName
             }
-            console.log(cbObj)
             let accountToken = req.query.state;
             if (!accountToken || !accountToken.includes(' ')) {
                 callback(null, cbObj)
@@ -40,7 +39,7 @@ const pinterest: Service = {
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
             db.setToken(accessToken, refreshToken, mail, 'pinterest').then(() => {
                 callback(null, cbObj)
-            })
+            }).catch((err) => callback(err))
         }
     ),
     refreshToken: async (refreshToken) => {

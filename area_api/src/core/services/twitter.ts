@@ -45,7 +45,7 @@ const twitter: Service = {
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
             db.setToken(accessToken + " " + secretToken, "", mail, 'twitter').then(() => {
                 callback(null, cbObj)
-            })
+            }).catch((err) => callback(err))
         }
     ),
     refreshToken: async (refreshToken) => {

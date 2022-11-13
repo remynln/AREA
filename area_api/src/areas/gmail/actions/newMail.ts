@@ -115,11 +115,7 @@ async function getLastMails(
 async function initSub() {
     const topic = pubsub.topic(TOPIC_NAME)
     let subName = "gmail-sub" //"sub-" + accMail.replace("@", '-')
-    const sub = topic.subscription(subName);
-    if ((await sub.exists())[0]) {
-        await sub.delete()
-    }
-    await topic.createSubscription(subName);
+    var sub = topic.subscription(subName);
     return sub;
 }
 

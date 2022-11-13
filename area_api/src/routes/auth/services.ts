@@ -7,6 +7,7 @@ import Area from "../../core/global"
 import global from "../../core/global";
 import db from "~/database/db";
 import JwtFormat from "./jwtFormat";
+import AreaInstances from "~/core/instances";
 
 var router: Router = express.Router()
 
@@ -77,6 +78,7 @@ router.get('/:serviceName/callback', (req, res, next) => {
                 username: res.locals.username,
                 admin: admin
             }
+            AreaInstances.connectToService(mail, req.params.serviceName)
             res.redirect(url.format({
                 pathname: req.query.state as string,
                 query: {

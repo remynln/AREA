@@ -20,10 +20,12 @@ interface ITrigger {
 }
 
 export default async function forEach(
+    start: (accountMail: string, tokens: Map<string, Tokens>) => Promise<void>,
     trigger: (accountMail: string, tokens: Map<string, Tokens>, area: ITrigger) => Promise<void>
 ) {
     for await (let user of User.find()) {
         let tokens = await db.token.getFromUser(user._id)
+        start(user.mail || '', tokens)
         for await (let triggerd of Trigger.find({ user_id: user._id })) {
             let area: ITrigger = {
                 _id: triggerd._id,

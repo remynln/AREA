@@ -66,7 +66,7 @@ const google: Service = {
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
             db.setToken(accessToken, refresh_token, mail, 'google').then(() => {
                 callback(null, cbObj)
-            })
+            }).catch((err) => callback(err))
             
       })
 }

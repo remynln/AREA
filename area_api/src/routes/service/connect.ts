@@ -63,8 +63,10 @@ router.get('/:serviceName/callback', (req, res, next) => {
     authParams.failureRedirect = process.env.DOMAIN + "/"
     authParams.callbackURL = "/service/" + req.params.serviceName + "/callback"
     passport.authenticate(req.params.serviceName, authParams, (err, user, info) => {
-        if (err)
-            console.log(err)
+        if (err) {
+            next(err)
+            return
+        }
         res.locals.user = user;
         next()
     })(req, res, next)

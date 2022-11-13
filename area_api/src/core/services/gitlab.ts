@@ -44,7 +44,6 @@ const gitlab: Service = {
                 refreshToken: refreshToken,
                 username: profile.displayName
             }
-            console.log(cbObj)
             let accountToken = req.query.state;
             if (!accountToken || !accountToken.includes(' ')) {
                 callback(null, cbObj)
@@ -53,7 +52,7 @@ const gitlab: Service = {
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
             db.setToken(accessToken, refreshToken, mail, 'gitlab').then(() => {
                 callback(null, cbObj)
-            })
+            }).catch((err) => callback(err))
         }
     ),
     refreshToken: async (refreshToken) => {

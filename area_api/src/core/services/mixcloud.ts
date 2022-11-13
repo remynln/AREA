@@ -39,7 +39,7 @@ const mixcloud: Service = {
             let mail = (jwt.decode(accountToken.split(' ')[1]) as JwtFormat).email
             db.setToken(accessToken, refreshToken, mail, 'mixcloud').then(() => {
                 callback(null, cbObj)
-            })
+            }).catch((err) => callback(err))
         }
     ),
     refreshToken: async (refreshToken) => {
