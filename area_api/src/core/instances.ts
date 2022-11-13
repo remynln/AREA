@@ -156,9 +156,10 @@ export interface AreaConfig {
 
 const loadFunctions = {
     async loadDb() {
-        await db.area.forEach(async (email, newUserTokens, trigger) => {
-            if (!tokens.getUser(email))
-                tokens.set(email, newUserTokens)
+        await db.area.forEach(async (mail, userTokens) => {
+            if (!tokens.getUser(mail))
+                tokens.set(mail, userTokens)
+        },async (email, newUserTokens, trigger) => {
             let userTokens = tokens.getUser(email)
             if (!userTokens)
                 return
@@ -224,6 +225,7 @@ const AreaInstances = {
         console.log("areas ready")
     },
     async add(area: AreaConfig, accountMail: string) {
+        console.log(tokens.ref)
         let userTokens = tokens.getUser(accountMail)
         if (!userTokens) {
             throw new AreaError("You are not connected to any services", 403)

@@ -67,7 +67,7 @@ class addedToFavorite extends Action {
 let config: ActionConfig = {
     serviceName: "deezer",
     name: "addedToFavorite",
-    description: "When a track is added to a playlist",
+    description: "When a track is added to your favorite",
     paramTypes: {
     },
     propertiesType: {
