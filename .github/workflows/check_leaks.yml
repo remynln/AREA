@@ -8,4 +8,4 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - run: "[ \"find . -type f -name '.env' ! -path './front-web/*' ! -path './area_api/node_modules/*'\" ] && exit 1 || exit 0"
+      - run: "[ \"find . -type f -name '.env' ! -path './front-web/*' ! -path './area_api/node_modules/*'\" ] && exit 1|| exit 0"
