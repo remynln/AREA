@@ -63,6 +63,11 @@ Accounts are linked by their mails, if you connect with the google service, it w
   - callback url redirection with body ->
     - `token`: JWT for authorization
 
+
+`/service/[service_name]`: *DELETE Method*
+- **Response**:
+  - 200: user disconnect from service successfully
+
 #### Available services
   - `google`
 
