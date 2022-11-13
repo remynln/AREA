@@ -42,7 +42,7 @@ for branch in $(git for-each-ref --format='%(refname:short)'); do
             :
             # echo -e "\e[32mno .env in $true_branch_name\e[0m"
         else
-            >&2 echo -e "\e[31m\e[1m\e[4m.env founded at $env_file in $true_branch_name\e[0m"
+            echo -e "\e[31m\e[1m\e[4m.env founded at $env_file in $true_branch_name\e[0m"
             # remove_env $env_file $force
         fi
     done
