@@ -5,7 +5,6 @@ import { getMailFromToken } from "../utils";
 
 class sendMail extends Reaction {
     override async launch() {
-        console.log("sending mail...")
         const msg = createMimeMessage()
         let mail: string = await this.refresh(async () => {
             try {

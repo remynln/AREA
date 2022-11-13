@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import { AreaError, DatabaseError, ParsingError } from "~/core/errors";
 
 export default function errorMiddleware(error: Error, req: Request, res: Response, next: any) {
-    console.log("passed in middleware !")
     if (error instanceof ParsingError) {
         res.status(400).send({
             message: `Parsing error: ${error.message}`

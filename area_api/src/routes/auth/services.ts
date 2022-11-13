@@ -42,7 +42,6 @@ router.get('/:serviceName', (req, res) => {
     authParams.state = req.query.callback as string
     passport.authenticate(req.params.serviceName, authParams)(req, res)
 }, (req, res) => {
-    console.log("nsm")
 })
 
 router.get('/:serviceName/callback', (req, res, next) => {
@@ -54,17 +53,15 @@ router.get('/:serviceName/callback', (req, res, next) => {
         return
     }
     let authParams = service.authParams;
-    authParams.failureRedirect = "http://localhost:8080/"
+    authParams.failureRedirect = process.env.DOMAIN + "/"
     authParams.callbackURL = "/auth/service/" + req.params.serviceName + "/callback"
     passport.authenticate(req.params.serviceName, authParams, (err, user, info) => {
-        console.log("user: ", user)
         res.locals.user = user;
         next()
     })(req, res, next)
-}, (req, res) => {
+}, (req, res, next) => {
     if (req.errored || !res.locals.user.data || !res.locals.user.username
         || !res.locals.user.accessToken || !res.locals.user.refreshToken) {
-        console.log(res.locals.user.accessToken, res.locals.user.refreshToken)
         res.status(500).json({
             message: "Internal server error"
         });
@@ -86,9 +83,9 @@ router.get('/:serviceName/callback', (req, res, next) => {
                     token: jwt.sign(token, process.env.JWT_KEY || "")
                 }
             }))
-        })
+        }).catch((err) => next(err))
     }
-    ) 
+    ).catch((err) => next(err))
 })
 
 export default router

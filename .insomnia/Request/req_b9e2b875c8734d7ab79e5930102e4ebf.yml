@@ -1,0 +1,24 @@
+_id: req_b9e2b875c8734d7ab79e5930102e4ebf
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1667327038905
+created: 1667327038905
+url: localhost:8080/user/me
+name: /user/me
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication:
+  type: bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hcmNvLnJlZ3VpbGxvdEBnbWFpbDIuY29tIiwidXNlcm5hbWUiOiJtYXJjb19yZ3QyIiwiaWF0IjoxNjY3MzExNTczfQ.3R0Ec_3BjcNbC0gbBDlU9_dugM6uzZx0eFYrlps96oI
+  prefix: Bearer
+metaSortKey: -1667311432576.25
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

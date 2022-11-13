@@ -6,7 +6,7 @@ import global from "~/core/global"
 
 var router = Router()
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
     let decoded = jwt.decode(req.headers.authorization?.split(' ')[1] || '')
     db.getServices((decoded as JwtFormat).email)
     .then((connectedServices) => {
@@ -16,6 +16,8 @@ router.get('/', (req, res) => {
                 !connectedServices.includes(elem)
             )
         })
+    }).catch((err) => {
+        next(err)
     })
 })
 

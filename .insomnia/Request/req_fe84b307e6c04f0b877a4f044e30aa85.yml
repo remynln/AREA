@@ -1,0 +1,31 @@
+_id: req_fe84b307e6c04f0b877a4f044e30aa85
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1667666035148
+created: 1667312454070
+url: localhost:8080/user/634547f8499550b942b4048d
+name: /user/userId
+description: ""
+method: PUT
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"admin": true
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+authentication:
+  type: bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvb3QiLCJ1c2VybmFtZSI6InJvb3QiLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNjY3MzA5NDc3fQ.9f4Bsx78Ucp3OzYqfcnimF-vKro3Ded4-fXT9xkssEA
+  prefix: Bearer
+metaSortKey: -1667310783638.5
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

@@ -19,7 +19,6 @@ interface DeezerTrack {
 }
 
 class addedToPlaylist extends Action {
-    task: ScheduledTask | undefined
     trackNumber: number
     async getPlaylistLen() {
         let id = this.params.playlistId as string
@@ -51,7 +50,6 @@ class addedToPlaylist extends Action {
 
     async loop() {
         let newTrackNumber = await this.getPlaylistLen()
-        console.log("loop", this.trackNumber, newTrackNumber)
         if (this.trackNumber < newTrackNumber) {
             let newTracks = await this.getNewPlaylistTracks()
             for (let i of newTracks) {
@@ -63,23 +61,15 @@ class addedToPlaylist extends Action {
 
     async start(): Promise<void> {
         this.trackNumber = await this.getPlaylistLen()
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
     async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 
 let config: ActionConfig = {
     serviceName: "deezer",
     name: "addedToPlaylist",
-    description: "triggers when a track is added to a playlist",
+    description: "When a track is added to a playlist",
     paramTypes: {
         "playlistId": "number" 
     },

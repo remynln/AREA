@@ -1,0 +1,30 @@
+_id: req_43b415097f014c6e88eaa55d4288daec
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1667404114624
+created: 1665994865571
+url: localhost:8080/auth/register
+name: /auth/register
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"email": "marco.reguillot@gmail4.com",
+    	"username": "marco_rgt4",
+    	"password": "Azerty1234"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+authentication: {}
+metaSortKey: -1665994865571
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

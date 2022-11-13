@@ -1,0 +1,24 @@
+_id: req_498bcf57409945a6af41437f8fa17c40
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1666626153758
+created: 1666626140363
+url: localhost:8080/service/google/reaction/sendMail
+name: /service/google/reaction/sendMail
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication:
+  type: bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hcmNvLnJlZ3VpbGxvdEBnbWFpbC5jb20iLCJpYXQiOjE2NjU5OTQ5OTR9.5DQzkUHDICvYOeNZPUY9foqLegI0Oe-TJVRJoagzDoQ
+  prefix: Bearer
+metaSortKey: -1666259882128.5625
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

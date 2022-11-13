@@ -1,0 +1,32 @@
+_id: req_76b9d5000781463485524b65489681e2
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1668114842100
+created: 1668089029157
+url: http://localhost:8080/service/twitch
+name: /service/twitch
+description: ""
+method: GET
+body: {}
+parameters:
+  - id: pair_bf92b927b7654a699b355fc5b81491f5
+    name: callback
+    value: https://google.com
+    description: ""
+  - id: pair_7c586a25d5674c539de960e0a4b284c4
+    name: jwt
+    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IldhejB4IiwiZW1haWwiOiJyZW15Lm5vdWxpbkBlcGl0ZWNoLmV1IiwiYWRtaW4iOmZhbHNlLCJpYXQiOjE2NjgxMDcxNjB9.u6ZTOHknqQrh40Uh-xeZQIrhDIff5mXyIxPzedniz5Y
+    description: ""
+headers: []
+authentication:
+  type: bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IldhejB4IiwiZW1haWwiOiJyZW15Lm5vdWxpbkBlcGl0ZWNoLmV1IiwiYWRtaW4iOmZhbHNlLCJpYXQiOjE2NjgwODkwMTJ9.31t3BBHXFCiNtisnlhI-qI9BmbNrx-sMvZhPnXWB92U
+  prefix: Bearer
+metaSortKey: -1666194011585.9375
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

@@ -2,11 +2,19 @@ import { OAuthCallbackObj, Service } from "../types";
 import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
+import newComment from "~/areas/notion/actions/newComment"
+import addTodo from "~/areas/notion/reactions/addTodo"
+import addComment from "~/areas/notion/reactions/addComment"
 import { Strategy } from "~/strategies/notion/lib/passport-notion/index"
 import { Request } from "express";
 const notion: Service = {
-    actions: new Map([]),
-    reactions: new Map([]),
+    actions: new Map([
+        ["newComment", newComment]
+    ]),
+    reactions: new Map([
+        ["addTodo", addTodo],
+        ["addComment", addComment]
+    ]),
     authParams: {
         accessType: 'offline',
         approvalPrompt: 'force'
@@ -15,18 +23,16 @@ const notion: Service = {
         {
             clientID: process.env.NOTION_CLIENT_ID || '',
             clientSecret: process.env.NOTION_CLIENT_SECRET || '',
-            callbackURL: "http://localhost:8080/service/notion/callback"
+            callbackURL: process.env.DOMAIN + "/service/notion/callback"
         },
         (reqUkn, accessToken, refreshToken, oauthData, profile, callback: any) => {
             let req = reqUkn as any
-            console.log(accessToken, refreshToken, profile)
             let cbObj: OAuthCallbackObj = {
                 data: profile.id,
                 accessToken: accessToken,
                 refreshToken: '',
                 username: profile.name || ''
             }
-            console.log(cbObj)
             let accountToken = req.query.state;
             if (!accountToken || !accountToken.includes(' ')) {
                 callback(null, cbObj)

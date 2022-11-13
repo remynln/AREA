@@ -4,7 +4,6 @@ import axios, { AxiosResponse } from "axios";
 import { SpotifyTrack } from "../utils";
 
 class addedToFavorite extends Action {
-    task: ScheduledTask | undefined
     trackNumber: number
     async getPlaylistLen() {
         return await this.refresh(async () => {
@@ -16,7 +15,6 @@ class addedToFavorite extends Action {
                 })
                 return res.data.total
             } catch (err: any) {
-                console.log(err.response)
                 if (err.response && err.response.status == 401)
                     return AreaRet.AccessTokenExpired
                 throw err
@@ -41,8 +39,6 @@ class addedToFavorite extends Action {
                 throw err
             }
         })
-        console.log(res.data.items[0].track.artists[0])
-        console.log(res.data.items[0].track.album)
         let mapped: SpotifyTrack[] = res.data.items.map(({ track }: any) => {
             let duration = track.duration / 1000
             return {
@@ -76,23 +72,15 @@ class addedToFavorite extends Action {
 
     async start(): Promise<void> {
         this.trackNumber = await this.getPlaylistLen()
-        this.task = cron.schedule("*/10 * * * * *", () => {
-            this.loop().catch((err) => {
-                this.error(err)
-            })
-        })
     }
     async stop(): Promise<void> {
-        if (this.task == undefined)
-            return
-        this.task.stop()
     }
 }
 
 let config: ActionConfig = {
     serviceName: "spotify",
     name: "addedToLibrary",
-    description: "triggers when a track is added to a playlist",
+    description: "When a track is added to favorite",
     paramTypes: {
     },
     propertiesType: {

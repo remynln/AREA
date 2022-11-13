@@ -1,0 +1,233 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+.settings {
+    width: 85%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.userPanel {
+    width: 92.5%;
+    height: 87.5%;
+    border-radius: 24px;
+    background-color: #444444;
+    display: flex;
+}
+
+.userPanel__sideBar {
+    height: 100%;
+    width: 20%;
+    border-bottom-left-radius: 24px;
+    border-top-left-radius: 24px;
+    border-right: 1px solid rgb(237, 237, 237, .5);
+}
+
+.userPanel__sideBar__title {
+    padding-top: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Poppins;
+    color: #EDEDED;
+    font-size: 24px;
+    font-weight: bold;
+    height: 10%;
+    margin-bottom: 5%;
+}
+
+.userPanel__sideBar__rows {
+    width: 100%;
+    height: 80%;
+}
+
+.userPanel__sideBar__rows__row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    width: 100%;
+    height: 10vh;
+    color: #EDEDED;
+    font-family: Poppins;
+    cursor: pointer;
+    transition: 0.4s ease-in-out;
+}
+
+.userPanel__sideBar__rows__row:hover {
+    color: #f10c23;
+}
+
+.settings__content {
+    width: 70%;
+    height: 100%;
+    display: flex;
+    margin-left: 2.5%;
+}
+
+.settings__content__user__informations {
+    margin-top: 7.5%;
+    width: 100%;
+    height: 100%;
+    font-family: Poppins;
+    color: #EDEDED;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings__content__user__informations__title {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.settings__content__user__informations__subtitle {
+    font-size: 18px;
+    font-weight: 600;
+    font-style: italic;
+}
+
+.settings__content__user__informations__content {
+    width: 15vw;
+    height: 6vh;
+    border: 1px solid rgb(237, 237, 237, .5);
+    display: flex;
+    align-items: center;
+    padding-left: 5%;
+}
+
+.settings__content__admin {
+    width: 100%;
+    height: 100%;
+}
+
+.settings__content__admin__false {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.settings__content__admin__false__img {
+    padding-top: 35%;
+}
+
+.settings__content__admin__false__title {
+    border-radius: 12px;
+    width: 16vw;
+    height: 4vh;
+    background-color: #f10c23;
+    color: #EDEDED;
+    font-family: Poppins;
+    font-weight: bold;
+    font-size: 18px;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media only screen and (max-height: 850px) {
+    .settings__content__admin__false__img {
+        width: 1550px;
+    }
+
+    .settings__content__admin__false__title {
+        height: 6vh;
+    }
+}
+
+@media only screen and (max-height: 750px) {
+    .userPanel__sideBar__rows__row {
+        margin-top: 6vh;
+        height: 16vh
+    }
+
+    .settings__content__admin__false__title {
+        height: 8vh;
+    }
+}
+
+@media only screen and (max-width: 1500px),
+            screen and (max-height: 575px) {
+    .userPanel__sideBar__rows__row__title {
+        display: none;
+    }
+
+    .userPanel__sideBar__title {
+        font-size: 20px;
+        text-align: center;
+        padding-top: 5vh;
+    }
+
+    .userPanel__sideBar {
+        width: 25%;
+    }
+
+    .settings__content__user__informations__title {
+        font-size: 18px;
+    }
+
+    .settings__content__user__informations__subtitle {
+        font-size: 16px;
+    }
+
+    .settings__content__user__informations__content {
+        font-size: 14px;
+        width: 18vw;
+    }
+
+    .settings__content__admin__false__title {
+        width: 26vw;
+        font-size: 16px;
+    }
+}
+
+@media only screen and (max-width: 1100px) {
+    .settings__content__user__informations__content {
+        width: 25vw;
+    }
+
+    .settings__content__admin__false__title {
+        width: 30vw;
+    }
+}
+
+@media only screen and (max-width: 950px) {
+    .settings__content__user__informations__content {
+        width: 35vw;
+    }
+
+    .settings__content__admin__false__title {
+        width: 35vw;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .settings__content__user__informations__content {
+        width: 40vw;
+    }
+
+    .settings__content__admin__false__title {
+        width: 40vw;
+        font-size: 14px;
+    }
+}
+
+@media only screen and (max-width: 670px) {
+    .settings__content__user__informations__content {
+        width: 50vw;
+    }
+
+    .settings__content__admin__false__title {
+        width: 50vw;
+    }
+
+    .settings__content__admin__false__img {
+        padding-top: 175%;
+    }
+}

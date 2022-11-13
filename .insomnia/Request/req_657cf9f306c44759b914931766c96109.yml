@@ -1,0 +1,32 @@
+_id: req_657cf9f306c44759b914931766c96109
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1668107168387
+created: 1667323059225
+url: localhost:8080/service/microsoft
+name: /service/microsoft
+description: ""
+method: GET
+body: {}
+parameters:
+  - id: pair_a008d0eccdbd4673ac4661e20532e7de
+    name: callback
+    value: https://google.com
+    description: ""
+  - id: pair_8ef08b6bcf7146c2b7f29733f5ce8e6d
+    name: jwt
+    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IldhejB4IiwiZW1haWwiOiJyZW15Lm5vdWxpbkBlcGl0ZWNoLmV1IiwiYWRtaW4iOmZhbHNlLCJpYXQiOjE2NjgxMDcxNjB9.u6ZTOHknqQrh40Uh-xeZQIrhDIff5mXyIxPzedniz5Y
+    description: ""
+headers: []
+authentication:
+  type: bearer
+  prefix: Bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IldhejB4IiwiZW1haWwiOiJyZW15Lm5vdWxpbkBlcGl0ZWNoLmV1IiwiYWRtaW4iOmZhbHNlLCJpYXQiOjE2Njc4NDU3NzJ9.UVNAZ5_2kvEJqACnSEFvM5egBACrLz-ifxtnHPMFUrI
+metaSortKey: -1666045035671.5
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

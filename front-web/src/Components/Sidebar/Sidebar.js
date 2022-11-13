@@ -25,8 +25,8 @@ function Sidebar() {
                         <Link key={key} to={val.link}
                         className="row"
                         id={window.location.pathname === val.link ? "active" : ""}>
-                            <div class="SidebarIcon">{val.icon}</div>
-                            <div class="SidebarTitle">{val.title}</div>
+                            <div className="SidebarIcon">{val.icon}</div>
+                            <div className="SidebarTitle">{val.title}</div>
                         </Link>
                     )
                 })}

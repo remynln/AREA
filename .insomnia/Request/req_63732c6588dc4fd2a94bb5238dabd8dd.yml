@@ -1,0 +1,29 @@
+_id: req_63732c6588dc4fd2a94bb5238dabd8dd
+type: Request
+parentId: wrk_3673a15931d74132ab3244f3b193f674
+modified: 1667409615694
+created: 1667230527099
+url: localhost:8080/auth/login
+name: /auth/login
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"email": "root",
+    	"password": "root"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+authentication: {}
+metaSortKey: -1667230527099
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

@@ -6,7 +6,7 @@ import axios from "axios";
 import './Login.css'
 
 export const Login = (props) => {
-    const [user, setUser] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setError] = useState("");
     const [loginState, setLogin] = useState(false)
@@ -19,38 +19,43 @@ export const Login = (props) => {
     };
 
     useEffect(() => {
-        let token = params.get("token")
-    
-        if (props.user === true && localStorage.getItem("jwt") !== null)
+        checkParamsToken()
+        if (props.user.username !== undefined && localStorage.getItem("jwt") !== null)
             navigate('/dashboard')
-        else
+        else if (props.user !== false && localStorage.getItem("jwt") === null) {
             props.setUser(false)
-        if (token !== null)
-            localStorage.setItem('jwt', JSON.stringify(token))
-        if (user.length === 0 || password.length < 8)
+            props.setServices([])
+        }
+        if (username.length === 0 || password.length < 8)
             setLogin(false)
-        else
+        else if (loginState !== true)
             setLogin(true)
     });
+
+    const checkParamsToken = async () => {
+        let token = await params.get("token")
+
+        if (token !== null) {
+            await localStorage.setItem('jwt', JSON.stringify(token))
+            await props.setUser({username: null})
+        }
+    };
 
     const navigateToRegister = () => {
         navigate('/register');
     };
 
-    const Login = () => {
-        axios.post("/auth/login", {
-            email: user,
-            password: password
-        })
-        .then(res => {
-            if (res.status === 200)
-                localStorage.setItem('jwt', JSON.stringify(res.data.token))
-                navigate('/dashboard')
-        })
-        .catch(error => {
+    const Login = async () => {
+        try {
+          const res = await axios.post("/auth/login", { email: username, password: password })
+
+          if (res.status === 200)
+            await localStorage.setItem('jwt', JSON.stringify(res.data.token))
+            props.setUser({username: null})
+        } catch (error) {
             setError(error.response.data.message);
-        })
-    }
+        }
+      }
 
     return (
         <div className="LoginPage">
@@ -60,7 +65,7 @@ export const Login = (props) => {
                 <p>Sign in with Google</p>
             </a>
             <div className="InputBackground">
-                <input className="Input" placeholder="Username or Email" onChange={(event) => setUser(event.target.value)}></input>
+                <input className="Input" placeholder="Username or Email" onChange={(event) => setUsername(event.target.value)}></input>
             </div>
             <div className="InputBackground">
                 <input className="Input" placeholder="Password" type="password" onChange={(event) => setPassword(event.target.value)}></input>

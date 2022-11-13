@@ -27,7 +27,7 @@ const spotify: Service = {
         {
             clientID: process.env.SPOTIFY_CLIENT_ID,
             clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/service/spotify/callback",
+            callbackURL: process.env.DOMAIN + "/service/spotify/callback",
             passReqToCallback: true,
             scope: [
                 "playlist-read-private",
@@ -47,7 +47,6 @@ const spotify: Service = {
                 refreshToken: refreshToken,
                 username: profile.displayName
             }
-            console.log(cbObj)
             let accountToken = req.query.state;
             if (!accountToken || !accountToken.includes(' ')) {
                 callback(null, cbObj)
@@ -60,7 +59,6 @@ const spotify: Service = {
         }
     ),
     refreshToken: async (refreshToken) => {
-        console.log("ref", refreshToken)
         let res = await axios.post("https://accounts.spotify.com/api/token", new URLSearchParams({
             grant_type: 'refresh_token',
             refresh_token: refreshToken,

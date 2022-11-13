@@ -1,16 +1,36 @@
 import { AreaError } from "./errors"
 import { formatContent } from "./formatting"
 import deezer from "./services/deezer"
+import genius from "./services/genius"
 import google from "./services/google"
 import notion from "./services/notion"
 import spotify from "./services/spotify"
+import trello from "./services/trello"
+import github from "./services/github"
+import twitch from "./services/twitch"
+import twitter from "./services/twitter"
+import skyrock from "./services/skyrock"
+import pinterest from "./services/pinterest"
+import discord from "./services/discord"
+import gitlab from "./services/gitlab"
 import { Action, Reaction } from "./types"
+import mixcloud from "./services/mixcloud"
 
 const services = new Map([
     ["google", google],
     ["deezer", deezer],
     ["spotify", spotify],
-    ["notion", notion]
+    ["notion", notion],
+    ["trello", trello],
+    ["github", github],
+    ["twitch", twitch],
+    ["genius", genius],
+    ["twitter", twitter],
+    ["mixcloud", mixcloud],
+    ["skyrock", skyrock],
+    ["pinterest", pinterest],
+    ["discord", discord],
+    ["gitlab", gitlab]
 ])
 
 function getAction(actionName: string) {
@@ -44,13 +64,13 @@ function getReaction(reactionName: string) {
 function checkParams(paramTypes: {[x: string]: string}, givedParams: any,
     properties: any = undefined) {
     for (let i of Object.entries(paramTypes)) {
-        if (!givedParams) {
+        if (givedParams == undefined) {
             if ((i[1] as string).endsWith('?'))
                 continue
             throw new AreaError(`Required param '${i[0]}' not found`, 400)
         }
         let current = givedParams[i[0]]
-        if (!current) {
+        if (current == undefined) {
             if ((i[1] as string).endsWith('?'))
                 continue
             throw new AreaError(`Required param '${i[0]}' not found`, 400)

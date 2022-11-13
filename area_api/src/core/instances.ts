@@ -1,13 +1,27 @@
 import { AxiosError } from "axios";
 import { Types } from "mongoose";
+import { ScheduledTask } from "node-cron";
+import cron from "node-cron";
 import db from "~/database/db";
 import { Area } from "./area";
 import { AreaError, DatabaseError, ProcessError } from "./errors";
 import global from "./global";
 import { ActionConfig, ReactionConfig, Tokens } from "./types";
 
+
+const AREA_START_DELTA = 4000
+const SERVICE_START_DELTA = 333
+const AREA_LOOP_DELTA = "*/5 * * * * *"
+const SERVICE_LOOP_DELTA = 416
+
 // This map stores areas instances, with db trigger id as key
 var areas: Map<string, Area> = new Map([])
+
+// This map stores areas instances, with action'sService name as key
+var areasServiceIndex: Map<string, Area[]> = new Map([])
+
+//cron associated with service to poll event from actions
+var cronTasks: Map<string, { task: ScheduledTask, current: number}> = new Map([])
 
 async function filterAsync<T>(arr: T[], predicate: (item: T) => Promise<boolean>) {
     const results: boolean[] = []
@@ -24,7 +38,7 @@ var tokens: Map<string, Map<string, Tokens>> = new Map([])
 function callbackErrorFun(err: ProcessError) {
     console.log("new error from: " + err.serviceName + "/" + err.name);
     if (err.err instanceof AxiosError) {
-        console.log("acios error")
+        console.log("axios error")
         console.log(err.err.response)
     } else {
         console.log(err.err)
@@ -39,6 +53,48 @@ export interface AreaConfig {
     reaction: { conf: ReactionConfig, params: any }
 }
 
+function createCron(serviceName: string) {
+    console.log("cron creation")
+    return cron.schedule(AREA_LOOP_DELTA, () => {
+        let selectedCron = cronTasks.get(serviceName)
+        if (!selectedCron)
+            return
+        let selectedAreas = areasServiceIndex.get(serviceName)
+        if (!selectedAreas)
+            return
+        if (selectedAreas.length == 0)
+            return
+        console.log("looping", serviceName, selectedCron.current)
+        let end = selectedCron.current
+        do {
+            if (selectedCron.current >= selectedAreas.length) {
+                if (end == 0) {
+                    return
+                }
+                selectedCron.current = 0
+            }
+            if (selectedAreas[selectedCron.current].status == "started") {
+                selectedAreas[selectedCron.current].loop()
+                selectedCron.current = selectedCron.current + 1
+                return
+            }
+            selectedCron.current = selectedCron.current + 1
+        } while (selectedCron.current != end)
+    })
+}
+
+async function launchAreasDiffered(areas: Area[]) {
+    for (let i of areas) {
+        if (i.dbStatus != "enabled" || i.status == "locked")
+            continue;
+        console.log("starting")
+        i.start().catch((err) => {
+            callbackErrorFun(new ProcessError(i.actionConf.serviceName || "", i.actionConf.name, err))
+        })
+        await new Promise(r => setTimeout(r, AREA_START_DELTA));
+    }
+}
+
 const AreaInstances = {
     get(id: string) {
         return areas.get(id)
@@ -47,6 +103,22 @@ const AreaInstances = {
         let user = await db.user.get(accountId)
         return Array.from(areas.entries())
             .filter(([_, value]) => value.accountMail == user.mail)
+    },
+    async addToCronTasks(area: Area) {
+        let serviceName = area.actionConf.serviceName || ''
+        var selected = areasServiceIndex.get(serviceName)
+        if (!selected) {
+            selected = []
+            areasServiceIndex.set(serviceName, selected)
+        }
+        selected.push(area)
+        if (cronTasks.has(serviceName))
+            return
+        var newCron = createCron(serviceName)
+        cronTasks.set(serviceName, {
+            task: newCron,
+            current: 0
+        })
     },
     async add(area: AreaConfig, accountMail: string) {
         let _tokens = tokens.get(accountMail)
@@ -65,9 +137,26 @@ const AreaInstances = {
             area.reaction,
             callbackErrorFun
         )
-        let id = await db.area.set(instance)
-        areas.set(id.toHexString(), instance)
+        await db.area.checkValidity(instance)
         await instance.start()
+        let id = await db.area.set(instance)
+        this.addToCronTasks(instance)
+        areas.set(id.toHexString(), instance)
+    },
+    async loadStart() {
+        let promises: Promise<void>[] = []
+        for (let [key, value] of areasServiceIndex.entries()) {
+            promises.push(launchAreasDiffered(value))
+            await new Promise(r => setTimeout(r, SERVICE_START_DELTA));
+        }
+        await Promise.all(promises)
+        for (let [key, value] of areasServiceIndex.entries()) {
+            cronTasks.set(key, {
+                task: createCron(key),
+                current: 0
+            })
+            await new Promise(r => setTimeout(r, SERVICE_LOOP_DELTA));
+        }
     },
     async load() {
         console.log("starting area instances")
@@ -98,16 +187,25 @@ const AreaInstances = {
                     callbackErrorFun
                 )
                 areas.set(area._id.toHexString(), areaInstance)
-                if (area.status == "enabled" && areaInstance.status != "locked") {
-                    await areaInstance.start()
+                var selected = areasServiceIndex.get(areaInstance.actionConf.serviceName || '')
+                if (!selected) {
+                    selected = []
+                    areasServiceIndex.set(areaInstance.actionConf.serviceName || '', selected)
                 }
+                selected.push(areaInstance)
+                areaInstance.dbStatus = area.status
                 if (area.status == "locked")
                     areaInstance.status = "locked"
             } catch (err) {
                 callbackErrorFun(new ProcessError("", "area init", err))
             }
         })
-        console.log("instanciated")
+        try {
+            await this.loadStart()
+        } catch (err) {
+            callbackErrorFun(new ProcessError("", "area start", err))
+        }
+        console.log("instances started")
     },
     async enable(areaId: string) {
         let area = areas.get(areaId)
@@ -132,6 +230,18 @@ const AreaInstances = {
             throw new DatabaseError(`area with id '${area} not found`, 404)
         if (area.status != "stopped" && area.status != "locked" && area.status != "errored")
             area.stop()
+        let selected = areasServiceIndex.get(area.actionConf.serviceName || '')
+        if (!selected)
+            return
+        let index = selected.indexOf(area)
+        if (index == -1)
+            return
+        selected.splice(index, 1)
+        let selectedCron = cronTasks.get(area.actionConf.serviceName || '')
+        if (!selectedCron)
+            return
+        if (selectedCron.current > index)
+            selectedCron.current--
         areas.delete(areaId)
         await db.area.delete(areaId)
     },
