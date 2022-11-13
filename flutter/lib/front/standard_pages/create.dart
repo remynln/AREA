@@ -70,14 +70,19 @@ class _CreateWidgetState extends State<CreateWidget> {
             if (isAction) {
               _actionService = Services().allServices()[index];
               _actionTrigger = ActionsAnswer();
+              _actionDetail = {};
               _firstDropDown = "";
               _secondDropDown = "";
               _comparatorDropDown = "";
               _secondFree = TextEditingController();
               _condition = TextEditingController();
+              _reactionService = Service("", "", "");
+              _reactionTrigger = ReactionsAnswer();
+              _reactionDetail = {};
             } else {
               _reactionService = Services().allServices()[index];
               _reactionTrigger = ReactionsAnswer();
+              _reactionDetail = {};
             }
             setStateWidget(() {});
             Navigator.of(context).pop();
@@ -195,6 +200,15 @@ class _CreateWidgetState extends State<CreateWidget> {
               onTap: () {
                 _actionTrigger = actionsAnswer
                     .firstWhere((element) => actionsAnswer[index].name == element.name);
+                _actionDetail = {};
+                _firstDropDown = "";
+                _secondDropDown = "";
+                _comparatorDropDown = "";
+                _secondFree = TextEditingController();
+                _condition = TextEditingController();
+                _reactionService = Service("", "", "");
+                _reactionTrigger = ReactionsAnswer();
+                _reactionDetail = {};
                 setStateWidget(() {});
                 Navigator.of(context).pop();
               },
@@ -227,6 +241,7 @@ class _CreateWidgetState extends State<CreateWidget> {
               onTap: () {
                 _reactionTrigger = reactionsAnswer
                     .firstWhere((element) => reactionsAnswer[index].name == element.name);
+                _reactionDetail = {};
                 setStateWidget(() {});
                 Navigator.of(context).pop();
               },

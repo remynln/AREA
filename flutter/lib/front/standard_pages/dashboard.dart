@@ -150,20 +150,27 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               delay: 700,
               child: Padding(
                   padding: EdgeInsetsDirectional.only(start: 10),
-                  child: TextButton(
-                      onPressed: () => setState(() {
-                            if (_isBasicService) {
-                              return;
-                            }
-                            _isBasicService = true;
-                          }),
-                      child: Text("Services",
-                          style: TextStyle(
-                              color:
-                                  _isBasicService ? Colors.white : Colors.grey,
-                              fontFamily: "Roboto",
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20))))),
+                  child: Text("Services",
+                      style: TextStyle(
+                          color: _isBasicService ? Colors.white : Colors.grey,
+                          fontFamily: "Roboto",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20)))),
+          Spacer(),
+          DelayedAnimation(
+              delay: 700,
+              child: Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: TextButton(
+                  onPressed: () {
+                    setState(() {});
+                  },
+                  style: ButtonStyle(
+                      side: MaterialStatePropertyAll<BorderSide>(BorderSide(
+                          color: Color.fromRGBO(191, 27, 44, 10), width: 1.5))),
+                  child: Text("REFRESH",
+                      style:
+                          TextStyle(color: Color.fromRGBO(191, 27, 44, 10), fontSize: 13)))))
         ]),
         ServiceDisplay(
             isBasicService: _isBasicService,
