@@ -13,6 +13,7 @@ import skyrock from "./services/skyrock"
 import pinterest from "./services/pinterest"
 import discord from "./services/discord"
 import gitlab from "./services/gitlab"
+import microsoft from './services/microsoft'
 import { Action, Reaction } from "./types"
 import mixcloud from "./services/mixcloud"
 
@@ -30,6 +31,7 @@ const services = new Map([
     ["skyrock", skyrock],
     ["pinterest", pinterest],
     ["discord", discord],
+    ["microsoft", microsoft],
     ["gitlab", gitlab]
 ])
 
