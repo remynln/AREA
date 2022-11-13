@@ -17,8 +17,8 @@ function remove_env() {
         git push --set-upstream origin $branch --force
     elif [[ $2 == "-f" ]];then
         git filter-repo --path $filepath --invert-paths --force
-            git remote add origin $remote
-            git push --set-upstream origin $branch --force
+        git remote add origin $remote
+        git push --set-upstream origin $branch --force
     else
         echo "Bad syntax"
         exit 1
@@ -36,7 +36,7 @@ fi
 for branch in $(git for-each-ref --format='%(refname:short)'); do
     true_branch_name=$(echo $branch | sed -e 's/\origin\///g')
     git checkout -f $true_branch_name --no-guess > /dev/null
-    env_file=$(find . -type f -name ".env" ! -path "./front-web/*" ! -path "./area_api/node_modules/*")
+    env_file=$(find . -type f -name ".env" ! -path "./front-web/*" ! -path "./area_api/node_modules/*" | cut -c 3-)
     if [ -z $env_file ]; then
         echo -e "\e[32mno .env in $true_branch_name\e[0m"
     else
