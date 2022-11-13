@@ -35,12 +35,15 @@ fi
 
 for branch in $(git for-each-ref --format='%(refname:short)'); do
     true_branch_name=$(echo $branch | sed -e 's/\origin\///g')
-    git checkout -f $true_branch_name > /dev/null
-    env_file=$(find . -type f -name ".env" ! -path "./front-web/*" ! -path "./area_api/node_modules/*" | cut -c 3-)
-    if [ -z $env_file ]; then
-        echo -e "\e[32mno .env in $true_branch_name\e[0m"
-    else
-        echo -e "\e[31m\e[1m\e[4m.env founded at $env_file in $true_branch_name\e[0m"
-        remove_env $env_file $force
-    fi
+    for commit in $(git rev-list $true_branch_name); do
+        git checkout $force $commit
+        env_file=$(find . -type f -name ".env" ! -path "./front-web/*" ! -path "./area_api/node_modules/*" | cut -c 3-)
+        if [ -z $env_file ]; then
+            :
+            # echo -e "\e[32mno .env in $true_branch_name\e[0m"
+        else
+            echo -e "\e[31m\e[1m\e[4m.env founded at $env_file in $true_branch_name\e[0m"
+            # remove_env $env_file $force
+        fi
+    done
 done
