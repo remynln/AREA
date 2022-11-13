@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from 'react-router-dom'
+import { Workflow } from "../Workflows/Workflow";
 import { WorkflowCreate } from "../Workflows/WorkflowCreate";
 import "./Dashboard.css"
 
@@ -15,7 +16,18 @@ function Dashboard_Workflows(props) {
                 <p className="DashboardWorkflowTitle">Workflows</p>
                 <Link to={"/workflows"} className="WorkflowRedirection"><p>View all</p></Link>
             </div>
-            <WorkflowCreate setInCreation={props.setInCreation}/>
+            <div className="dashboard__workflows__display">
+                <WorkflowCreate setInCreation={props.setInCreation}/>
+                {
+                    props.areas.map((element, key) => {
+                        if (key < 5) {
+                            return (
+                                <Workflow key={key} workflow={element} setAreas={props.setAreas}/>
+                            )
+                        }
+                    })
+                }
+            </div>
         </div>
     )
 }

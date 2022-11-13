@@ -45,6 +45,21 @@ export const Settings = (props) => {
         }
     }
 
+    const setAdmin = async (user) => {
+        try {
+            if (user.admin === false) {
+                await axios.put("/user/" + user.id, {admin: true},
+                    { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+            } else {
+                await axios.put("/user/" + user.id, {admin: false},
+                    { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+            }
+            await loadUsers()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <div className="Home">
             <Sidebar />
@@ -116,8 +131,14 @@ export const Settings = (props) => {
                                                     <AlternateEmailIcon />
                                                     <p className='settings__content__admin__content__user__email'>{element.email}</p>
                                                     <div className='settings__content__admin__content__user__delete'
+                                                        style={element.admin === true && props.user.superuser === false ? {display: "none"} : undefined}
                                                         onClick={() => {deleteUser(element)}}>
                                                         <DeleteIcon />
+                                                    </div>
+                                                    <div className='settings__content__admin__content__user__setadmin'
+                                                        style={props.user.superuser ? (element.admin ? {color: "#4B7844"} : {color: "#f10c23"}) : {display: "none"}}
+                                                        onClick={() => {setAdmin(element)}}>
+                                                        <ShieldIcon />
                                                     </div>
                                                 </div>
                                             )

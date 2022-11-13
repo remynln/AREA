@@ -56,7 +56,6 @@ export const WorkflowPanel = (props) => {
 
     const CreateWorkflow = async () => {
         try {
-            let workflowContent = {}
             let action = {}
             let reaction = {}
             let condition = ""
@@ -81,12 +80,25 @@ export const WorkflowPanel = (props) => {
                 reaction = {name: reactionServiceActive + "/" + reactionActive, params: reactParams}
             } else
                 reaction = {name: reactionServiceActive + "/" + reactionActive}
-            const res = await axios.post("/area/create", {action, reaction, condition, title, description},
+            await axios.post("/area/create", {action, reaction, condition, title, description},
                 { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+            await loadAreas()
+            props.setInCreation(false)
         } catch (error) {
             console.log(error)
             setErrorMessage(error.response.data.message)
         }
+    }
+
+    const loadAreas = async () => {
+        try {
+            const res = await axios.get("/user/me/areas",
+                { headers: { Authorization: "Bearer " + JSON.parse(localStorage.getItem("jwt")) } })
+
+            await props.setAreas(res.data)
+      } catch (error) {
+            console.log(error)
+      }
     }
 
     return (
