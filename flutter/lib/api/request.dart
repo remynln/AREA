@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -16,6 +17,67 @@ import 'package:area/api/answer/area_answer.dart';
 import 'package:area/api/answer/user_answer.dart';
 
 import 'package:url_launcher/url_launcher.dart';
+
+class Area {
+  String title;
+  String description;
+  Map<String, dynamic> action;
+  String condition;
+  Map<String, dynamic> reaction;
+
+  Area(
+      {required this.title,
+      required this.description,
+      required this.action,
+      this.condition = "",
+      required this.reaction});
+
+  factory Area.fromJson(Map<String, dynamic> json) {
+    return Area(
+        title: json["title"] as String,
+        description: json["description"] as String,
+        action: json["action"] as Map<String, dynamic>,
+        condition: json["condition"] as String,
+        reaction: json["reaction"] as Map<String, dynamic>);
+  }
+
+  bool valueIsNumber(String value) {
+    try {
+      double.parse(value);
+    } catch (_) {
+      return (false);
+    }
+    return (true);
+  }
+
+  Map<String, dynamic> getParams(Map<String, dynamic> params) {
+    Map<String, dynamic> result = {};
+
+    params.forEach((key, value) {
+      if (valueIsNumber(value)) {
+        result.addAll({key: int.parse(value)});
+      }
+      else {
+        result.addAll({key: value});
+      }
+    });
+    return result;
+  }
+
+  Map<String, dynamic> toJson() => {
+        "title": title,
+        "description": description,
+        "action": {
+          "name": action["name"],
+          "params": getParams(action["params"])
+        },
+        "condition": condition,
+        "reaction": {
+          "name": reaction["name"],
+          "params": getParams(reaction["params"])
+        }
+      };
+}
 
 class ApiService {
   Future<RegisterAnswer?> handleRegister(
@@ -152,31 +214,33 @@ class ApiService {
   Future<String> createArea(String title, String description, String token,
       ActionsAnswer action, String condition, ReactionsAnswer reaction) async {
     try {
+      Area theArea = Area(
+          title: title,
+          description: description,
+          action: {
+            "name": "${action.serviceName}/${action.name}",
+            "params": action.parameters
+          },
+          condition: condition,
+          reaction: {
+            "name": "${reaction.serviceName}/${reaction.name}",
+            "params": reaction.parameters
+          });
+
       final uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
           ApiConstants.createEndpoint);
       final headers = {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         HttpHeaders.contentTypeHeader: 'application/json'
       };
-      var body_data = {
-        "title": title,
-        "description": description,
-        "action": {
-          "name": "${action.serviceName}/${action.name}",
-          "params": action.parameters
-        },
-        "reaction": {
-          "name": "${reaction.serviceName}/${reaction.name}",
-          "params": reaction.parameters
-        }
-      };
-      if (condition != "null") {
-        body_data["condition"] = condition;
-      }
+
       var response =
-          await http.post(uri, headers: headers, body: jsonEncode(body_data));
+          await http.post(uri, headers: headers, body: jsonEncode(theArea.toJson()));
       if (response.statusCode != 200) {
         log(response.statusCode.toString());
+        if (json.decode(response.body).containsKey("message")) {
+          return json.decode(response.body)["message"];
+        }
       } else
         return json.decode(response.body)["message"];
     } catch (e) {
@@ -315,7 +379,8 @@ class ApiService {
       token_info += token_info.length % 4 == 0
           ? ''
           : (token_info.length % 4 == 3 ? '=' : '==');
-      String name = jsonDecode(utf8.fuse(base64).decode(token_info))["username"];
+      String name =
+          jsonDecode(utf8.fuse(base64).decode(token_info))["username"];
 
       final uri = Uri.http(
           "${ApiConstants.ip}:${ApiConstants.port}",
@@ -379,7 +444,8 @@ class ApiService {
       token_info += token_info.length % 4 == 0
           ? ''
           : (token_info.length % 4 == 3 ? '=' : '==');
-      String name = jsonDecode(utf8.fuse(base64).decode(token_info))["username"];
+      String name =
+          jsonDecode(utf8.fuse(base64).decode(token_info))["username"];
 
       var uri = Uri.http("${ApiConstants.ip}:${ApiConstants.port}",
           ApiConstants.userEndpoint(user_id));
