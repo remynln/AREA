@@ -14,6 +14,8 @@ class _DelayedAnimationState extends State<DelayedAnimation>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _animOffset;
+
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +36,9 @@ class _DelayedAnimationState extends State<DelayedAnimation>
     ).animate(curve);
 
     Timer(Duration(milliseconds: widget.delay), () {
-      _controller.forward();
+      if (mounted) {
+        _controller.forward();
+      }
     });
   }
 
@@ -46,5 +50,11 @@ class _DelayedAnimationState extends State<DelayedAnimation>
         child: widget.child,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

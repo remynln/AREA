@@ -125,7 +125,7 @@ void openUserAsAdmin(String token, context, setStateParent, UserAnswer answer) {
                                                   color: Color.fromRGBO(
                                                       62, 149, 49, 100),
                                                   width: 1.5))),
-                                  child: const Text("UPDATE USERNAME",
+                                  child: const Text("UPDATE USER",
                                       style: TextStyle(
                                           color: Color.fromRGBO(
                                               62, 149, 49, 100)))),
