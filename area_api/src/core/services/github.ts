@@ -3,12 +3,10 @@ import jwt from "jsonwebtoken"
 import db from "~/database/db";
 import JwtFormat from "~/routes/auth/jwtFormat";
 import axios from "axios";
-import addStar from '~/areas/github/reactions/addStar'
 import newStar from '~/areas/github/actions/newStar'
 import starRemoved from '~/areas/github/actions/starRemoved'
+import addStar from '~/areas/github/reactions/addStar'
 import removeStar from '~/areas/github/reactions/removeStar'
-import createFork from '~/areas/github/reactions/createFork'
-import listFork from '~/areas/github/actions/listFork'
 var GithubStrategy = require("passport-github2").Strategy
 
 const github: Service = {
@@ -19,7 +17,6 @@ const github: Service = {
     reactions: new Map([
         ["addStar", addStar],
         ["removeStar", removeStar],
-        ["createFork", createFork]
     ]),
     authParams: {
         accessType: 'offline',
