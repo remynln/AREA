@@ -15,7 +15,6 @@ const github: Service = {
     actions: new Map([
         ["newStar", newStar],
         ["starRemoved", starRemoved],
-        ["listFork", listFork]
     ]),
     reactions: new Map([
         ["addStar", addStar],
