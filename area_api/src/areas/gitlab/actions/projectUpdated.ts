@@ -32,7 +32,7 @@ class projectUpdated extends Action {
         }
         let mapped: ProjectInfo = {
             name: res.data.name,
-            description: res.data.description
+            description: res.data.description || ' '
         }
         return mapped
     }
